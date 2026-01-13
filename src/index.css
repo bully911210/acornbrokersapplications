@@ -135,12 +135,12 @@
 @layer components {
   /* Form Container */
   .form-container {
-    @apply bg-card rounded-xl shadow-card border border-border/50 p-6 md:p-8;
+    @apply bg-card rounded-xl shadow-card border border-border/50 p-4 md:p-8;
   }
 
   /* Step Indicator */
   .step-indicator {
-    @apply flex items-center justify-center w-10 h-10 rounded-full text-sm font-semibold transition-all duration-300;
+    @apply flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-full text-xs md:text-sm font-semibold transition-all duration-300;
   }
 
   .step-indicator-active {
@@ -157,7 +157,7 @@
 
   /* Cover Cards */
   .cover-card {
-    @apply relative bg-card border-2 rounded-xl p-6 transition-all duration-300 cursor-pointer hover:shadow-lg;
+    @apply relative bg-card border-2 rounded-xl p-3 md:p-6 transition-all duration-300 cursor-pointer hover:shadow-lg;
   }
 
   .cover-card-selected {

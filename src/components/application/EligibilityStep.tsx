@@ -34,30 +34,30 @@ export const EligibilityStep = ({ defaultValues, onNext }: EligibilityStepProps)
 
   return (
     <div className="animate-fade-in">
-      <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold text-foreground mb-2">
+      <div className="text-center mb-4 md:mb-8">
+        <h2 className="text-lg md:text-2xl font-bold text-foreground mb-1 md:mb-2">
           Let's Get Started
         </h2>
-        <p className="text-muted-foreground">
+        <p className="text-sm md:text-base text-muted-foreground">
           First, we need to confirm your eligibility for firearm legal cover.
         </p>
       </div>
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 md:space-y-8">
           <FormField
             control={form.control}
             name="firearmLicenceStatus"
             render={({ field }) => (
-              <FormItem className="space-y-4 stagger-1 animate-fade-in opacity-0">
-                <FormLabel className="text-base font-semibold">
+              <FormItem className="space-y-2 md:space-y-4 stagger-1 animate-fade-in opacity-0">
+                <FormLabel className="text-sm md:text-base font-semibold">
                   What is your firearm licence status?
                 </FormLabel>
                 <FormControl>
                   <RadioGroup
                     onValueChange={field.onChange}
                     value={field.value}
-                    className="grid grid-cols-1 md:grid-cols-2 gap-4"
+                    className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4"
                   >
                     <label
                       className={`cover-card ${
@@ -67,9 +67,9 @@ export const EligibilityStep = ({ defaultValues, onNext }: EligibilityStepProps)
                       }`}
                     >
                       <RadioGroupItem value="valid" className="sr-only" />
-                      <div className="flex items-start gap-4">
-                        <div className="p-3 rounded-lg bg-success-light">
-                          <Shield className="w-6 h-6 text-success" />
+                      <div className="flex items-start gap-3 md:gap-4">
+                        <div className="p-2 md:p-3 rounded-lg bg-success-light">
+                          <Shield className="w-5 h-5 md:w-6 md:h-6 text-success" />
                         </div>
                         <div>
                           <p className="font-semibold text-foreground">
@@ -90,9 +90,9 @@ export const EligibilityStep = ({ defaultValues, onNext }: EligibilityStepProps)
                       }`}
                     >
                       <RadioGroupItem value="in_progress" className="sr-only" />
-                      <div className="flex items-start gap-4">
-                        <div className="p-3 rounded-lg bg-warning-light">
-                          <Shield className="w-6 h-6 text-warning" />
+                      <div className="flex items-start gap-3 md:gap-4">
+                        <div className="p-2 md:p-3 rounded-lg bg-warning-light">
+                          <Shield className="w-5 h-5 md:w-6 md:h-6 text-warning" />
                         </div>
                         <div>
                           <p className="font-semibold text-foreground">
@@ -115,15 +115,15 @@ export const EligibilityStep = ({ defaultValues, onNext }: EligibilityStepProps)
             control={form.control}
             name="source"
             render={({ field }) => (
-              <FormItem className="space-y-4 stagger-2 animate-fade-in opacity-0">
-                <FormLabel className="text-base font-semibold">
+              <FormItem className="space-y-2 md:space-y-4 stagger-2 animate-fade-in opacity-0">
+                <FormLabel className="text-sm md:text-base font-semibold">
                   How did you hear about us?
                 </FormLabel>
                 <FormControl>
                   <RadioGroup
                     onValueChange={field.onChange}
                     value={field.value}
-                    className="grid grid-cols-2 md:grid-cols-4 gap-3"
+                    className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3"
                   >
                     {[
                       { value: "online", label: "Online", icon: Globe },
@@ -133,7 +133,7 @@ export const EligibilityStep = ({ defaultValues, onNext }: EligibilityStepProps)
                     ].map(({ value, label, icon: Icon }) => (
                       <label
                         key={value}
-                        className={`cover-card text-center py-4 ${
+                        className={`cover-card text-center py-2 md:py-4 ${
                           field.value === value
                             ? "cover-card-selected"
                             : "cover-card-unselected"
@@ -151,8 +151,8 @@ export const EligibilityStep = ({ defaultValues, onNext }: EligibilityStepProps)
             )}
           />
 
-          <div className="flex justify-end pt-4">
-            <Button type="submit" size="lg" className="min-w-[200px]">
+          <div className="flex justify-end pt-2 md:pt-4">
+            <Button type="submit" size="lg" className="w-full md:w-auto md:min-w-[200px]">
               Continue
             </Button>
           </div>
