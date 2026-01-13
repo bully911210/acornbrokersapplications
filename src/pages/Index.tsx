@@ -199,17 +199,17 @@ const Index = () => {
 
   return (
     <Layout>
-      <div className="container max-w-3xl py-8 md:py-12">
+      <div className="container max-w-3xl px-4 py-4 md:py-12">
         {/* Hero Section */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
-            <Shield className="w-4 h-4" />
+        <div className="text-center mb-4 md:mb-8">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-xs md:text-sm font-medium mb-2 md:mb-4">
+            <Shield className="w-3.5 h-3.5 md:w-4 md:h-4" />
             Firearm Legal Cover
           </div>
-          <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-3">
+          <h1 className="text-xl md:text-4xl font-bold text-foreground mb-2 md:mb-3">
             Protect Your Rights as a Firearm Owner
           </h1>
-          <p className="text-muted-foreground max-w-xl mx-auto">
+          <p className="text-sm md:text-base text-muted-foreground max-w-xl mx-auto">
             Get comprehensive legal expense and liability insurance designed specifically for South African firearm owners.
           </p>
         </div>
