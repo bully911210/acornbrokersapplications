@@ -61,8 +61,9 @@ export const AuthorisationsStep = ({
     return "*".repeat(Math.max(0, account.length - 3)) + account.slice(-3);
   };
 
-  const handleSubmit = (data: AuthorisationsData) => {
-    onSubmit(data);
+  const handleSubmit = (data: Record<string, boolean>) => {
+    // Cast to AuthorisationsData since Zod validation ensures all are true
+    onSubmit(data as unknown as AuthorisationsData);
   };
 
   const consentItems = [
