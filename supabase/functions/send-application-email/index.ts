@@ -6,7 +6,7 @@ import { COVER_OPTIONS, ApplicantData } from "../_shared/types.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-session-id",
 };
 
 const RECIPIENT_EMAILS = [
@@ -41,17 +41,39 @@ const getOrdinalSuffix = (num: number): string => {
   return "th";
 };
 
-const maskIdNumber = (id: string): string => {
-  return id.substring(0, 6) + "*******";
-};
-
-const maskAccountNumber = (account: string): string => {
-  return "*".repeat(Math.max(0, account.length - 3)) + account.slice(-3);
+// HTML escape function to prevent XSS in emails
+const escapeHtml = (text: string | null | undefined): string => {
+  if (!text) return "";
+  const map: Record<string, string> = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#039;'
+  };
+  return String(text).replace(/[&<>"']/g, (m) => map[m]);
 };
 
 const generateEmailHtml = (applicant: ApplicantData): string => {
   const coverOption = COVER_OPTIONS.find((opt) => opt.id === applicant.cover_option)!;
   const debitDate = `${applicant.preferred_debit_date}${getOrdinalSuffix(applicant.preferred_debit_date)}`;
+
+  // Escape all user-controlled fields
+  const firstName = escapeHtml(applicant.first_name);
+  const lastName = escapeHtml(applicant.last_name);
+  const saIdNumber = escapeHtml(applicant.sa_id_number);
+  const mobile = escapeHtml(applicant.mobile);
+  const email = escapeHtml(applicant.email);
+  const streetAddress = escapeHtml(applicant.street_address);
+  const suburb = escapeHtml(applicant.suburb);
+  const city = escapeHtml(applicant.city);
+  const province = escapeHtml(applicant.province);
+  const accountHolder = escapeHtml(applicant.account_holder);
+  const bankName = escapeHtml(applicant.bank_name);
+  const accountType = escapeHtml(applicant.account_type);
+  const accountNumber = escapeHtml(applicant.account_number);
+  const source = escapeHtml(applicant.source);
+  const agentId = escapeHtml(applicant.agent_id);
 
   return `
 <!DOCTYPE html>
@@ -100,23 +122,23 @@ const generateEmailHtml = (applicant: ApplicantData): string => {
               <table width="100%" cellpadding="5" cellspacing="0">
                 <tr>
                   <td width="35%" style="color: #64748b; font-size: 14px;">Full Name:</td>
-                  <td style="color: #1e293b; font-size: 14px; font-weight: bold;">${applicant.first_name} ${applicant.last_name}</td>
+                  <td style="color: #1e293b; font-size: 14px; font-weight: bold;">${firstName} ${lastName}</td>
                 </tr>
                 <tr>
                   <td style="color: #64748b; font-size: 14px;">SA ID Number:</td>
-                  <td style="color: #1e293b; font-size: 14px;">${applicant.sa_id_number}</td>
+                  <td style="color: #1e293b; font-size: 14px;">${saIdNumber}</td>
                 </tr>
                 <tr>
                   <td style="color: #64748b; font-size: 14px;">Mobile:</td>
-                  <td style="color: #1e293b; font-size: 14px;">${applicant.mobile}</td>
+                  <td style="color: #1e293b; font-size: 14px;">${mobile}</td>
                 </tr>
                 <tr>
                   <td style="color: #64748b; font-size: 14px;">Email:</td>
-                  <td style="color: #1e293b; font-size: 14px;">${applicant.email}</td>
+                  <td style="color: #1e293b; font-size: 14px;">${email}</td>
                 </tr>
                 <tr>
                   <td style="color: #64748b; font-size: 14px;">Address:</td>
-                  <td style="color: #1e293b; font-size: 14px;">${applicant.street_address}, ${applicant.suburb}<br>${applicant.city}, ${applicant.province}</td>
+                  <td style="color: #1e293b; font-size: 14px;">${streetAddress}, ${suburb}<br>${city}, ${province}</td>
                 </tr>
               </table>
             </td>
@@ -154,19 +176,19 @@ const generateEmailHtml = (applicant: ApplicantData): string => {
               <table width="100%" cellpadding="5" cellspacing="0">
                 <tr>
                   <td width="35%" style="color: #64748b; font-size: 14px;">Account Holder:</td>
-                  <td style="color: #1e293b; font-size: 14px; font-weight: bold;">${applicant.account_holder}</td>
+                  <td style="color: #1e293b; font-size: 14px; font-weight: bold;">${accountHolder}</td>
                 </tr>
                 <tr>
                   <td style="color: #64748b; font-size: 14px;">Bank:</td>
-                  <td style="color: #1e293b; font-size: 14px;">${applicant.bank_name}</td>
+                  <td style="color: #1e293b; font-size: 14px;">${bankName}</td>
                 </tr>
                 <tr>
                   <td style="color: #64748b; font-size: 14px;">Account Type:</td>
-                  <td style="color: #1e293b; font-size: 14px;">${applicant.account_type.charAt(0).toUpperCase() + applicant.account_type.slice(1)}</td>
+                  <td style="color: #1e293b; font-size: 14px;">${accountType ? accountType.charAt(0).toUpperCase() + accountType.slice(1) : ''}</td>
                 </tr>
                 <tr>
                   <td style="color: #64748b; font-size: 14px;">Account Number:</td>
-                  <td style="color: #1e293b; font-size: 14px;">${applicant.account_number}</td>
+                  <td style="color: #1e293b; font-size: 14px;">${accountNumber}</td>
                 </tr>
                 <tr>
                   <td style="color: #64748b; font-size: 14px;">Debit Date:</td>
@@ -212,12 +234,12 @@ const generateEmailHtml = (applicant: ApplicantData): string => {
               <table width="100%" cellpadding="5" cellspacing="0">
                 <tr>
                   <td width="35%" style="color: #64748b; font-size: 14px;">Source:</td>
-                  <td style="color: #1e293b; font-size: 14px;">${applicant.source || "Direct"}</td>
+                  <td style="color: #1e293b; font-size: 14px;">${source || "Direct"}</td>
                 </tr>
-                ${applicant.agent_id ? `
+                ${agentId ? `
                 <tr>
                   <td style="color: #64748b; font-size: 14px;">Agent ID:</td>
-                  <td style="color: #1e293b; font-size: 14px;">${applicant.agent_id}</td>
+                  <td style="color: #1e293b; font-size: 14px;">${agentId}</td>
                 </tr>
                 ` : ""}
               </table>
@@ -258,6 +280,21 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error("Missing applicantId");
     }
 
+    // Validate UUID format to prevent injection
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(applicantId)) {
+      throw new Error("Invalid applicantId format");
+    }
+
+    // Get session ID from header for validation
+    const sessionId = req.headers.get("x-session-id");
+    if (!sessionId) {
+      return new Response(
+        JSON.stringify({ error: "Unauthorized: Missing session" }),
+        { status: 401, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
     // Create Supabase client with service role for full access
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -269,17 +306,42 @@ const handler = async (req: Request): Promise<Response> => {
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Fetch the complete applicant record
+    // Fetch the complete applicant record - verify session_id matches AND status is complete
     const { data: applicant, error: fetchError } = await supabase
       .from("applicants")
       .select("*")
       .eq("id", applicantId)
+      .eq("session_id", sessionId)
       .eq("status", "complete")
       .single();
 
     if (fetchError || !applicant) {
-      console.error("Error fetching applicant:", fetchError);
-      throw new Error("Applicant not found or not complete");
+      console.error("Error fetching applicant or session mismatch:", fetchError);
+      return new Response(
+        JSON.stringify({ error: "Unauthorized or application not found" }),
+        { status: 403, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    // Idempotency check: Only send email if not already sent
+    if (applicant.abandonment_email_sent === true) {
+      console.log("Email already sent for applicant:", applicantId);
+      return new Response(
+        JSON.stringify({ success: true, message: "Email already sent" }),
+        { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    // Mark email as sent BEFORE sending to prevent race conditions
+    const { error: updateError } = await supabase
+      .from("applicants")
+      .update({ abandonment_email_sent: true })
+      .eq("id", applicantId)
+      .eq("session_id", sessionId);
+
+    if (updateError) {
+      console.error("Error marking email as sent:", updateError);
+      // Continue anyway - better to possibly send duplicate than not send at all
     }
 
     // Generate PDF
@@ -298,7 +360,7 @@ const handler = async (req: Request): Promise<Response> => {
     const emailResponse = await resend.emails.send({
       from: "Acorn Brokers <noreply@acornbrokers.co.za>",
       to: RECIPIENT_EMAILS,
-      subject: `New Application Received - ${applicant.first_name} ${applicant.last_name} - Ref: ${refNumber}`,
+      subject: `New Application Received - ${escapeHtml(applicant.first_name)} ${escapeHtml(applicant.last_name)} - Ref: ${refNumber}`,
       html: emailHtml,
       attachments: [
         {
@@ -322,7 +384,7 @@ const handler = async (req: Request): Promise<Response> => {
     console.error("Error in send-application-email:", errorMessage);
     
     return new Response(
-      JSON.stringify({ error: errorMessage }),
+      JSON.stringify({ error: "Failed to process request" }),
       {
         status: 500,
         headers: { "Content-Type": "application/json", ...corsHeaders },
