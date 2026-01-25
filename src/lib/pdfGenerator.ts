@@ -204,7 +204,7 @@ export const generateApplicationPDF = (data: ApplicationData): jsPDF => {
   
   doc.setTextColor(...mutedColor);
   doc.setFontSize(8);
-  doc.text("Acorn Brokers (Pty) Ltd | FSP 12345 | www.acornbrokers.co.za", leftMargin, footerY);
+  doc.text("Acorn Brokers (Pty) Ltd | FSP 47433 | www.acornbrokers.co.za", leftMargin, footerY);
   doc.text(`Generated: ${new Date().toLocaleDateString("en-ZA")}`, pageWidth - leftMargin - 35, footerY);
   
   return doc;

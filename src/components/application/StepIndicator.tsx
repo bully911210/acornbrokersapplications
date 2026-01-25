@@ -11,7 +11,7 @@ const STEPS: Step[] = [
   { number: 2, title: "Personal Details" },
   { number: 3, title: "Cover Selection" },
   { number: 4, title: "Banking" },
-  { number: 5, title: "Confirm" },
+  { number: 5, title: "Review & Confirm" },
 ];
 
 interface StepIndicatorProps {

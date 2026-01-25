@@ -60,6 +60,7 @@ const Privacy = () => {
             <p>
               For privacy-related queries, contact our Information Officer at: <br />
               Email: privacy@acornbrokers.co.za<br />
+              Phone: +27 (0)69 007 6320
               Phone: 0800 123 456
             </p>
           </section>
