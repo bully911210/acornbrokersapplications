@@ -1,5 +1,5 @@
 {
   "imports": {
-    "jspdf": "npm:jspdf@2.5.1"
+    "jspdf": "npm:jspdf@2.5.2"
   }
 }

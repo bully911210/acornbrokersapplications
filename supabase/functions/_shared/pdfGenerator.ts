@@ -1,5 +1,5 @@
 // Deno-compatible PDF Generator for Edge Functions
-import jsPDF from "jspdf";
+import { jsPDF } from "npm:jspdf@2.5.2";
 import { COVER_OPTIONS, ApplicantData } from "./types.ts";
 
 // Mask sensitive data
