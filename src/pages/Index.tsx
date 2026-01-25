@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { insertApplicant, updateApplicantById, updateApplicantByIdReturning } from "@/lib/supabaseClient";
 import { Layout } from "@/components/Layout";
 import { StepIndicator } from "@/components/application/StepIndicator";
 import { EligibilityStep } from "@/components/application/EligibilityStep";
@@ -42,19 +42,15 @@ const Index = () => {
       const session = initSession();
       const clientInfo = await getClientInfo();
       
-      const { data: applicant, error } = await supabase
-        .from("applicants")
-        .insert({
-          firearm_licence_status: data.firearmLicenceStatus,
-          source: data.source,
-          session_id: session.sessionId,
-          agent_id: session.agentId,
-          user_agent: clientInfo.userAgent,
-          current_step: 1,
-          status: "partial",
-        })
-        .select()
-        .single();
+      const { data: applicant, error } = await insertApplicant({
+        firearm_licence_status: data.firearmLicenceStatus,
+        source: data.source,
+        session_id: session.sessionId,
+        agent_id: session.agentId,
+        user_agent: clientInfo.userAgent,
+        current_step: 1,
+        status: "partial",
+      });
 
       if (error) throw error;
       return applicant;
@@ -77,10 +73,7 @@ const Index = () => {
     mutationFn: async ({ step, data }: { step: number; data: Record<string, unknown> }) => {
       if (!applicantId) throw new Error("No applicant ID");
 
-      const { error } = await supabase
-        .from("applicants")
-        .update({ ...data, current_step: step })
-        .eq("id", applicantId);
+      const { error } = await updateApplicantById(applicantId, { ...data, current_step: step });
 
       if (error) throw error;
     },
@@ -90,21 +83,16 @@ const Index = () => {
     mutationFn: async (consents: AuthorisationsData) => {
       if (!applicantId) throw new Error("No applicant ID");
 
-      const { data, error } = await supabase
-        .from("applicants")
-        .update({
-          debit_order_consent: consents.debitOrderConsent,
-          declaration_consent: consents.declarationConsent,
-          terms_consent: consents.termsConsent,
-          popia_consent: consents.popiaConsent,
-          electronic_signature_consent: consents.electronicSignatureConsent,
-          consent_timestamp: new Date().toISOString(),
-          status: "complete",
-          current_step: 5,
-        })
-        .eq("id", applicantId)
-        .select()
-        .single();
+      const { data, error } = await updateApplicantByIdReturning(applicantId, {
+        debit_order_consent: consents.debitOrderConsent,
+        declaration_consent: consents.declarationConsent,
+        terms_consent: consents.termsConsent,
+        popia_consent: consents.popiaConsent,
+        electronic_signature_consent: consents.electronicSignatureConsent,
+        consent_timestamp: new Date().toISOString(),
+        status: "complete",
+        current_step: 5,
+      });
 
       if (error) throw error;
       return data;
