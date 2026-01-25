@@ -6,7 +6,7 @@ export const Header = () => {
     <header className="sticky top-0 z-50 w-full border-b border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80">
       <div className="container flex h-16 items-center justify-between">
         <Link to="/" className="flex items-center gap-3">
-          <img src={acornLogo} alt="Acorn Brokers" className="h-10 w-auto" />
+          <img src={acornLogo} alt="Acorn Brokers" className="h-20 w-auto" />
         </Link>
         <nav className="hidden md:flex items-center gap-6">
           <Link

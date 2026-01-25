@@ -143,11 +143,11 @@ export const SuccessScreen = ({ applicationData }: SuccessScreenProps) => {
         {/* Contact Info */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-6 text-sm text-muted-foreground">
           <a
-            href="tel:0800123456"
+            href="tel:+27690076320"
             className="flex items-center gap-2 hover:text-primary transition-colors"
           >
             <Phone className="w-4 h-4" />
-            0800 123 456
+            +27 (0)69 007 6320
           </a>
           <a
             href="mailto:info@acornbrokers.co.za"
