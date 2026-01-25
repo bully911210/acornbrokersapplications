@@ -98,6 +98,10 @@ const Index = () => {
       return data;
     },
     onSuccess: (data) => {
+      // Get session BEFORE clearing it (needed for email authentication)
+      const session = getSession();
+      const sessionId = session?.sessionId || "";
+      
       clearSession();
       setCompletedData({
         ...applicationData as FullApplicationData,
@@ -107,12 +111,11 @@ const Index = () => {
       setIsComplete(true);
 
       // Fire-and-forget: Send application email notification with session validation
-      const session = getSession();
       fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-application-email`, {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
-          "x-session-id": session?.sessionId || "",
+          "x-session-id": sessionId,
         },
         body: JSON.stringify({ applicantId: data.id }),
       }).catch((err) => console.error("Failed to send application email:", err));
