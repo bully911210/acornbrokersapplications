@@ -1,0 +1,334 @@
+import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
+import { Resend } from "resend";
+import { generateApplicationPDF } from "../_shared/pdfGenerator.ts";
+import { COVER_OPTIONS, ApplicantData } from "../_shared/types.ts";
+
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+};
+
+const RECIPIENT_EMAILS = [
+  "franz@sigsolutions.co.za",
+  "franz@acornbrokers.co.za",
+];
+
+const formatCurrency = (amount: number): string => {
+  return new Intl.NumberFormat("en-ZA", {
+    style: "currency",
+    currency: "ZAR",
+    minimumFractionDigits: 0,
+  }).format(amount);
+};
+
+const formatDate = (dateString: string): string => {
+  return new Date(dateString).toLocaleDateString("en-ZA", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
+
+const getOrdinalSuffix = (num: number): string => {
+  const j = num % 10;
+  const k = num % 100;
+  if (j === 1 && k !== 11) return "st";
+  if (j === 2 && k !== 12) return "nd";
+  if (j === 3 && k !== 13) return "rd";
+  return "th";
+};
+
+const maskIdNumber = (id: string): string => {
+  return id.substring(0, 6) + "*******";
+};
+
+const maskAccountNumber = (account: string): string => {
+  return "*".repeat(Math.max(0, account.length - 3)) + account.slice(-3);
+};
+
+const generateEmailHtml = (applicant: ApplicantData): string => {
+  const coverOption = COVER_OPTIONS.find((opt) => opt.id === applicant.cover_option)!;
+  const debitDate = `${applicant.preferred_debit_date}${getOrdinalSuffix(applicant.preferred_debit_date)}`;
+
+  return `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>New Application Received</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f5f7fa;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f5f7fa; padding: 20px;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+          
+          <!-- Header -->
+          <tr>
+            <td style="background-color: #29ABE2; padding: 30px; text-align: center;">
+              <h1 style="color: #ffffff; margin: 0; font-size: 28px;">Acorn Brokers</h1>
+              <p style="color: #ffffff; margin: 10px 0 0 0; font-size: 16px;">New Application Received</p>
+            </td>
+          </tr>
+          
+          <!-- Reference -->
+          <tr>
+            <td style="padding: 25px 30px; background-color: #e8f7fc;">
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td>
+                    <p style="margin: 0; color: #29ABE2; font-size: 12px; text-transform: uppercase; font-weight: bold;">Reference Number</p>
+                    <p style="margin: 5px 0 0 0; color: #1e293b; font-size: 20px; font-weight: bold;">${applicant.id.toUpperCase().substring(0, 8)}</p>
+                  </td>
+                  <td style="text-align: right;">
+                    <p style="margin: 0; color: #64748b; font-size: 12px;">Submitted</p>
+                    <p style="margin: 5px 0 0 0; color: #1e293b; font-size: 14px;">${formatDate(applicant.created_at)}</p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          
+          <!-- Personal Details -->
+          <tr>
+            <td style="padding: 25px 30px;">
+              <h2 style="color: #29ABE2; font-size: 16px; margin: 0 0 15px 0; padding-bottom: 10px; border-bottom: 2px solid #e2e8f0;">Personal Details</h2>
+              <table width="100%" cellpadding="5" cellspacing="0">
+                <tr>
+                  <td width="35%" style="color: #64748b; font-size: 14px;">Full Name:</td>
+                  <td style="color: #1e293b; font-size: 14px; font-weight: bold;">${applicant.first_name} ${applicant.last_name}</td>
+                </tr>
+                <tr>
+                  <td style="color: #64748b; font-size: 14px;">SA ID Number:</td>
+                  <td style="color: #1e293b; font-size: 14px;">${applicant.sa_id_number}</td>
+                </tr>
+                <tr>
+                  <td style="color: #64748b; font-size: 14px;">Mobile:</td>
+                  <td style="color: #1e293b; font-size: 14px;">${applicant.mobile}</td>
+                </tr>
+                <tr>
+                  <td style="color: #64748b; font-size: 14px;">Email:</td>
+                  <td style="color: #1e293b; font-size: 14px;">${applicant.email}</td>
+                </tr>
+                <tr>
+                  <td style="color: #64748b; font-size: 14px;">Address:</td>
+                  <td style="color: #1e293b; font-size: 14px;">${applicant.street_address}, ${applicant.suburb}<br>${applicant.city}, ${applicant.province}</td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          
+          <!-- Cover Selection -->
+          <tr>
+            <td style="padding: 0 30px 25px 30px;">
+              <h2 style="color: #29ABE2; font-size: 16px; margin: 0 0 15px 0; padding-bottom: 10px; border-bottom: 2px solid #e2e8f0;">Cover Selection</h2>
+              <table width="100%" cellpadding="5" cellspacing="0">
+                <tr>
+                  <td width="35%" style="color: #64748b; font-size: 14px;">Plan:</td>
+                  <td style="color: #1e293b; font-size: 14px; font-weight: bold;">${coverOption.name}</td>
+                </tr>
+                <tr>
+                  <td style="color: #64748b; font-size: 14px;">Monthly Premium:</td>
+                  <td style="color: #29ABE2; font-size: 16px; font-weight: bold;">${formatCurrency(coverOption.premium)}</td>
+                </tr>
+                <tr>
+                  <td style="color: #64748b; font-size: 14px;">Legal Expense Limit:</td>
+                  <td style="color: #1e293b; font-size: 14px;">${formatCurrency(coverOption.legalExpenseLimit)}</td>
+                </tr>
+                <tr>
+                  <td style="color: #64748b; font-size: 14px;">Liability Limit:</td>
+                  <td style="color: #1e293b; font-size: 14px;">${formatCurrency(coverOption.liabilityLimit)}</td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          
+          <!-- Banking Details -->
+          <tr>
+            <td style="padding: 0 30px 25px 30px;">
+              <h2 style="color: #29ABE2; font-size: 16px; margin: 0 0 15px 0; padding-bottom: 10px; border-bottom: 2px solid #e2e8f0;">Banking Details</h2>
+              <table width="100%" cellpadding="5" cellspacing="0">
+                <tr>
+                  <td width="35%" style="color: #64748b; font-size: 14px;">Account Holder:</td>
+                  <td style="color: #1e293b; font-size: 14px; font-weight: bold;">${applicant.account_holder}</td>
+                </tr>
+                <tr>
+                  <td style="color: #64748b; font-size: 14px;">Bank:</td>
+                  <td style="color: #1e293b; font-size: 14px;">${applicant.bank_name}</td>
+                </tr>
+                <tr>
+                  <td style="color: #64748b; font-size: 14px;">Account Type:</td>
+                  <td style="color: #1e293b; font-size: 14px;">${applicant.account_type.charAt(0).toUpperCase() + applicant.account_type.slice(1)}</td>
+                </tr>
+                <tr>
+                  <td style="color: #64748b; font-size: 14px;">Account Number:</td>
+                  <td style="color: #1e293b; font-size: 14px;">${applicant.account_number}</td>
+                </tr>
+                <tr>
+                  <td style="color: #64748b; font-size: 14px;">Debit Date:</td>
+                  <td style="color: #1e293b; font-size: 14px;">${debitDate} of each month</td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          
+          <!-- Consent Confirmations -->
+          <tr>
+            <td style="padding: 0 30px 25px 30px;">
+              <h2 style="color: #29ABE2; font-size: 16px; margin: 0 0 15px 0; padding-bottom: 10px; border-bottom: 2px solid #e2e8f0;">Consent Confirmations</h2>
+              <table width="100%" cellpadding="5" cellspacing="0">
+                <tr>
+                  <td style="color: #1e293b; font-size: 14px;">✅ Debit Order Authorisation</td>
+                </tr>
+                <tr>
+                  <td style="color: #1e293b; font-size: 14px;">✅ Declaration & Disclosure</td>
+                </tr>
+                <tr>
+                  <td style="color: #1e293b; font-size: 14px;">✅ Terms & Conditions</td>
+                </tr>
+                <tr>
+                  <td style="color: #1e293b; font-size: 14px;">✅ POPIA Consent</td>
+                </tr>
+                <tr>
+                  <td style="color: #1e293b; font-size: 14px;">✅ Electronic Signature</td>
+                </tr>
+                <tr>
+                  <td style="color: #64748b; font-size: 12px; padding-top: 10px;">
+                    Consent recorded: ${formatDate(applicant.consent_timestamp)}
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          
+          <!-- Attribution -->
+          <tr>
+            <td style="padding: 0 30px 25px 30px;">
+              <h2 style="color: #29ABE2; font-size: 16px; margin: 0 0 15px 0; padding-bottom: 10px; border-bottom: 2px solid #e2e8f0;">Attribution</h2>
+              <table width="100%" cellpadding="5" cellspacing="0">
+                <tr>
+                  <td width="35%" style="color: #64748b; font-size: 14px;">Source:</td>
+                  <td style="color: #1e293b; font-size: 14px;">${applicant.source || "Direct"}</td>
+                </tr>
+                ${applicant.agent_id ? `
+                <tr>
+                  <td style="color: #64748b; font-size: 14px;">Agent ID:</td>
+                  <td style="color: #1e293b; font-size: 14px;">${applicant.agent_id}</td>
+                </tr>
+                ` : ""}
+              </table>
+            </td>
+          </tr>
+          
+          <!-- Footer -->
+          <tr>
+            <td style="background-color: #1e293b; padding: 20px 30px; text-align: center;">
+              <p style="color: #94a3b8; font-size: 12px; margin: 0;">
+                Acorn Brokers (Pty) Ltd | FSP 47433
+              </p>
+              <p style="color: #64748b; font-size: 11px; margin: 10px 0 0 0;">
+                This is an automated notification. The full application PDF is attached.
+              </p>
+            </td>
+          </tr>
+          
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+`;
+};
+
+const handler = async (req: Request): Promise<Response> => {
+  // Handle CORS preflight
+  if (req.method === "OPTIONS") {
+    return new Response(null, { headers: corsHeaders });
+  }
+
+  try {
+    const { applicantId } = await req.json();
+
+    if (!applicantId) {
+      throw new Error("Missing applicantId");
+    }
+
+    // Create Supabase client with service role for full access
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const resendApiKey = Deno.env.get("Resend_API")!;
+
+    if (!resendApiKey) {
+      throw new Error("Resend API key not configured");
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
+    // Fetch the complete applicant record
+    const { data: applicant, error: fetchError } = await supabase
+      .from("applicants")
+      .select("*")
+      .eq("id", applicantId)
+      .eq("status", "complete")
+      .single();
+
+    if (fetchError || !applicant) {
+      console.error("Error fetching applicant:", fetchError);
+      throw new Error("Applicant not found or not complete");
+    }
+
+    // Generate PDF
+    console.log("Generating PDF for applicant:", applicantId);
+    const pdfBase64 = generateApplicationPDF(applicant as ApplicantData);
+
+    // Generate email HTML
+    const emailHtml = generateEmailHtml(applicant as ApplicantData);
+    const refNumber = applicant.id.toUpperCase().substring(0, 8);
+
+    // Initialize Resend
+    const resend = new Resend(resendApiKey);
+
+    // Send email with PDF attachment
+    console.log("Sending email to:", RECIPIENT_EMAILS);
+    const emailResponse = await resend.emails.send({
+      from: "Acorn Brokers <noreply@acornbrokers.co.za>",
+      to: RECIPIENT_EMAILS,
+      subject: `New Application Received - ${applicant.first_name} ${applicant.last_name} - Ref: ${refNumber}`,
+      html: emailHtml,
+      attachments: [
+        {
+          filename: `Acorn-Application-${refNumber}.pdf`,
+          content: pdfBase64,
+        },
+      ],
+    });
+
+    console.log("Email sent successfully:", emailResponse);
+
+    return new Response(
+      JSON.stringify({ success: true, response: emailResponse }),
+      {
+        status: 200,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      }
+    );
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    console.error("Error in send-application-email:", errorMessage);
+    
+    return new Response(
+      JSON.stringify({ error: errorMessage }),
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      }
+    );
+  }
+};
+
+serve(handler);

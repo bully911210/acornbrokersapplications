@@ -105,6 +105,13 @@ const Index = () => {
         createdAt: data.created_at,
       });
       setIsComplete(true);
+
+      // Fire-and-forget: Send application email notification
+      fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-application-email`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ applicantId: data.id }),
+      }).catch((err) => console.error("Failed to send application email:", err));
     },
     onError: () => {
       toast({
