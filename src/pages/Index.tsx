@@ -18,7 +18,7 @@ import {
   AuthorisationsData,
   normalizePhone,
 } from "@/lib/validations";
-import { initSession, updateSession, clearSession, getClientInfo } from "@/lib/sessionManager";
+import { initSession, updateSession, clearSession, getClientInfo, getSession } from "@/lib/sessionManager";
 import { useToast } from "@/hooks/use-toast";
 import { Shield } from "lucide-react";
 
@@ -106,10 +106,14 @@ const Index = () => {
       });
       setIsComplete(true);
 
-      // Fire-and-forget: Send application email notification
+      // Fire-and-forget: Send application email notification with session validation
+      const session = getSession();
       fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-application-email`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "x-session-id": session?.sessionId || "",
+        },
         body: JSON.stringify({ applicantId: data.id }),
       }).catch((err) => console.error("Failed to send application email:", err));
     },
