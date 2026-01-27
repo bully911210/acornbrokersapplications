@@ -389,7 +389,7 @@ const handler = async (req: Request): Promise<Response> => {
     const emailResponse = await sendEmailWithSendGrid(
       sendGridApiKey,
       RECIPIENT_EMAILS,
-      { email: "noreply@acornbrokers.co.za", name: "Acorn Brokers" },
+      { email: "benefits@firearmsguardian.co.za", name: "Acorn Brokers" },
       `New Application Received - ${escapeHtml(applicant.first_name)} ${escapeHtml(applicant.last_name)} - Ref: ${refNumber}`,
       emailHtml,
       [
