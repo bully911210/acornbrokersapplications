@@ -62,12 +62,15 @@ export const Footer = () => {
           </div>
         </div>
 
-        <div className="mt-8 pt-8 border-t border-border flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="mt-8 pt-8 border-t border-border flex flex-col items-center gap-4 text-center">
           <p className="text-xs text-muted-foreground">
             © {currentYear} Acorn Brokers (Pty) Ltd. All rights reserved.
           </p>
           <p className="text-xs text-muted-foreground">
             Acorn Brokers is an authorised Financial Services Provider (FSP 47433).
+          </p>
+          <p className="text-xs text-muted-foreground">
+            The Firearms Guardian policy is administered by Firearms Guardian (Pty) Ltd (FSP47115), an authorised Financial Services Provider and underwritten by GENRIC Insurance Company Limited (FSP43638), an authorised Financial Services Provider and licensed non-life Insurer.
           </p>
         </div>
       </div>

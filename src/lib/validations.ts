@@ -142,19 +142,13 @@ export const bankingDetailsSchema = z.object({
 // Step 5: Authorisations Schema
 export const authorisationsSchema = z.object({
   debitOrderConsent: z.literal(true, {
-    errorMap: () => ({ message: "You must consent to the debit order" }),
+    errorMap: () => ({ message: "You must agree to the debit order authorisation" }),
   }),
   declarationConsent: z.literal(true, {
-    errorMap: () => ({ message: "You must accept the declaration" }),
-  }),
-  termsConsent: z.literal(true, {
-    errorMap: () => ({ message: "You must accept the terms and conditions" }),
+    errorMap: () => ({ message: "You must agree to the declaration" }),
   }),
   popiaConsent: z.literal(true, {
-    errorMap: () => ({ message: "You must provide POPIA consent" }),
-  }),
-  electronicSignatureConsent: z.literal(true, {
-    errorMap: () => ({ message: "You must consent to electronic signature" }),
+    errorMap: () => ({ message: "You must agree to the POPIA consent" }),
   }),
 });
 

@@ -86,9 +86,7 @@ const Index = () => {
       const { data, error } = await updateApplicantByIdReturning(applicantId, {
         debit_order_consent: consents.debitOrderConsent,
         declaration_consent: consents.declarationConsent,
-        terms_consent: consents.termsConsent,
         popia_consent: consents.popiaConsent,
-        electronic_signature_consent: consents.electronicSignatureConsent,
         consent_timestamp: new Date().toISOString(),
         status: "complete",
         current_step: 5,
