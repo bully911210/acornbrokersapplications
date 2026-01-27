@@ -1,6 +1,5 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
-import { Resend } from "resend";
 import { generateApplicationPDF } from "../_shared/pdfGenerator.ts";
 import { COVER_OPTIONS, ApplicantData } from "../_shared/types.ts";
 
@@ -207,16 +206,10 @@ const generateEmailHtml = (applicant: ApplicantData): string => {
                   <td style="color: #1e293b; font-size: 14px;">✅ Debit Order Authorisation</td>
                 </tr>
                 <tr>
-                  <td style="color: #1e293b; font-size: 14px;">✅ Declaration & Disclosure</td>
-                </tr>
-                <tr>
-                  <td style="color: #1e293b; font-size: 14px;">✅ Terms & Conditions</td>
+                  <td style="color: #1e293b; font-size: 14px;">✅ Declaration</td>
                 </tr>
                 <tr>
                   <td style="color: #1e293b; font-size: 14px;">✅ POPIA Consent</td>
-                </tr>
-                <tr>
-                  <td style="color: #1e293b; font-size: 14px;">✅ Electronic Signature</td>
                 </tr>
                 <tr>
                   <td style="color: #64748b; font-size: 12px; padding-top: 10px;">
@@ -267,6 +260,45 @@ const generateEmailHtml = (applicant: ApplicantData): string => {
 `;
 };
 
+// SendGrid API call
+const sendEmailWithSendGrid = async (
+  apiKey: string,
+  to: string[],
+  from: { email: string; name: string },
+  subject: string,
+  htmlContent: string,
+  attachments?: { content: string; filename: string; type: string; disposition: string }[]
+): Promise<{ success: boolean; messageId?: string; error?: string }> => {
+  const payload: Record<string, unknown> = {
+    personalizations: [{ to: to.map(email => ({ email })) }],
+    from: { email: from.email, name: from.name },
+    subject,
+    content: [{ type: "text/html", value: htmlContent }],
+  };
+
+  if (attachments && attachments.length > 0) {
+    payload.attachments = attachments;
+  }
+
+  const response = await fetch("https://api.sendgrid.com/v3/mail/send", {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (response.status === 202) {
+    const messageId = response.headers.get("X-Message-Id") || "sent";
+    return { success: true, messageId };
+  }
+
+  const errorText = await response.text();
+  console.error("SendGrid API error:", response.status, errorText);
+  return { success: false, error: `SendGrid error: ${response.status} - ${errorText}` };
+};
+
 const handler = async (req: Request): Promise<Response> => {
   // Handle CORS preflight
   if (req.method === "OPTIONS") {
@@ -298,10 +330,10 @@ const handler = async (req: Request): Promise<Response> => {
     // Create Supabase client with service role for full access
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    const resendApiKey = Deno.env.get("Resend_API")!;
+    const sendGridApiKey = Deno.env.get("SENDGRID_API_KEY")!;
 
-    if (!resendApiKey) {
-      throw new Error("Resend API key not configured");
+    if (!sendGridApiKey) {
+      throw new Error("SendGrid API key not configured");
     }
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
@@ -352,28 +384,33 @@ const handler = async (req: Request): Promise<Response> => {
     const emailHtml = generateEmailHtml(applicant as ApplicantData);
     const refNumber = applicant.id.toUpperCase().substring(0, 8);
 
-    // Initialize Resend
-    const resend = new Resend(resendApiKey);
-
-    // Send email with PDF attachment
-    console.log("Sending email to:", RECIPIENT_EMAILS);
-    const emailResponse = await resend.emails.send({
-      from: "Acorn Brokers <noreply@acornbrokers.co.za>",
-      to: RECIPIENT_EMAILS,
-      subject: `New Application Received - ${escapeHtml(applicant.first_name)} ${escapeHtml(applicant.last_name)} - Ref: ${refNumber}`,
-      html: emailHtml,
-      attachments: [
+    // Send email with SendGrid
+    console.log("Sending email via SendGrid to:", RECIPIENT_EMAILS);
+    const emailResponse = await sendEmailWithSendGrid(
+      sendGridApiKey,
+      RECIPIENT_EMAILS,
+      { email: "noreply@acornbrokers.co.za", name: "Acorn Brokers" },
+      `New Application Received - ${escapeHtml(applicant.first_name)} ${escapeHtml(applicant.last_name)} - Ref: ${refNumber}`,
+      emailHtml,
+      [
         {
-          filename: `Acorn-Application-${refNumber}.pdf`,
           content: pdfBase64,
+          filename: `Acorn-Application-${refNumber}.pdf`,
+          type: "application/pdf",
+          disposition: "attachment",
         },
-      ],
-    });
+      ]
+    );
 
-    console.log("Email sent successfully:", emailResponse);
+    if (!emailResponse.success) {
+      console.error("SendGrid email failed:", emailResponse.error);
+      throw new Error(emailResponse.error || "Failed to send email");
+    }
+
+    console.log("Email sent successfully via SendGrid:", emailResponse.messageId);
 
     return new Response(
-      JSON.stringify({ success: true, response: emailResponse }),
+      JSON.stringify({ success: true, messageId: emailResponse.messageId }),
       {
         status: 200,
         headers: { "Content-Type": "application/json", ...corsHeaders },
