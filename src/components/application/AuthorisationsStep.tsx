@@ -1,12 +1,10 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link } from "react-router-dom";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -33,9 +31,7 @@ export const AuthorisationsStep = ({
     defaultValues: {
       debitOrderConsent: false as boolean,
       declarationConsent: false as boolean,
-      termsConsent: false as boolean,
       popiaConsent: false as boolean,
-      electronicSignatureConsent: false as boolean,
     },
   });
 
@@ -62,70 +58,8 @@ export const AuthorisationsStep = ({
   };
 
   const handleSubmit = (data: Record<string, boolean>) => {
-    // Cast to AuthorisationsData since Zod validation ensures all are true
     onSubmit(data as unknown as AuthorisationsData);
   };
-
-  const consentItems = [
-    {
-      id: "debitOrderConsent" as const,
-      title: "Debit Order Authorisation",
-      description: `I authorise Acorn Brokers to debit ${
-        coverOption ? formatCurrency(coverOption.premium) : "the premium"
-      } from my bank account on the ${
-        applicationData.preferredDebitDate || "selected"
-      }${getOrdinalSuffix(
-        parseInt(applicationData.preferredDebitDate || "1")
-      )} of each month.`,
-    },
-    {
-      id: "declarationConsent" as const,
-      title: "Declaration",
-      description:
-        "I declare that all information provided in this application is true and accurate to the best of my knowledge. I understand that any false or misleading information may result in the rejection of claims or cancellation of cover.",
-    },
-    {
-      id: "termsConsent" as const,
-      title: "Terms and Conditions",
-      description: (
-        <>
-          I have read, understood, and agree to the{" "}
-          <Link
-            to="/terms"
-            target="_blank"
-            className="text-primary hover:underline"
-          >
-            Terms and Conditions
-          </Link>{" "}
-          of the insurance policy.
-        </>
-      ),
-    },
-    {
-      id: "popiaConsent" as const,
-      title: "POPIA Consent",
-      description: (
-        <>
-          I consent to the processing of my personal information in accordance
-          with the Protection of Personal Information Act (POPIA) and the{" "}
-          <Link
-            to="/privacy"
-            target="_blank"
-            className="text-primary hover:underline"
-          >
-            Privacy Policy
-          </Link>
-          .
-        </>
-      ),
-    },
-    {
-      id: "electronicSignatureConsent" as const,
-      title: "Electronic Signature",
-      description:
-        "I understand and agree that by submitting this application electronically, my actions constitute a valid electronic signature with the same legal effect as a handwritten signature.",
-    },
-  ];
 
   return (
     <div className="animate-fade-in">
@@ -208,44 +142,155 @@ export const AuthorisationsStep = ({
         </div>
       </div>
 
-      {/* Consent Form */}
+      {/* Legal Authorisations */}
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-          <h3 className="font-semibold text-lg text-foreground mb-4">
-            Authorisations Required
+        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+          <h3 className="font-semibold text-lg text-foreground">
+            Legal Authorisations
           </h3>
 
-          {consentItems.map((item, index) => (
-            <FormField
-              key={item.id}
-              control={form.control}
-              name={item.id}
-              render={({ field }) => (
-                <FormItem
-                  className={`consent-item stagger-${index + 1} animate-fade-in opacity-0`}
-                >
-                  <div className="flex items-start gap-3">
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                        className="mt-0.5"
-                      />
-                    </FormControl>
-                    <div className="flex-1">
-                      <FormLabel className="font-medium text-foreground cursor-pointer">
-                        {item.title}
-                      </FormLabel>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        {item.description}
-                      </p>
-                      <FormMessage className="mt-1" />
+          <div className="border border-border rounded-xl bg-muted/20 p-5 md:p-8 space-y-8">
+            {/* Debit Order Authorisation */}
+            <div className="space-y-4">
+              <h4 className="text-base md:text-lg font-semibold text-foreground">
+                Debit Order Authorisation
+              </h4>
+              <div className="space-y-3 text-sm text-muted-foreground">
+                <p>
+                  I hereby request and authorise Firearms Guardian (Pty) Ltd, Acorn Brokers (Pty) Ltd, and/or their authorised agent/s or collection service providers, to draw against my bank account as indicated herein each month and to debit my account with the amount equivalent to the premium due by me in respect of the Firearms Guardian policy, until cancelled by me in writing.
+                </p>
+                <p>
+                  In the event of an increase of the premium, Firearms Guardian, Acorn Brokers, or their agent/s have my authority to deduct from my account the increased premium.
+                </p>
+                <p>
+                  All such debits against my account shall be treated as though I have signed and done them personally.
+                </p>
+                <p>
+                  If the payment day falls on a Sunday or public holiday, the payment day will automatically be the following ordinary business day.
+                </p>
+              </div>
+              <FormField
+                control={form.control}
+                name="debitOrderConsent"
+                render={({ field }) => (
+                  <FormItem className="mt-4 pt-4 border-t border-border">
+                    <div className="flex items-center gap-3">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <label
+                        className="text-sm font-medium text-foreground cursor-pointer"
+                        onClick={() => field.onChange(!field.value)}
+                      >
+                        Agree
+                      </label>
                     </div>
-                  </div>
-                </FormItem>
-              )}
-            />
-          ))}
+                    <FormMessage className="mt-1" />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            {/* Declaration */}
+            <div className="space-y-4">
+              <h4 className="text-base md:text-lg font-semibold text-foreground">
+                Declaration
+              </h4>
+              <div className="space-y-3 text-sm text-muted-foreground">
+                <p>
+                  I hereby apply for a Firearms Guardian policy in accordance with all applicable terms and conditions.
+                </p>
+                <p>
+                  I personally completed this application and acknowledge that payment of premiums on the due dates is my responsibility.
+                </p>
+                <p>
+                  I warrant that all information given in this application form is true, correct, and complete.
+                </p>
+                <p>
+                  I understand and accept that this application, together with the applicable terms and conditions, represents the agreement between myself and the underwriter of the Firearms Guardian policy, GENRIC Insurance Company Limited (GENRIC).
+                </p>
+                <p>
+                  I further understand that Firearms Guardian (Pty) Ltd and Acorn Brokers (Pty) Ltd act as authorised administrators and/or intermediaries, and that acceptance of my application is in the sole discretion of Firearms Guardian and GENRIC.
+                </p>
+              </div>
+              <FormField
+                control={form.control}
+                name="declarationConsent"
+                render={({ field }) => (
+                  <FormItem className="mt-4 pt-4 border-t border-border">
+                    <div className="flex items-center gap-3">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <label
+                        className="text-sm font-medium text-foreground cursor-pointer"
+                        onClick={() => field.onChange(!field.value)}
+                      >
+                        Agree
+                      </label>
+                    </div>
+                    <FormMessage className="mt-1" />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            {/* POPIA Consent */}
+            <div className="space-y-4">
+              <h4 className="text-base md:text-lg font-semibold text-foreground">
+                Declaration and Informed Consent in Terms of POPIA
+              </h4>
+              <div className="space-y-3 text-sm text-muted-foreground">
+                <p>
+                  We at GENRIC Insurance Company Limited (GENRIC), Firearms Guardian (Pty) Ltd, and Acorn Brokers (Pty) Ltd respect your right to privacy.
+                </p>
+                <p>
+                  Personal information is collected and processed in accordance with the Protection of Personal Information Act, 4 of 2013 (POPIA), for the primary purpose of providing insurance cover and for all activities incidental and relevant to this purpose.
+                </p>
+                <p>
+                  Personal information may be shared with authorised third parties, service providers, reinsurers, legal service providers, payment processors, and regulatory bodies as required by law, including for fraud prevention and compliance purposes.
+                </p>
+                <p>
+                  Information will be retained for legally permitted retention periods and handled securely and confidentially.
+                </p>
+                <p>
+                  I understand that I may request access to, correction, or deletion of my personal information.
+                </p>
+                <p>
+                  I voluntarily consent to GENRIC, Firearms Guardian, and Acorn Brokers processing my personal information for the purposes described above.
+                </p>
+              </div>
+              <FormField
+                control={form.control}
+                name="popiaConsent"
+                render={({ field }) => (
+                  <FormItem className="mt-4 pt-4 border-t border-border">
+                    <div className="flex items-center gap-3">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <label
+                        className="text-sm font-medium text-foreground cursor-pointer"
+                        onClick={() => field.onChange(!field.value)}
+                      >
+                        Agree
+                      </label>
+                    </div>
+                    <FormMessage className="mt-1" />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
 
           <div className="flex justify-between pt-6">
             <Button
