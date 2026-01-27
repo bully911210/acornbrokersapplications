@@ -30,12 +30,18 @@ const Index = () => {
   const [completedData, setCompletedData] = useState<(FullApplicationData & { id: string; createdAt: string }) | null>(null);
   const { toast } = useToast();
 
+  // Initialize session on mount
   useEffect(() => {
     const session = initSession();
     if (session.applicantId) {
       setApplicantId(session.applicantId);
     }
   }, []);
+
+  // Scroll to top when step changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [currentStep]);
 
   const createApplicant = useMutation({
     mutationFn: async (data: EligibilityData) => {

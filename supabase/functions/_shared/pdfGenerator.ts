@@ -36,20 +36,36 @@ const getOrdinalSuffix = (num: number): string => {
   return "th";
 };
 
+const formatTimestamp = (timestamp: string): string => {
+  return new Date(timestamp).toLocaleString("en-ZA", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
+
+// Colours
+const primaryColor: [number, number, number] = [41, 171, 226]; // Acorn Blue
+const textColor: [number, number, number] = [30, 41, 59];
+const mutedColor: [number, number, number] = [107, 114, 128]; // #6B7280
+const sectionBgColor: [number, number, number] = [245, 247, 250];
+const dividerColor: [number, number, number] = [209, 213, 219];
+const consentGreen: [number, number, number] = [34, 197, 94];
+
 export const generateApplicationPDF = (data: ApplicantData): string => {
   const doc = new jsPDF();
   const coverOption = COVER_OPTIONS.find((opt) => opt.id === data.cover_option)!;
   
-  const primaryColor: [number, number, number] = [41, 171, 226]; // Acorn Blue
-  const textColor: [number, number, number] = [30, 41, 59];
-  const mutedColor: [number, number, number] = [100, 116, 139];
-  
-  let yPosition = 20;
   const leftMargin = 20;
   const pageWidth = 210;
   const contentWidth = pageWidth - 40;
+  let yPosition = 20;
   
-  // Header
+  // ============================================
+  // HEADER
+  // ============================================
   doc.setFillColor(...primaryColor);
   doc.rect(0, 0, pageWidth, 45, "F");
   
@@ -77,8 +93,10 @@ export const generateApplicationPDF = (data: ApplicantData): string => {
   
   yPosition += 15;
   
-  // Section: Personal Details
-  doc.setFillColor(245, 247, 250);
+  // ============================================
+  // SECTION: Personal Details
+  // ============================================
+  doc.setFillColor(...sectionBgColor);
   doc.rect(leftMargin, yPosition - 5, contentWidth, 8, "F");
   doc.setTextColor(...primaryColor);
   doc.setFontSize(12);
@@ -109,8 +127,10 @@ export const generateApplicationPDF = (data: ApplicantData): string => {
   
   yPosition += 8;
   
-  // Section: Cover Details
-  doc.setFillColor(245, 247, 250);
+  // ============================================
+  // SECTION: Cover Details
+  // ============================================
+  doc.setFillColor(...sectionBgColor);
   doc.rect(leftMargin, yPosition - 5, contentWidth, 8, "F");
   doc.setTextColor(...primaryColor);
   doc.setFontSize(12);
@@ -140,8 +160,10 @@ export const generateApplicationPDF = (data: ApplicantData): string => {
   
   yPosition += 8;
   
-  // Section: Banking Details
-  doc.setFillColor(245, 247, 250);
+  // ============================================
+  // SECTION: Banking Details
+  // ============================================
+  doc.setFillColor(...sectionBgColor);
   doc.rect(leftMargin, yPosition - 5, contentWidth, 8, "F");
   doc.setTextColor(...primaryColor);
   doc.setFontSize(12);
@@ -171,7 +193,9 @@ export const generateApplicationPDF = (data: ApplicantData): string => {
   
   yPosition += 10;
   
-  // Important Notes
+  // ============================================
+  // Important Information (Amber Box)
+  // ============================================
   doc.setFillColor(254, 243, 199);
   doc.rect(leftMargin, yPosition - 3, contentWidth, 25, "F");
   
@@ -186,16 +210,121 @@ export const generateApplicationPDF = (data: ApplicantData): string => {
   yPosition += 5;
   doc.text("• A 3-month waiting period applies to legal representation services.", leftMargin + 3, yPosition);
   
-  // Footer on all pages
-  const footerY = 285;
-  doc.setDrawColor(...primaryColor);
-  doc.setLineWidth(0.5);
-  doc.line(leftMargin, footerY - 5, pageWidth - leftMargin, footerY - 5);
+  yPosition += 18;
   
+  // ============================================
+  // DISCLAIMER SECTIONS
+  // ============================================
+  
+  // Helper function to draw a disclaimer section
+  const drawDisclaimerSection = (title: string, bullets: string[], consentText: string) => {
+    const sectionHeight = 8 + (bullets.length * 5) + 10;
+    
+    // Check if we need a new page
+    if (yPosition + sectionHeight > 250) {
+      doc.addPage();
+      yPosition = 20;
+    }
+    
+    // Section background
+    doc.setFillColor(...sectionBgColor);
+    doc.rect(leftMargin, yPosition - 3, contentWidth, sectionHeight, "F");
+    
+    // Title
+    doc.setTextColor(...textColor);
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "bold");
+    doc.text(title, leftMargin + 4, yPosition + 3);
+    yPosition += 10;
+    
+    // Bullets
+    doc.setFontSize(9);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(...mutedColor);
+    
+    bullets.forEach((bullet) => {
+      doc.text(`• ${bullet}`, leftMargin + 4, yPosition);
+      yPosition += 5;
+    });
+    
+    // Consent confirmation
+    yPosition += 2;
+    doc.setTextColor(...consentGreen);
+    doc.setFont("helvetica", "bold");
+    doc.text("✓", leftMargin + 4, yPosition);
+    doc.setTextColor(...mutedColor);
+    doc.setFont("helvetica", "normal");
+    doc.text(consentText, leftMargin + 10, yPosition);
+    
+    yPosition += 12;
+  };
+  
+  // Debit Order Authorisation
+  drawDisclaimerSection(
+    "Debit Order Authorisation",
+    [
+      "Authorised Firearms Guardian and Acorn Brokers to debit account",
+      `Monthly premium of ${formatCurrency(coverOption.premium)} confirmed`,
+      `Debit date: ${data.preferred_debit_date}${getOrdinalSuffix(data.preferred_debit_date)} of each month`,
+    ],
+    `Consented: ${formatTimestamp(data.consent_timestamp)}`
+  );
+  
+  // Policy Declaration
+  drawDisclaimerSection(
+    "Policy Declaration",
+    [
+      "Information provided is true and accurate",
+      "Terms and conditions of the policy accepted",
+      "GENRIC Insurance Company Limited acknowledged as underwriter",
+    ],
+    `Consented: ${formatTimestamp(data.consent_timestamp)}`
+  );
+  
+  // POPIA Consent
+  drawDisclaimerSection(
+    "POPIA Consent & Privacy Notice",
+    [
+      "Consent given for personal information processing",
+      "Third-party sharing acknowledged where required",
+      "Data protection rights understood",
+    ],
+    `Consented: ${formatTimestamp(data.consent_timestamp)}`
+  );
+  
+  // ============================================
+  // FOOTER (3-Column Layout)
+  // ============================================
+  const footerY = 270;
+  
+  // Divider line
+  doc.setDrawColor(...dividerColor);
+  doc.setLineWidth(0.3);
+  doc.line(leftMargin, footerY - 12, pageWidth - leftMargin, footerY - 12);
+  
+  // Column 1: Company (Left)
   doc.setTextColor(...mutedColor);
   doc.setFontSize(8);
-  doc.text("Acorn Brokers (Pty) Ltd | FSP 47433 | www.acornbrokers.co.za", leftMargin, footerY);
-  doc.text(`Generated: ${new Date().toLocaleDateString("en-ZA")}`, pageWidth - leftMargin - 35, footerY);
+  doc.setFont("helvetica", "bold");
+  doc.text("Acorn Brokers (Pty) Ltd", leftMargin, footerY - 5);
+  doc.setFont("helvetica", "normal");
+  doc.text("FSP 47433", leftMargin, footerY);
+  doc.text(`© ${new Date().getFullYear()} All rights reserved`, leftMargin, footerY + 5);
+  
+  // Column 2: Regulatory (Centre)
+  const centreX = pageWidth / 2;
+  doc.setFont("helvetica", "normal");
+  doc.text("Firearms Guardian (Pty) Ltd", centreX, footerY - 5, { align: "center" });
+  doc.text("FSP 47115", centreX, footerY, { align: "center" });
+  doc.setFontSize(7);
+  doc.text("Underwritten by GENRIC Insurance Company Ltd (FSP 43638)", centreX, footerY + 5, { align: "center" });
+  
+  // Column 3: Contact (Right)
+  const rightX = pageWidth - leftMargin;
+  doc.setFontSize(8);
+  doc.text("info@acornbrokers.co.za", rightX, footerY - 5, { align: "right" });
+  doc.text("+27 (0)69 007 6320", rightX, footerY, { align: "right" });
+  doc.text(`Generated: ${new Date().toLocaleDateString("en-ZA")}`, rightX, footerY + 5, { align: "right" });
   
   // Return as base64 string for email attachment
   return doc.output("datauristring").split(",")[1];
