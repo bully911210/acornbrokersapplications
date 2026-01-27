@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { insertApplicant, updateApplicantById, updateApplicantByIdReturning } from "@/lib/supabaseClient";
 import { Layout } from "@/components/Layout";
-import { StepIndicator } from "@/components/application/StepIndicator";
 import { EligibilityStep } from "@/components/application/EligibilityStep";
 import { PersonalDetailsStep } from "@/components/application/PersonalDetailsStep";
 import { CoverSelectionStep } from "@/components/application/CoverSelectionStep";
@@ -197,14 +196,14 @@ const Index = () => {
 
   if (isComplete && completedData) {
     return (
-      <Layout>
+      <Layout showStepIndicator={false}>
         <SuccessScreen applicationData={completedData} />
       </Layout>
     );
   }
 
   return (
-    <Layout>
+    <Layout currentStep={currentStep}>
       <div className="container max-w-3xl px-4 py-4 md:py-12">
         {/* Hero Section */}
         <div className="text-center mb-4 md:mb-8">
@@ -220,8 +219,7 @@ const Index = () => {
           </p>
         </div>
 
-        {/* Progress Indicator */}
-        <StepIndicator currentStep={currentStep} />
+        {/* Form Container */}
 
         {/* Form Container */}
         <div className="form-container">
