@@ -1,50 +1,141 @@
+Plan: Scroll Reset & PDF Footer / Disclaimer Redesign
+Overview
 
-# Align Backend Cover Data with Frontend
+This plan addresses two focused improvements:
 
-## Overview
+Form Scroll Reset
+Ensure the page scrolls to the top when navigating between steps.
 
-Update `supabase/functions/_shared/types.ts` to match the correct cover option data from `src/lib/coverData.ts`, then redeploy the edge function.
+PDF Visual & Legibility Improvements
+Improve the PDF footer and disclaimer sections so they are cleaner, clearer, and more professional, without changing legal meaning or adding unnecessary complexity.
 
-## Changes Required
+Part 1: Form Scroll-to-Top on Step Change
+Current Behaviour
 
-### 1. Update `supabase/functions/_shared/types.ts`
+When a user clicks Continue, the page remains at the current scroll position, which is confusing—especially on mobile.
 
-Replace the `COVER_OPTIONS` array with the correct frontend values:
+Solution
 
-**Option A - Essential Cover:**
-- Premium: R135 (unchanged)
-- Legal Expense Limit: R100,000 (unchanged)
-- Liability Limit: R100,000 (currently shows R1,000,000 - WRONG)
-- Benefits: Update to 8-item list from frontend
-- Exclusions: Update to 6-item list from frontend
+Scroll the page to the top whenever the step changes.
 
-**Option B - Comprehensive Cover:**
-- Premium: R245 (currently shows R225 - WRONG)
-- Legal Expense Limit: R300,000 (currently shows R250,000 - WRONG)
-- Liability Limit: R300,000 (currently shows R2,500,000 - WRONG)
-- Benefits: Update to 11-item list from frontend
-- Exclusions: Update to 6-item list from frontend
+File to Modify
 
-### 2. Redeploy Edge Function
+src/pages/Index.tsx
 
-Redeploy `send-application-email` to pick up the corrected shared types.
+Implementation
 
-### 3. Verify Fix
+Add the following after the existing state declarations:
 
-Reset the test application's email flag and re-trigger to confirm the email now shows:
-- Correct R245 premium for Comprehensive Cover
-- Correct R300,000 limits
-- Correct benefits and exclusions lists
+useEffect(() => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}, [currentStep]);
 
-## Files to Modify
+Part 2: PDF Footer Redesign
+Current Issues
 
-| File | Change |
-|------|--------|
-| `supabase/functions/_shared/types.ts` | Replace COVER_OPTIONS with frontend data |
+Footer feels like leftover HTML
 
-## Impact
+Regulatory info is cramped
 
-This fix ensures consistency across:
-- Application form (already correct)
-- Email notifications (will be fixed)
-- PDF attachments (will be fixed)
+No clear separation from content above
+
+New Footer Structure (3 Columns)
+------------------------------------------------------------
+| Acorn Brokers        Regulatory Info          Contact    |
+| (logo/text)                                   Details    |
+|                                                           
+| FSP 47433            Firearms Guardian        Email      |
+|                      (Pty) Ltd FSP 47115      Phone      |
+|                                                           
+|                      Underwritten by                     |
+|                      GENRIC Insurance FSP 43638          |
+------------------------------------------------------------
+
+Design Guidelines
+
+Font: Helvetica or similar sans-serif
+
+Size: 8–9pt
+
+Colour: Muted grey (#6B7280)
+
+Sentence case
+
+Thin divider line above footer
+
+Comfortable spacing (no dense blocks)
+
+Part 3: PDF Disclaimer & Consent Sections
+Goal
+
+Make the existing disclaimers easier to read and visually structured, without rewriting or expanding the legal text.
+
+Placement
+
+After the Important Information box and before the footer.
+
+Section Layout (All Three)
+
+Sections
+
+Debit Order Authorisation
+
+Policy Declaration
+
+POPIA Consent
+
+Design
+
+Title: Bold, 10pt
+
+Body: 9pt
+
+Light grey background panel
+
+Left-aligned text
+
+No more than 6–8 lines visible at once
+
+Content
+
+Use the existing legal wording
+
+May use short bullets for readability
+
+Entity names in semi-bold
+
+Include a simple consent line:
+
+Consented: [timestamp]
+
+
+👉 No legal expansion.
+👉 No restructuring.
+👉 Just presentation.
+
+Technical Implementation
+File
+
+supabase/functions/_shared/pdfGenerator.ts
+
+Changes
+
+Wrap existing disclaimer text in styled sections
+
+Add spacing and background panels
+
+Redesign footer into 3 columns
+
+Ensure footer stays on final page
+
+Files Summary
+File	Change
+src/pages/Index.tsx	Scroll-to-top on step change
+pdfGenerator.ts	Visual cleanup of footer & disclaimers
+Compliance Notes (Minimal)
+
+Minimum font size maintained
+
+Existing legal text unchanged
+
+FSP numbers remain visible
