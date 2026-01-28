@@ -27,7 +27,7 @@ export const Header = ({ currentStep = 1, showStepIndicator = true }: HeaderProp
           <img 
             src={acornLogo} 
             alt="Acorn Brokers" 
-            className="h-7 lg:h-9 w-auto" 
+            className="h-9 lg:h-11 w-auto" 
           />
         </Link>
 
