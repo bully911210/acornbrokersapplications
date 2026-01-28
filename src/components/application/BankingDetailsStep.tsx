@@ -9,6 +9,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { MaskedInput } from "@/components/ui/masked-input";
 import {
   Select,
   SelectContent,
@@ -147,9 +148,11 @@ export const BankingDetailsStep = ({
               <FormItem className="stagger-4 animate-fade-in opacity-0">
                 <FormLabel>Account Number</FormLabel>
                 <FormControl>
-                  <Input
-                    placeholder="Enter your account number"
-                    {...field}
+                  <MaskedInput
+                    maskType="accountNumber"
+                    value={field.value}
+                    onValueChange={field.onChange}
+                    placeholder="1234 5678 90"
                   />
                 </FormControl>
                 <FormMessage />
