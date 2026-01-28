@@ -1,141 +1,194 @@
-Plan: Scroll Reset & PDF Footer / Disclaimer Redesign
-Overview
 
-This plan addresses two focused improvements:
+# Plan: Smart Logic Form Optimization
 
-Form Scroll Reset
-Ensure the page scrolls to the top when navigating between steps.
+## Overview
 
-PDF Visual & Legibility Improvements
-Improve the PDF footer and disclaimer sections so they are cleaner, clearer, and more professional, without changing legal meaning or adding unnecessary complexity.
+Implement 5 smart logic rules to dramatically reduce cognitive load and typing effort in the application form. This includes input masking, SA ID parsing with verification feedback, keyboard optimization, banking smart defaults, and progressive disclosure on the review page.
 
-Part 1: Form Scroll-to-Top on Step Change
-Current Behaviour
+---
 
-When a user clicks Continue, the page remains at the current scroll position, which is confusing—especially on mobile.
+## Rule 1: Smart Inputs (Reduce Typing by 50%)
 
-Solution
+### 1A. SA ID Number Parsing with Verification Feedback
 
-Scroll the page to the top whenever the step changes.
+**Current State**: Plain text input that validates but gives no immediate feedback
 
-File to Modify
+**New Behaviour**:
+- When user enters a valid 13-digit SA ID:
+  - Extract Date of Birth (first 6 digits: YYMMDD)
+  - Determine Gender (digits 7-10: 0000-4999 = Female, 5000-9999 = Male)
+  - Determine Citizenship (digit 11: 0 = SA Citizen, 1 = Permanent Resident)
+- Display success message below field:
+  ```
+  ✓ Verified: Born 24 May 1990 • Male • SA Citizen
+  ```
 
-src/pages/Index.tsx
+**Files to Create/Modify**:
+- Create `src/lib/saIdParser.ts` - utility functions to parse SA ID
+- Modify `PersonalDetailsStep.tsx` - add verification message display
 
-Implementation
+### 1B. Address Autocomplete (Simplified Approach)
 
-Add the following after the existing state declarations:
+**Note**: Google Places Autocomplete requires an API key and billing setup. Instead, we'll optimize the existing address fields with better UX:
 
-useEffect(() => {
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}, [currentStep]);
+**Improvement**:
+- Keep the 4 address fields but add smart placeholder text
+- Add province auto-selection hint based on common city/suburb patterns
+- This avoids external API dependencies while still improving UX
 
-Part 2: PDF Footer Redesign
-Current Issues
+---
 
-Footer feels like leftover HTML
+## Rule 2: Visual Chunking with Input Masks
 
-Regulatory info is cramped
+**Current State**: Raw number strings that are hard to verify
 
-No clear separation from content above
+**New Behaviour with Masks**:
 
-New Footer Structure (3 Columns)
-------------------------------------------------------------
-| Acorn Brokers        Regulatory Info          Contact    |
-| (logo/text)                                   Details    |
-|                                                           
-| FSP 47433            Firearms Guardian        Email      |
-|                      (Pty) Ltd FSP 47115      Phone      |
-|                                                           
-|                      Underwritten by                     |
-|                      GENRIC Insurance FSP 43638          |
-------------------------------------------------------------
+| Field | Current | Masked Format |
+|-------|---------|---------------|
+| Mobile | 0821234567 | 082 123 4567 |
+| SA ID | 9102105009087 | 910210 5009 08 7 |
+| Account Number | 1234567890 | 1234 5678 90 |
 
-Design Guidelines
+**Implementation**:
+- Create `src/components/ui/masked-input.tsx` - reusable masked input component
+- Apply masks that auto-format as user types
+- Store raw values (without spaces) in form state for validation
+- Display formatted values for readability
 
-Font: Helvetica or similar sans-serif
+**Technical Approach**:
+- Use controlled input with custom onChange handler
+- Format display value with spaces at specific positions
+- Strip spaces before validation/submission
 
-Size: 8–9pt
+---
 
-Colour: Muted grey (#6B7280)
+## Rule 3: Keyboard Optimization for Mobile
 
-Sentence case
+**Current State**: Standard text inputs open QWERTY keyboard on mobile
 
-Thin divider line above footer
+**New Behaviour**:
+Add `inputMode="numeric"` and `pattern="[0-9]*"` to numeric-only fields:
+- Mobile Number
+- SA ID Number
+- Account Number
 
-Comfortable spacing (no dense blocks)
+**Files to Modify**:
+- `PersonalDetailsStep.tsx` - SA ID, Mobile inputs
+- `BankingDetailsStep.tsx` - Account Number input
 
-Part 3: PDF Disclaimer & Consent Sections
-Goal
+This forces mobile devices to show the large number pad instead of the tiny QWERTY keyboard.
 
-Make the existing disclaimers easier to read and visually structured, without rewriting or expanding the legal text.
+---
 
-Placement
+## Rule 4: Banking Smart Defaults
 
-After the Important Information box and before the footer.
+### 4A. Universal Branch Codes
 
-Section Layout (All Three)
+**Current State**: No branch code field exists (already optimal)
 
-Sections
+**Verification**: The banking form already doesn't require branch codes since major SA banks use universal codes. No changes needed here.
 
-Debit Order Authorisation
+### 4B. Debit Date Selection
 
-Policy Declaration
+**Current State**: Already uses button group (1st, 15th, 25th) - already optimal
 
-POPIA Consent
+**Verification**: The `BankingDetailsStep.tsx` already implements clickable cards for date selection. This is already following best practice.
 
-Design
+---
 
-Title: Bold, 10pt
+## Rule 5: Progressive Disclosure on Review Page
 
-Body: 9pt
+**Current State**: All 3 legal sections are fully expanded, creating a "wall of text"
 
-Light grey background panel
+**New Behaviour**:
+- Present each legal section as a collapsible accordion
+- Default state: Collapsed with summary title
+- Title format: `Debit Order Authorisation • R245/pm` (includes key info)
+- User expands to read full text
+- Checkbox only visible when expanded OR as "I have read and agree" without needing expansion
 
-Left-aligned text
+**Accordion Titles**:
+1. `Debit Order Authorisation • R[premium]/pm`
+2. `Policy Declaration`
+3. `POPIA Consent & Privacy Notice`
 
-No more than 6–8 lines visible at once
+**Files to Modify**:
+- `AuthorisationsStep.tsx` - wrap legal sections in accordions
 
-Content
+---
 
-Use the existing legal wording
+## File Changes Summary
 
-May use short bullets for readability
+| File | Action | Description |
+|------|--------|-------------|
+| `src/lib/saIdParser.ts` | CREATE | SA ID parsing utilities (DOB, gender, citizenship) |
+| `src/components/ui/masked-input.tsx` | CREATE | Reusable masked input component |
+| `src/components/application/PersonalDetailsStep.tsx` | MODIFY | Add SA ID verification, input masks, keyboard optimization |
+| `src/components/application/BankingDetailsStep.tsx` | MODIFY | Add account number mask, keyboard optimization |
+| `src/components/application/AuthorisationsStep.tsx` | MODIFY | Convert legal sections to accordions |
 
-Entity names in semi-bold
+---
 
-Include a simple consent line:
+## Technical Implementation Details
 
-Consented: [timestamp]
+### SA ID Parser (saIdParser.ts)
 
+```typescript
+interface SAIdInfo {
+  dateOfBirth: Date;
+  gender: 'Male' | 'Female';
+  citizenship: 'SA Citizen' | 'Permanent Resident';
+  isValid: boolean;
+}
 
-👉 No legal expansion.
-👉 No restructuring.
-👉 Just presentation.
+function parseSAId(idNumber: string): SAIdInfo | null
+function formatDateOfBirth(date: Date): string // "24 May 1990"
+```
 
-Technical Implementation
-File
+### Masked Input Component
 
-supabase/functions/_shared/pdfGenerator.ts
+The masked input will:
+1. Accept a `mask` pattern prop (e.g., "### ### ####" for mobile)
+2. Auto-format input as user types
+3. Expose raw value (no spaces) via `onValueChange` callback
+4. Display formatted value in the input field
 
-Changes
+### Accordion Legal Sections
 
-Wrap existing disclaimer text in styled sections
+Each accordion item will:
+1. Show collapsed by default with summary title
+2. Expand on click to reveal full legal text
+3. Keep checkbox at bottom of expanded content
+4. Allow independent expand/collapse of each section
 
-Add spacing and background panels
+---
 
-Redesign footer into 3 columns
+## Mobile UX Improvements
 
-Ensure footer stays on final page
+**Keyboard Attributes** added to all numeric fields:
+```html
+<input 
+  inputMode="numeric" 
+  pattern="[0-9]*"
+  autoComplete="off"
+/>
+```
 
-Files Summary
-File	Change
-src/pages/Index.tsx	Scroll-to-top on step change
-pdfGenerator.ts	Visual cleanup of footer & disclaimers
-Compliance Notes (Minimal)
+This ensures:
+- iOS shows numeric keypad
+- Android shows numeric keypad
+- Reduced thumb errors on mobile
 
-Minimum font size maintained
+---
 
-Existing legal text unchanged
+## Expected Impact
 
-FSP numbers remain visible
+| Metric | Before | After |
+|--------|--------|-------|
+| Mobile Number entry | ~12 taps | ~10 taps |
+| SA ID entry | Hard to verify | Instant verification |
+| SA ID typing errors | Common | Rare (chunked display) |
+| Account Number verification | Impossible | Easy (chunked) |
+| Legal text anxiety | High | Low (collapsed) |
+| Overall form completion time | ~5 min | ~3 min |
