@@ -1,5 +1,6 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMemo } from "react";
 import {
   Form,
   FormControl,
@@ -9,6 +10,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { MaskedInput } from "@/components/ui/masked-input";
 import {
   Select,
   SelectContent,
@@ -22,7 +24,8 @@ import {
   PersonalDetailsData,
   SA_PROVINCES,
 } from "@/lib/validations";
-import { ArrowLeft } from "lucide-react";
+import { parseSAId } from "@/lib/saIdParser";
+import { ArrowLeft, CheckCircle2 } from "lucide-react";
 
 interface PersonalDetailsStepProps {
   defaultValues?: Partial<PersonalDetailsData>;
@@ -50,6 +53,16 @@ export const PersonalDetailsStep = ({
       ...defaultValues,
     },
   });
+
+  const watchedIdNumber = form.watch("saIdNumber");
+  
+  const idInfo = useMemo(() => {
+    const rawId = watchedIdNumber?.replace(/\s/g, '') || '';
+    if (rawId.length === 13) {
+      return parseSAId(rawId);
+    }
+    return null;
+  }, [watchedIdNumber]);
 
   const onSubmit = (data: PersonalDetailsData) => {
     onNext(data);
@@ -99,7 +112,7 @@ export const PersonalDetailsStep = ({
             />
           </div>
 
-          {/* ID Number */}
+          {/* ID Number with Verification */}
           <FormField
             control={form.control}
             name="saIdNumber"
@@ -107,12 +120,21 @@ export const PersonalDetailsStep = ({
               <FormItem className="stagger-3 animate-fade-in opacity-0">
                 <FormLabel>SA ID Number</FormLabel>
                 <FormControl>
-                  <Input
-                    placeholder="Enter your 13-digit SA ID number"
-                    maxLength={13}
-                    {...field}
+                  <MaskedInput
+                    maskType="saId"
+                    value={field.value}
+                    onValueChange={field.onChange}
+                    placeholder="910210 5009 08 7"
                   />
                 </FormControl>
+                {idInfo?.isValid && (
+                  <div className="flex items-center gap-2 text-sm text-emerald-600 dark:text-emerald-500 mt-1.5">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-500" />
+                    <span>
+                      Verified: Born {idInfo.formattedDOB} • {idInfo.gender} • {idInfo.citizenship}
+                    </span>
+                  </div>
+                )}
                 <FormMessage />
               </FormItem>
             )}
@@ -127,7 +149,12 @@ export const PersonalDetailsStep = ({
                 <FormItem className="stagger-4 animate-fade-in opacity-0">
                   <FormLabel>Mobile Number</FormLabel>
                   <FormControl>
-                    <Input placeholder="0821234567" {...field} />
+                    <MaskedInput
+                      maskType="mobile"
+                      value={field.value}
+                      onValueChange={field.onChange}
+                      placeholder="082 123 4567"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
