@@ -22,12 +22,12 @@ export const Header = ({ currentStep = 1, showStepIndicator = true }: HeaderProp
   return (
     <header className="sticky top-0 z-50 w-full bg-white border-b border-border">
       <div className="container flex h-14 lg:h-16 items-center justify-between gap-4">
-        {/* Logo - Left */}
+        {/* Logo - Left (25% larger) */}
         <Link to="/" className="flex-shrink-0" onClick={() => window.location.reload()}>
           <img 
             src={acornLogo} 
             alt="Acorn Brokers" 
-            className="h-9 lg:h-11 w-auto" 
+            className="h-11 lg:h-14 w-auto" 
           />
         </Link>
 

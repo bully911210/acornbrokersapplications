@@ -1,24 +1,10 @@
 import { z } from "zod";
 
-// SA ID Number validation with Luhn check
-const luhnCheck = (idNumber: string): boolean => {
-  let sum = 0;
-  for (let i = 0; i < 13; i++) {
-    let digit = parseInt(idNumber[i], 10);
-    if (i % 2 === 1) {
-      digit *= 2;
-      if (digit > 9) digit -= 9;
-    }
-    sum += digit;
-  }
-  return sum % 10 === 0;
-};
-
+// SA ID Number validation - length and digits only
 const saIdNumberSchema = z
   .string()
   .length(13, "SA ID number must be 13 digits")
-  .regex(/^\d{13}$/, "SA ID number must contain only digits")
-  .refine(luhnCheck, "Invalid SA ID number");
+  .regex(/^\d{13}$/, "SA ID number must contain only digits");
 
 // SA Mobile number validation
 const saMobileSchema = z

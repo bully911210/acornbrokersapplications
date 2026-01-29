@@ -66,7 +66,7 @@ export const BankingDetailsStep = ({
             control={form.control}
             name="accountHolder"
             render={({ field }) => (
-              <FormItem className="stagger-1 animate-fade-in opacity-0">
+              <FormItem>
                 <FormLabel>Account Holder Name</FormLabel>
                 <FormControl>
                   <Input placeholder="Name as it appears on your bank account" {...field} />
@@ -80,9 +80,9 @@ export const BankingDetailsStep = ({
             control={form.control}
             name="bankName"
             render={({ field }) => (
-              <FormItem className="stagger-2 animate-fade-in opacity-0">
+              <FormItem>
                 <FormLabel>Bank Name</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}>
+                <Select onValueChange={field.onChange} value={field.value || ""}>
                   <FormControl>
                     <SelectTrigger>
                       <div className="flex items-center gap-2">
@@ -108,12 +108,12 @@ export const BankingDetailsStep = ({
             control={form.control}
             name="accountType"
             render={({ field }) => (
-              <FormItem className="space-y-3 stagger-3 animate-fade-in opacity-0">
+              <FormItem className="space-y-3">
                 <FormLabel>Account Type</FormLabel>
                 <FormControl>
                   <RadioGroup
                     onValueChange={field.onChange}
-                    value={field.value}
+                    value={field.value || ""}
                     className="grid grid-cols-3 gap-3"
                   >
                     {[
@@ -145,7 +145,7 @@ export const BankingDetailsStep = ({
             control={form.control}
             name="accountNumber"
             render={({ field }) => (
-              <FormItem className="stagger-4 animate-fade-in opacity-0">
+              <FormItem>
                 <FormLabel>Account Number</FormLabel>
                 <FormControl>
                   <MaskedInput
@@ -164,12 +164,12 @@ export const BankingDetailsStep = ({
             control={form.control}
             name="preferredDebitDate"
             render={({ field }) => (
-              <FormItem className="space-y-3 stagger-5 animate-fade-in opacity-0">
+              <FormItem className="space-y-3">
                 <FormLabel>Preferred Debit Date</FormLabel>
                 <FormControl>
                   <RadioGroup
                     onValueChange={field.onChange}
-                    value={field.value}
+                    value={field.value || ""}
                     className="grid grid-cols-3 gap-3"
                   >
                     {[

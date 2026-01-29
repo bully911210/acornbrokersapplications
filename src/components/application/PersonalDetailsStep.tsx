@@ -87,7 +87,7 @@ export const PersonalDetailsStep = ({
               control={form.control}
               name="firstName"
               render={({ field }) => (
-                <FormItem className="stagger-1 animate-fade-in opacity-0">
+                <FormItem>
                   <FormLabel>First Name</FormLabel>
                   <FormControl>
                     <Input placeholder="Enter your first name" {...field} />
@@ -101,7 +101,7 @@ export const PersonalDetailsStep = ({
               control={form.control}
               name="lastName"
               render={({ field }) => (
-                <FormItem className="stagger-2 animate-fade-in opacity-0">
+                <FormItem>
                   <FormLabel>Last Name</FormLabel>
                   <FormControl>
                     <Input placeholder="Enter your last name" {...field} />
@@ -117,7 +117,7 @@ export const PersonalDetailsStep = ({
             control={form.control}
             name="saIdNumber"
             render={({ field }) => (
-              <FormItem className="stagger-3 animate-fade-in opacity-0">
+              <FormItem>
                 <FormLabel>SA ID Number</FormLabel>
                 <FormControl>
                   <MaskedInput
@@ -146,7 +146,7 @@ export const PersonalDetailsStep = ({
               control={form.control}
               name="mobile"
               render={({ field }) => (
-                <FormItem className="stagger-4 animate-fade-in opacity-0">
+                <FormItem>
                   <FormLabel>Mobile Number</FormLabel>
                   <FormControl>
                     <MaskedInput
@@ -165,7 +165,7 @@ export const PersonalDetailsStep = ({
               control={form.control}
               name="email"
               render={({ field }) => (
-                <FormItem className="stagger-5 animate-fade-in opacity-0">
+                <FormItem>
                   <FormLabel>Email Address</FormLabel>
                   <FormControl>
                     <Input
@@ -185,7 +185,7 @@ export const PersonalDetailsStep = ({
             control={form.control}
             name="streetAddress"
             render={({ field }) => (
-              <FormItem className="stagger-6 animate-fade-in opacity-0">
+              <FormItem>
                 <FormLabel>Street Address</FormLabel>
                 <FormControl>
                   <Input placeholder="123 Main Street" {...field} />
@@ -200,7 +200,7 @@ export const PersonalDetailsStep = ({
               control={form.control}
               name="suburb"
               render={({ field }) => (
-                <FormItem className="stagger-7 animate-fade-in opacity-0">
+                <FormItem>
                   <FormLabel>Suburb</FormLabel>
                   <FormControl>
                     <Input placeholder="Suburb" {...field} />
@@ -214,7 +214,7 @@ export const PersonalDetailsStep = ({
               control={form.control}
               name="city"
               render={({ field }) => (
-                <FormItem className="stagger-8 animate-fade-in opacity-0">
+                <FormItem>
                   <FormLabel>City</FormLabel>
                   <FormControl>
                     <Input placeholder="City" {...field} />
@@ -229,7 +229,7 @@ export const PersonalDetailsStep = ({
             control={form.control}
             name="province"
             render={({ field }) => (
-              <FormItem className="animate-fade-in opacity-0" style={{ animationDelay: "0.45s" }}>
+              <FormItem>
                 <FormLabel>Province</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
