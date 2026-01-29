@@ -1,194 +1,185 @@
 
-# Plan: Smart Logic Form Optimization
+
+# Plan: Remove SA ID Validation & Improve Page Load Performance
 
 ## Overview
 
-Implement 5 smart logic rules to dramatically reduce cognitive load and typing effort in the application form. This includes input masking, SA ID parsing with verification feedback, keyboard optimization, banking smart defaults, and progressive disclosure on the review page.
+This plan removes the SA ID number validation (Luhn checksum and verification feedback) and implements performance optimizations to make the page load faster.
 
 ---
 
-## Rule 1: Smart Inputs (Reduce Typing by 50%)
+## Part 1: Remove SA ID Validation
 
-### 1A. SA ID Number Parsing with Verification Feedback
+### What Gets Removed
 
-**Current State**: Plain text input that validates but gives no immediate feedback
+1. **Luhn checksum validation** - The mathematical check that validates if an ID is structurally correct
+2. **DO NOT REMOVE THE SA ID message** - The green "Verified: Born 24 May 1990 • Male • SA Citizen" feedback
 
-**New Behaviour**:
-- When user enters a valid 13-digit SA ID:
-  - Extract Date of Birth (first 6 digits: YYMMDD)
-  - Determine Gender (digits 7-10: 0000-4999 = Female, 5000-9999 = Male)
-  - Determine Citizenship (digit 11: 0 = SA Citizen, 1 = Permanent Resident)
-- Display success message below field:
-  ```
-  ✓ Verified: Born 24 May 1990 • Male • SA Citizen
-  ```
+### What Stays
 
-**Files to Create/Modify**:
-- Create `src/lib/saIdParser.ts` - utility functions to parse SA ID
-- Modify `PersonalDetailsStep.tsx` - add verification message display
+1. **13-digit length requirement** - Still needs exactly 13 digits (can start with 0 or 00 as well)
+2. **Digits-only validation** - Must be numbers only
+3. **Visual chunking/masking** - The "910210 5009 087" formatting stays (it helps users proofread)
 
-### 1B. Address Autocomplete (Simplified Approach)
+### Files to Modify
 
-**Note**: Google Places Autocomplete requires an API key and billing setup. Instead, we'll optimize the existing address fields with better UX:
+**1. `src/lib/validations.ts`**
+- Simplify `saIdNumberSchema` to only check length and digits
+- Remove the Luhn check function
 
-**Improvement**:
-- Keep the 4 address fields but add smart placeholder text
-- Add province auto-selection hint based on common city/suburb patterns
-- This avoids external API dependencies while still improving UX
+**2. `src/components/application/PersonalDetailsStep.tsx`**
+- Remove the import of `parseSAId` from saIdParser
+- Remove the `idInfo` useMemo hook
+- Remove the green verification message display below the SA ID field
 
----
+### Changes Summary
 
-## Rule 2: Visual Chunking with Input Masks
-
-**Current State**: Raw number strings that are hard to verify
-
-**New Behaviour with Masks**:
-
-| Field | Current | Masked Format |
-|-------|---------|---------------|
-| Mobile | 0821234567 | 082 123 4567 |
-| SA ID | 9102105009087 | 910210 5009 08 7 |
-| Account Number | 1234567890 | 1234 5678 90 |
-
-**Implementation**:
-- Create `src/components/ui/masked-input.tsx` - reusable masked input component
-- Apply masks that auto-format as user types
-- Store raw values (without spaces) in form state for validation
-- Display formatted values for readability
-
-**Technical Approach**:
-- Use controlled input with custom onChange handler
-- Format display value with spaces at specific positions
-- Strip spaces before validation/submission
+| File | Change |
+|------|--------|
+| `src/lib/validations.ts` | Remove Luhn check, keep length/digit validation |
+| `PersonalDetailsStep.tsx` | Remove ID parsing feedback display |
+| `src/lib/saIdParser.ts` | Can be deleted or kept for future use |
 
 ---
 
-## Rule 3: Keyboard Optimization for Mobile
+## Part 2: Improve Page Load Performance
 
-**Current State**: Standard text inputs open QWERTY keyboard on mobile
+### Current Performance Issues Identified
 
-**New Behaviour**:
-Add `inputMode="numeric"` and `pattern="[0-9]*"` to numeric-only fields:
-- Mobile Number
-- SA ID Number
-- Account Number
+1. **External Font Loading** - Google Fonts loaded via CSS import blocks rendering
+2. **Staggered Animations** - Multiple elements with `opacity-0` and animation delays
+3. **Console Warning** - RadioGroup/Select switching from uncontrolled to controlled
 
-**Files to Modify**:
-- `PersonalDetailsStep.tsx` - SA ID, Mobile inputs
-- `BankingDetailsStep.tsx` - Account Number input
+### Optimizations to Implement
 
-This forces mobile devices to show the large number pad instead of the tiny QWERTY keyboard.
+**1. Optimize Font Loading**
+- Add `font-display: swap` to prevent font blocking
+- Consider preloading the Inter font
+- Add font preconnect hints to index.html
 
----
+**2. Remove Initial Opacity-0 on Form Fields**
+- Currently form fields start with `opacity-0` and animate in with staggered delays (0.05s to 0.45s)
+- This causes a perceived delay before content appears
+- Reduce or remove these animation delays for faster perceived load
 
-## Rule 4: Banking Smart Defaults
+**3. Fix Controlled Component Warnings**
+- Ensure RadioGroup and Select have defined initial values (not `undefined`)
+- Change `defaultValues` from `undefined` to empty strings or specific defaults
 
-### 4A. Universal Branch Codes
+**4. Lazy Load Non-Critical Assets**
+- The form is already lightweight
+- Ensure TanStack Query doesn't block initial render
 
-**Current State**: No branch code field exists (already optimal)
+### Files to Modify
 
-**Verification**: The banking form already doesn't require branch codes since major SA banks use universal codes. No changes needed here.
-
-### 4B. Debit Date Selection
-
-**Current State**: Already uses button group (1st, 15th, 25th) - already optimal
-
-**Verification**: The `BankingDetailsStep.tsx` already implements clickable cards for date selection. This is already following best practice.
-
----
-
-## Rule 5: Progressive Disclosure on Review Page
-
-**Current State**: All 3 legal sections are fully expanded, creating a "wall of text"
-
-**New Behaviour**:
-- Present each legal section as a collapsible accordion
-- Default state: Collapsed with summary title
-- Title format: `Debit Order Authorisation • R245/pm` (includes key info)
-- User expands to read full text
-- Checkbox only visible when expanded OR as "I have read and agree" without needing expansion
-
-**Accordion Titles**:
-1. `Debit Order Authorisation • R[premium]/pm`
-2. `Policy Declaration`
-3. `POPIA Consent & Privacy Notice`
-
-**Files to Modify**:
-- `AuthorisationsStep.tsx` - wrap legal sections in accordions
+| File | Change |
+|------|--------|
+| `index.html` | Add font preconnect and preload hints |
+| `src/index.css` | Optimize font import with display swap |
+| `PersonalDetailsStep.tsx` | Remove staggered animation delays |
+| `EligibilityStep.tsx` | Fix RadioGroup controlled state warning |
+| `BankingDetailsStep.tsx` | Remove animation delays |
 
 ---
 
-## File Changes Summary
+## Implementation Details
 
-| File | Action | Description |
-|------|--------|-------------|
-| `src/lib/saIdParser.ts` | CREATE | SA ID parsing utilities (DOB, gender, citizenship) |
-| `src/components/ui/masked-input.tsx` | CREATE | Reusable masked input component |
-| `src/components/application/PersonalDetailsStep.tsx` | MODIFY | Add SA ID verification, input masks, keyboard optimization |
-| `src/components/application/BankingDetailsStep.tsx` | MODIFY | Add account number mask, keyboard optimization |
-| `src/components/application/AuthorisationsStep.tsx` | MODIFY | Convert legal sections to accordions |
+### Validation Changes (validations.ts)
 
----
-
-## Technical Implementation Details
-
-### SA ID Parser (saIdParser.ts)
-
+Current SA ID schema:
 ```typescript
-interface SAIdInfo {
-  dateOfBirth: Date;
-  gender: 'Male' | 'Female';
-  citizenship: 'SA Citizen' | 'Permanent Resident';
-  isValid: boolean;
-}
-
-function parseSAId(idNumber: string): SAIdInfo | null
-function formatDateOfBirth(date: Date): string // "24 May 1990"
+const saIdNumberSchema = z
+  .string()
+  .length(13, "SA ID number must be 13 digits")
+  .regex(/^\d{13}$/, "SA ID number must contain only digits")
+  .refine(luhnCheck, "Invalid SA ID number");
 ```
 
-### Masked Input Component
+New simplified schema:
+```typescript
+const saIdNumberSchema = z
+  .string()
+  .length(13, "SA ID number must be 13 digits")
+  .regex(/^\d{13}$/, "SA ID number must contain only digits");
+```
 
-The masked input will:
-1. Accept a `mask` pattern prop (e.g., "### ### ####" for mobile)
-2. Auto-format input as user types
-3. Expose raw value (no spaces) via `onValueChange` callback
-4. Display formatted value in the input field
+### PersonalDetailsStep Changes
 
-### Accordion Legal Sections
+Remove:
+```typescript
+import { parseSAId } from "@/lib/saIdParser";
+// ...
+const idInfo = useMemo(() => {
+  const rawId = watchedIdNumber?.replace(/\s/g, '') || '';
+  if (rawId.length === 13) {
+    return parseSAId(rawId);
+  }
+  return null;
+}, [watchedIdNumber]);
+```
 
-Each accordion item will:
-1. Show collapsed by default with summary title
-2. Expand on click to reveal full legal text
-3. Keep checkbox at bottom of expanded content
-4. Allow independent expand/collapse of each section
+Remove the verification message JSX:
+```jsx
+{idInfo?.isValid && (
+  <div className="flex items-center gap-2 text-sm text-emerald-600...">
+    ...
+  </div>
+)}
+```
 
----
+### Animation Optimization
 
-## Mobile UX Improvements
+Current (slow perceived load):
+```tsx
+<FormItem className="stagger-1 animate-fade-in opacity-0">
+```
 
-**Keyboard Attributes** added to all numeric fields:
+Optimized (instant visibility):
+```tsx
+<FormItem className="animate-fade-in">
+```
+
+Or remove animations entirely for form fields:
+```tsx
+<FormItem>
+```
+
+### Font Loading Optimization
+
+Add to `index.html` head:
 ```html
-<input 
-  inputMode="numeric" 
-  pattern="[0-9]*"
-  autoComplete="off"
-/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 ```
 
-This ensures:
-- iOS shows numeric keypad
-- Android shows numeric keypad
-- Reduced thumb errors on mobile
+Update `index.css`:
+```css
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+```
+The `display=swap` is already present in the Google Fonts URL.
 
 ---
 
-## Expected Impact
+## Files Summary
 
-| Metric | Before | After |
-|--------|--------|-------|
-| Mobile Number entry | ~12 taps | ~10 taps |
-| SA ID entry | Hard to verify | Instant verification |
-| SA ID typing errors | Common | Rare (chunked display) |
-| Account Number verification | Impossible | Easy (chunked) |
-| Legal text anxiety | High | Low (collapsed) |
-| Overall form completion time | ~5 min | ~3 min |
+| File | Action | Purpose |
+|------|--------|---------|
+| `src/lib/validations.ts` | Modify | Remove Luhn check validation |
+| `PersonalDetailsStep.tsx` | Modify | Remove ID verification feedback, reduce animations |
+| `EligibilityStep.tsx` | Modify | Fix controlled component, reduce animations |
+| `BankingDetailsStep.tsx` | Modify | Reduce animations |
+| `index.html` | Modify | Add font preconnect hints |
+| `src/lib/saIdParser.ts` | Keep | May be useful later, not actively used |
+
+---
+
+## Expected Results
+
+1. **SA ID field** - Still validates 13 digits, still shows chunked format
+2. **Page load** - Form fields appear immediately without staggered animation delays
+3. **Console warnings** - RadioGroup/Select warnings eliminated
+4. **Font loading** - Faster initial text rendering with preconnect
+5. **Increase logo size by 25%** in both footer and header.
+6. **and also change the site title [Firearm Legal and Liability Cover] and the the favicon of the form application**
+
+
