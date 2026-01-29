@@ -9,12 +9,12 @@ export const Footer = () => {
       <div className="container py-6">
         {/* Single Row: Logo/FSP on Left, Contact on Right */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          {/* Left: Logo + FSP */}
+          {/* Left: Logo + FSP (25% larger) */}
           <div className="flex items-center gap-3">
             <img 
               src={acornLogo} 
               alt="Acorn Brokers" 
-              className="h-8 w-auto opacity-80" 
+              className="h-10 w-auto opacity-80" 
             />
             <span className="text-xs text-muted-foreground">
               Authorised FSP 47433

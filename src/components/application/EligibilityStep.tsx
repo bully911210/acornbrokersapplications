@@ -49,14 +49,14 @@ export const EligibilityStep = ({ defaultValues, onNext }: EligibilityStepProps)
             control={form.control}
             name="firearmLicenceStatus"
             render={({ field }) => (
-              <FormItem className="space-y-2 md:space-y-4 stagger-1 animate-fade-in opacity-0">
+              <FormItem className="space-y-2 md:space-y-4">
                 <FormLabel className="text-sm md:text-base font-semibold">
                   What is your firearm licence status?
                 </FormLabel>
                 <FormControl>
                   <RadioGroup
                     onValueChange={field.onChange}
-                    value={field.value}
+                    value={field.value || ""}
                     className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4"
                   >
                     <label
@@ -115,14 +115,14 @@ export const EligibilityStep = ({ defaultValues, onNext }: EligibilityStepProps)
             control={form.control}
             name="source"
             render={({ field }) => (
-              <FormItem className="space-y-2 md:space-y-4 stagger-2 animate-fade-in opacity-0">
+              <FormItem className="space-y-2 md:space-y-4">
                 <FormLabel className="text-sm md:text-base font-semibold">
                   How did you hear about us?
                 </FormLabel>
                 <FormControl>
                   <RadioGroup
                     onValueChange={field.onChange}
-                    value={field.value}
+                    value={field.value || ""}
                     className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3"
                   >
                     {[
