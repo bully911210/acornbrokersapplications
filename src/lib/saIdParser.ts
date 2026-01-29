@@ -35,13 +35,8 @@ export function parseSAId(idNumber: string): SAIdInfo | null {
   // Remove any spaces
   const cleanId = idNumber.replace(/\s/g, '');
   
-  // Must be exactly 13 digits
+  // Must be exactly 13 digits - NO Luhn validation, accept any 13 digits
   if (!/^\d{13}$/.test(cleanId)) {
-    return null;
-  }
-
-  // Validate with Luhn check
-  if (!luhnCheck(cleanId)) {
     return null;
   }
 
