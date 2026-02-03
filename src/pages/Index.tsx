@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { insertApplicant, updateApplicantById, updateApplicantByIdReturning } from "@/lib/supabaseClient";
+import { createApplication, updateApplication, sendApplicationEmail } from "@/lib/apiClient";
 import { Layout } from "@/components/Layout";
 import { EligibilityStep } from "@/components/application/EligibilityStep";
 import { PersonalDetailsStep } from "@/components/application/PersonalDetailsStep";
@@ -17,7 +17,7 @@ import {
   AuthorisationsData,
   normalizePhone,
 } from "@/lib/validations";
-import { initSession, updateSession, clearSession, getClientInfo, getSession } from "@/lib/sessionManager";
+import { initSession, updateSession, clearSession, getClientInfo, getSession, getToken } from "@/lib/sessionManager";
 import { useToast } from "@/hooks/use-toast";
 import { Shield } from "lucide-react";
 
@@ -42,27 +42,27 @@ const Index = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [currentStep]);
 
-  const createApplicant = useMutation({
+  const createApplicantMutation = useMutation({
     mutationFn: async (data: EligibilityData) => {
       const session = initSession();
       const clientInfo = await getClientInfo();
       
-      const { data: applicant, error } = await insertApplicant({
-        firearm_licence_status: data.firearmLicenceStatus,
+      const result = await createApplication({
+        firearmLicenceStatus: data.firearmLicenceStatus,
         source: data.source,
-        session_id: session.sessionId,
-        agent_id: session.agentId,
-        user_agent: clientInfo.userAgent,
-        current_step: 1,
-        status: "partial",
+        agentId: session.agentId,
+        userAgent: clientInfo.userAgent,
       });
 
-      if (error) throw error;
-      return applicant;
+      return result;
     },
-    onSuccess: (applicant) => {
-      setApplicantId(applicant.id);
-      updateSession({ applicantId: applicant.id, currentStep: 2 });
+    onSuccess: (result) => {
+      setApplicantId(result.applicantId);
+      updateSession({ 
+        applicantId: result.applicantId, 
+        token: result.token,
+        currentStep: 2 
+      });
       setCurrentStep(2);
     },
     onError: () => {
@@ -74,21 +74,21 @@ const Index = () => {
     },
   });
 
-  const updateApplicant = useMutation({
+  const updateApplicantMutation = useMutation({
     mutationFn: async ({ step, data }: { step: number; data: Record<string, unknown> }) => {
-      if (!applicantId) throw new Error("No applicant ID");
+      const token = getToken();
+      if (!token) throw new Error("No session token");
 
-      const { error } = await updateApplicantById(applicantId, { ...data, current_step: step });
-
-      if (error) throw error;
+      await updateApplication(token, { ...data, current_step: step });
     },
   });
 
-  const submitApplication = useMutation({
+  const submitApplicationMutation = useMutation({
     mutationFn: async (consents: AuthorisationsData) => {
-      if (!applicantId) throw new Error("No applicant ID");
+      const token = getToken();
+      if (!token || !applicantId) throw new Error("No session token or applicant ID");
 
-      const { data, error } = await updateApplicantByIdReturning(applicantId, {
+      const result = await updateApplication(token, {
         debit_order_consent: consents.debitOrderConsent,
         declaration_consent: consents.declarationConsent,
         popia_consent: consents.popiaConsent,
@@ -97,31 +97,24 @@ const Index = () => {
         current_step: 5,
       });
 
-      if (error) throw error;
-      return data;
+      return { applicant: result.applicant, token };
     },
     onSuccess: (data) => {
-      // Get session BEFORE clearing it (needed for email authentication)
-      const session = getSession();
-      const sessionId = session?.sessionId || "";
+      const token = data.token;
+      const applicantData = data.applicant as Record<string, unknown>;
       
       clearSession();
       setCompletedData({
         ...applicationData as FullApplicationData,
-        id: data.id,
-        createdAt: data.created_at,
+        id: applicantData.id as string,
+        createdAt: applicantData.created_at as string,
       });
       setIsComplete(true);
 
-      // Fire-and-forget: Send application email notification with session validation
-      fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-application-email`, {
-        method: "POST",
-        headers: { 
-          "Content-Type": "application/json",
-          "x-session-id": sessionId,
-        },
-        body: JSON.stringify({ applicantId: data.id }),
-      }).catch((err) => console.error("Failed to send application email:", err));
+      // Fire-and-forget: Send application email notification
+      sendApplicationEmail(applicantData.id as string, token).catch((err) => 
+        console.error("Failed to send application email:", err)
+      );
     },
     onError: () => {
       toast({
@@ -134,14 +127,14 @@ const Index = () => {
 
   const handleStep1 = useCallback((data: EligibilityData) => {
     setApplicationData((prev) => ({ ...prev, ...data }));
-    createApplicant.mutate(data);
-  }, [createApplicant]);
+    createApplicantMutation.mutate(data);
+  }, [createApplicantMutation]);
 
   const handleStep2 = useCallback((data: PersonalDetailsData) => {
     const normalizedData = { ...data, mobile: normalizePhone(data.mobile) };
     setApplicationData((prev) => ({ ...prev, ...normalizedData }));
     
-    updateApplicant.mutate({
+    updateApplicantMutation.mutate({
       step: 2,
       data: {
         first_name: data.firstName,
@@ -158,24 +151,24 @@ const Index = () => {
     
     updateSession({ currentStep: 3 });
     setCurrentStep(3);
-  }, [updateApplicant]);
+  }, [updateApplicantMutation]);
 
   const handleStep3 = useCallback((data: CoverSelectionData) => {
     setApplicationData((prev) => ({ ...prev, ...data }));
     
-    updateApplicant.mutate({
+    updateApplicantMutation.mutate({
       step: 3,
       data: { cover_option: data.coverOption },
     });
     
     updateSession({ currentStep: 4 });
     setCurrentStep(4);
-  }, [updateApplicant]);
+  }, [updateApplicantMutation]);
 
   const handleStep4 = useCallback((data: BankingDetailsData) => {
     setApplicationData((prev) => ({ ...prev, ...data }));
     
-    updateApplicant.mutate({
+    updateApplicantMutation.mutate({
       step: 4,
       data: {
         account_holder: data.accountHolder,
@@ -188,11 +181,11 @@ const Index = () => {
     
     updateSession({ currentStep: 5 });
     setCurrentStep(5);
-  }, [updateApplicant]);
+  }, [updateApplicantMutation]);
 
   const handleStep5 = useCallback((data: AuthorisationsData) => {
-    submitApplication.mutate(data);
-  }, [submitApplication]);
+    submitApplicationMutation.mutate(data);
+  }, [submitApplicationMutation]);
 
   if (isComplete && completedData) {
     return (
@@ -218,8 +211,6 @@ const Index = () => {
             Get comprehensive legal expense and liability insurance designed specifically for South African firearm owners.
           </p>
         </div>
-
-        {/* Form Container */}
 
         {/* Form Container */}
         <div className="form-container">
@@ -255,7 +246,7 @@ const Index = () => {
               applicationData={applicationData}
               onSubmit={handleStep5}
               onBack={() => setCurrentStep(4)}
-              isSubmitting={submitApplication.isPending}
+              isSubmitting={submitApplicationMutation.isPending}
             />
           )}
         </div>
