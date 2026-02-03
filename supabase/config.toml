@@ -2,3 +2,9 @@ project_id = "dssnsaatwxrdchidkvun"
 
 [functions.send-application-email]
 verify_jwt = false
+
+[functions.generate-session-token]
+verify_jwt = false
+
+[functions.update-application]
+verify_jwt = false

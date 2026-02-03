@@ -1,4 +1,4 @@
-// Session management for application tracking
+// Session management for application tracking with signed tokens
 
 export interface SessionData {
   sessionId: string;
@@ -6,16 +6,10 @@ export interface SessionData {
   agentId?: string;
   startTime: number;
   currentStep: number;
+  token?: string; // Signed JWT token from server
 }
 
 const SESSION_KEY = "acorn_application_session";
-
-// Generate unique session ID
-export const generateSessionId = (): string => {
-  const timestamp = Date.now().toString(36);
-  const randomPart = Math.random().toString(36).substring(2, 10);
-  return `${timestamp}-${randomPart}`;
-};
 
 // Extract agent attribution from URL
 export const extractAgentAttribution = (): string | null => {
@@ -35,8 +29,9 @@ export const initSession = (): SessionData => {
     }
   }
 
+  // Return a placeholder session - actual session will be created on server
   const newSession: SessionData = {
-    sessionId: generateSessionId(),
+    sessionId: "", // Will be set by server
     agentId: extractAgentAttribution() || undefined,
     startTime: Date.now(),
     currentStep: 1,
@@ -65,6 +60,12 @@ export const getSession = (): SessionData | null => {
   }
 };
 
+// Get token from session
+export const getToken = (): string | null => {
+  const session = getSession();
+  return session?.token || null;
+};
+
 // Clear session on completion
 export const clearSession = (): void => {
   sessionStorage.removeItem(SESSION_KEY);
@@ -75,7 +76,7 @@ export const getUserAgent = (): string => {
   return navigator.userAgent;
 };
 
-// Get client IP (will be captured server-side, this is a placeholder)
+// Get client info
 export const getClientInfo = async (): Promise<{ ip?: string; userAgent: string }> => {
   return {
     userAgent: getUserAgent(),
