@@ -117,9 +117,7 @@ export const bankingDetailsSchema = z.object({
   }),
   accountNumber: z
     .string()
-    .min(5, "Account number is required")
-    .max(20, "Account number must be less than 20 digits")
-    .regex(/^\d+$/, "Account number must contain only digits"),
+    .min(1, "Account number is required"),
   preferredDebitDate: z.enum(["1", "15", "25"], {
     required_error: "Please select your preferred debit date",
   }),

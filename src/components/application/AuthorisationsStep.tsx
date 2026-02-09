@@ -153,7 +153,7 @@ export const AuthorisationsStep = ({
 
       {/* Legal Authorisations with Accordions */}
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+        <form noValidate onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
           <h3 className="font-semibold text-lg text-foreground">
             Legal Authorisations
           </h3>

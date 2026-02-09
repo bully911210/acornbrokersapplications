@@ -44,7 +44,7 @@ export const EligibilityStep = ({ defaultValues, onNext }: EligibilityStepProps)
       </div>
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 md:space-y-8">
+        <form noValidate onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 md:space-y-8">
           <FormField
             control={form.control}
             name="firearmLicenceStatus"
