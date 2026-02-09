@@ -35,12 +35,12 @@ export const AuthorisationsStep = ({
 }: AuthorisationsStepProps) => {
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
   
-  const form = useForm({
+  const form = useForm<AuthorisationsData>({
     resolver: zodResolver(authorisationsSchema),
     defaultValues: {
-      debitOrderConsent: false as boolean,
-      declarationConsent: false as boolean,
-      popiaConsent: false as boolean,
+      debitOrderConsent: false,
+      declarationConsent: false,
+      popiaConsent: false,
     },
   });
 
@@ -66,8 +66,8 @@ export const AuthorisationsStep = ({
     return "*".repeat(Math.max(0, account.length - 3)) + account.slice(-3);
   };
 
-  const handleSubmit = (data: Record<string, boolean>) => {
-    onSubmit(data as unknown as AuthorisationsData);
+  const handleSubmit = (data: AuthorisationsData) => {
+    onSubmit(data);
   };
 
   return (

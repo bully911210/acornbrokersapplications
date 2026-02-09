@@ -47,13 +47,31 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Get secrets
-    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    const jwtSecret = Deno.env.get("SESSION_JWT_SECRET")!;
+    // Validate enum values
+    const VALID_LICENCE_STATUSES = ["valid", "in_progress"];
+    const VALID_SOURCES = ["online", "agent", "referral", "other"];
 
-    if (!jwtSecret) {
-      console.error("SESSION_JWT_SECRET not configured");
+    if (!VALID_LICENCE_STATUSES.includes(firearmLicenceStatus)) {
+      return new Response(
+        JSON.stringify({ error: "Invalid firearm licence status" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    if (!VALID_SOURCES.includes(source)) {
+      return new Response(
+        JSON.stringify({ error: "Invalid source" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Get secrets
+    const supabaseUrl = Deno.env.get("SUPABASE_URL");
+    const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+    const jwtSecret = Deno.env.get("SESSION_JWT_SECRET");
+
+    if (!supabaseUrl || !supabaseServiceKey || !jwtSecret) {
+      console.error("Missing required environment variables");
       return new Response(
         JSON.stringify({ error: "Server configuration error" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
