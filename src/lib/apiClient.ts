@@ -20,6 +20,7 @@ export const createApplication = async (data: {
   source: string;
   agentId?: string;
   userAgent?: string;
+  eventId?: string;
 }): Promise<GenerateTokenResponse> => {
   const response = await fetch(`${SUPABASE_URL}/functions/v1/generate-session-token`, {
     method: "POST",
@@ -42,14 +43,15 @@ export const createApplication = async (data: {
  */
 export const updateApplication = async (
   token: string,
-  data: Record<string, unknown>
+  data: Record<string, unknown>,
+  eventId?: string
 ): Promise<UpdateApplicationResponse> => {
   const response = await fetch(`${SUPABASE_URL}/functions/v1/update-application`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ token, data }),
+    body: JSON.stringify({ token, data, eventId }),
   });
 
   if (!response.ok) {
@@ -65,7 +67,8 @@ export const updateApplication = async (
  */
 export const sendApplicationEmail = async (
   applicantId: string,
-  token: string
+  token: string,
+  eventId?: string
 ): Promise<void> => {
   const response = await fetch(`${SUPABASE_URL}/functions/v1/send-application-email`, {
     method: "POST",
@@ -73,7 +76,7 @@ export const sendApplicationEmail = async (
       "Content-Type": "application/json",
       "x-session-token": token,
     },
-    body: JSON.stringify({ applicantId }),
+    body: JSON.stringify({ applicantId, eventId }),
   });
 
   if (!response.ok) {

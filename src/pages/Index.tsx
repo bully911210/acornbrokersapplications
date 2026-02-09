@@ -18,6 +18,8 @@ import {
   normalizePhone,
 } from "@/lib/validations";
 import { initSession, updateSession, clearSession, getClientInfo, getSession, getToken } from "@/lib/sessionManager";
+import { trackViewContent, trackLead, trackContact, trackCustomizeProduct, trackAddPaymentInfo, trackPurchase } from "@/lib/metaPixel";
+import { COVER_OPTIONS } from "@/lib/coverData";
 import { useToast } from "@/hooks/use-toast";
 import { Shield } from "lucide-react";
 
@@ -29,12 +31,13 @@ const Index = () => {
   const [completedData, setCompletedData] = useState<(FullApplicationData & { id: string; createdAt: string }) | null>(null);
   const { toast } = useToast();
 
-  // Initialize session on mount
+  // Initialize session on mount and fire ViewContent pixel event
   useEffect(() => {
     const session = initSession();
     if (session.applicantId) {
       setApplicantId(session.applicantId);
     }
+    trackViewContent();
   }, []);
 
   // Scroll to top when step changes
@@ -43,15 +46,16 @@ const Index = () => {
   }, [currentStep]);
 
   const createApplicantMutation = useMutation({
-    mutationFn: async (data: EligibilityData) => {
+    mutationFn: async (data: EligibilityData & { eventId?: string }) => {
       const session = initSession();
       const clientInfo = await getClientInfo();
-      
+
       const result = await createApplication({
         firearmLicenceStatus: data.firearmLicenceStatus,
         source: data.source,
         agentId: session.agentId,
         userAgent: clientInfo.userAgent,
+        eventId: data.eventId,
       });
 
       return result;
@@ -75,11 +79,11 @@ const Index = () => {
   });
 
   const updateApplicantMutation = useMutation({
-    mutationFn: async ({ step, data }: { step: number; data: Record<string, unknown> }) => {
+    mutationFn: async ({ step, data, eventId }: { step: number; data: Record<string, unknown>; eventId?: string }) => {
       const token = getToken();
       if (!token) throw new Error("No session token");
 
-      await updateApplication(token, { ...data, current_step: step });
+      await updateApplication(token, { ...data, current_step: step }, eventId);
     },
   });
 
@@ -87,6 +91,10 @@ const Index = () => {
     mutationFn: async (consents: AuthorisationsData) => {
       const token = getToken();
       if (!token || !applicantId) throw new Error("No session token or applicant ID");
+
+      // Fire Purchase pixel event
+      const coverOption = COVER_OPTIONS.find((opt) => opt.id === applicationData.coverOption);
+      const purchaseEventId = trackPurchase(coverOption?.premium || 0);
 
       const result = await updateApplication(token, {
         debit_order_consent: consents.debitOrderConsent,
@@ -97,12 +105,12 @@ const Index = () => {
         current_step: 5,
       });
 
-      return { applicant: result.applicant, token };
+      return { applicant: result.applicant, token, purchaseEventId };
     },
     onSuccess: (data) => {
       const token = data.token;
       const applicantData = data.applicant as Record<string, unknown>;
-      
+
       clearSession();
       setCompletedData({
         ...applicationData as FullApplicationData,
@@ -111,8 +119,8 @@ const Index = () => {
       });
       setIsComplete(true);
 
-      // Fire-and-forget: Send application email notification
-      sendApplicationEmail(applicantData.id as string, token).catch((err) => 
+      // Fire-and-forget: Send application email notification + CAPI Purchase event
+      sendApplicationEmail(applicantData.id as string, token, data.purchaseEventId).catch((err) =>
         console.error("Failed to send application email:", err)
       );
     },
@@ -126,14 +134,16 @@ const Index = () => {
   });
 
   const handleStep1 = useCallback((data: EligibilityData) => {
+    const eventId = trackLead();
     setApplicationData((prev) => ({ ...prev, ...data }));
-    createApplicantMutation.mutate(data);
+    createApplicantMutation.mutate({ ...data, eventId });
   }, [createApplicantMutation]);
 
   const handleStep2 = useCallback((data: PersonalDetailsData) => {
+    const eventId = trackContact(data.email);
     const normalizedData = { ...data, mobile: normalizePhone(data.mobile) };
     setApplicationData((prev) => ({ ...prev, ...normalizedData }));
-    
+
     updateApplicantMutation.mutate({
       step: 2,
       data: {
@@ -147,27 +157,35 @@ const Index = () => {
         city: data.city,
         province: data.province,
       },
+      eventId,
     });
-    
+
     updateSession({ currentStep: 3 });
     setCurrentStep(3);
   }, [updateApplicantMutation]);
 
   const handleStep3 = useCallback((data: CoverSelectionData) => {
+    const coverOption = COVER_OPTIONS.find((opt) => opt.id === data.coverOption);
+    const eventId = trackCustomizeProduct(
+      coverOption?.name || data.coverOption,
+      coverOption?.premium || 0
+    );
     setApplicationData((prev) => ({ ...prev, ...data }));
-    
+
     updateApplicantMutation.mutate({
       step: 3,
       data: { cover_option: data.coverOption },
+      eventId,
     });
-    
+
     updateSession({ currentStep: 4 });
     setCurrentStep(4);
   }, [updateApplicantMutation]);
 
   const handleStep4 = useCallback((data: BankingDetailsData) => {
+    const eventId = trackAddPaymentInfo();
     setApplicationData((prev) => ({ ...prev, ...data }));
-    
+
     updateApplicantMutation.mutate({
       step: 4,
       data: {
@@ -177,8 +195,9 @@ const Index = () => {
         account_number: data.accountNumber,
         preferred_debit_date: parseInt(data.preferredDebitDate),
       },
+      eventId,
     });
-    
+
     updateSession({ currentStep: 5 });
     setCurrentStep(5);
   }, [updateApplicantMutation]);

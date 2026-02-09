@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
+import { sendCAPIEvent } from "../_shared/metaCapi.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -57,7 +58,7 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { token, data } = await req.json();
+    const { token, data, eventId } = await req.json();
 
     if (!token || !data) {
       return new Response(
@@ -131,6 +132,35 @@ Deno.serve(async (req) => {
         JSON.stringify({ error: "Failed to update application" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
+    }
+
+    // Fire-and-forget: Send CAPI event based on step
+    if (eventId) {
+      const step = sanitizedData.current_step as number | undefined;
+      const STEP_EVENTS: Record<number, string> = {
+        2: "Contact",
+        3: "CustomizeProduct",
+        4: "AddPaymentInfo",
+      };
+      const eventName = step ? STEP_EVENTS[step] : undefined;
+
+      if (eventName) {
+        const userData: Record<string, string | undefined> = {};
+        const applicant = updatedApplicant as Record<string, unknown>;
+        if (applicant.email) userData.em = applicant.email as string;
+        if (applicant.mobile) userData.ph = applicant.mobile as string;
+        if (applicant.first_name) userData.fn = applicant.first_name as string;
+        if (applicant.last_name) userData.ln = applicant.last_name as string;
+        if (applicant.city) userData.ct = applicant.city as string;
+        if (applicant.province) userData.st = applicant.province as string;
+        userData.country = "ZA";
+
+        sendCAPIEvent({
+          eventName,
+          eventId,
+          userData,
+        }).catch((err) => console.error(`CAPI ${eventName} event error:`, err));
+      }
     }
 
     return new Response(

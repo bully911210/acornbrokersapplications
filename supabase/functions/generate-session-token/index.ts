@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
+import { sendCAPIEvent } from "../_shared/metaCapi.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -37,7 +38,7 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { firearmLicenceStatus, source, agentId, userAgent } = await req.json();
+    const { firearmLicenceStatus, source, agentId, userAgent, eventId } = await req.json();
 
     // Validate required fields
     if (!firearmLicenceStatus || !source) {
@@ -118,6 +119,15 @@ Deno.serve(async (req) => {
     };
 
     const token = await createJWT(tokenPayload, jwtSecret);
+
+    // Fire-and-forget: Send Lead event to Meta CAPI
+    sendCAPIEvent({
+      eventName: "Lead",
+      eventId: eventId || undefined,
+      userData: {
+        client_user_agent: userAgent || undefined,
+      },
+    }).catch((err) => console.error("CAPI Lead event error:", err));
 
     return new Response(
       JSON.stringify({

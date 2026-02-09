@@ -2,6 +2,7 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
 import { generateApplicationPDF } from "../_shared/pdfGenerator.ts";
 import { COVER_OPTIONS, ApplicantData } from "../_shared/types.ts";
+import { sendCAPIEvent } from "../_shared/metaCapi.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -306,7 +307,7 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { applicantId } = await req.json();
+    const { applicantId, eventId } = await req.json();
 
     if (!applicantId) {
       throw new Error("Missing applicantId");
@@ -408,6 +409,27 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     console.log("Email sent successfully via SendGrid:", emailResponse.messageId);
+
+    // Fire-and-forget: Send Purchase event to Meta CAPI
+    const coverOption = COVER_OPTIONS.find((opt) => opt.id === applicant.cover_option);
+    sendCAPIEvent({
+      eventName: "Purchase",
+      eventId: eventId || undefined,
+      userData: {
+        em: applicant.email,
+        ph: applicant.mobile,
+        fn: applicant.first_name,
+        ln: applicant.last_name,
+        ct: applicant.city,
+        st: applicant.province,
+        country: "ZA",
+      },
+      customData: {
+        value: coverOption?.premium || 0,
+        currency: "ZAR",
+        content_name: coverOption?.name || applicant.cover_option,
+      },
+    }).catch((err) => console.error("CAPI Purchase event error:", err));
 
     return new Response(
       JSON.stringify({ success: true, messageId: emailResponse.messageId }),
