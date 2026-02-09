@@ -67,12 +67,12 @@ Deno.serve(async (req) => {
     }
 
     // Get secrets
-    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    const jwtSecret = Deno.env.get("SESSION_JWT_SECRET")!;
+    const supabaseUrl = Deno.env.get("SUPABASE_URL");
+    const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+    const jwtSecret = Deno.env.get("SESSION_JWT_SECRET");
 
-    if (!jwtSecret) {
-      console.error("SESSION_JWT_SECRET not configured");
+    if (!supabaseUrl || !supabaseServiceKey || !jwtSecret) {
+      console.error("Missing required environment variables");
       return new Response(
         JSON.stringify({ error: "Server configuration error" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -93,10 +93,34 @@ Deno.serve(async (req) => {
     // Create Supabase client with service role (bypasses RLS)
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
+    // Whitelist allowed fields to prevent arbitrary column updates
+    const ALLOWED_FIELDS = [
+      "first_name", "last_name", "sa_id_number", "mobile", "email",
+      "street_address", "suburb", "city", "province",
+      "cover_option",
+      "account_holder", "bank_name", "account_type", "account_number", "preferred_debit_date",
+      "debit_order_consent", "declaration_consent", "popia_consent",
+      "consent_timestamp", "status", "current_step",
+    ];
+
+    const sanitizedData: Record<string, unknown> = {};
+    for (const key of ALLOWED_FIELDS) {
+      if (key in data) {
+        sanitizedData[key] = data[key];
+      }
+    }
+
+    if (Object.keys(sanitizedData).length === 0) {
+      return new Response(
+        JSON.stringify({ error: "No valid fields to update" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     // Update applicant record
     const { data: updatedApplicant, error: updateError } = await supabase
       .from("applicants")
-      .update(data)
+      .update(sanitizedData)
       .eq("id", applicantId)
       .select()
       .single();

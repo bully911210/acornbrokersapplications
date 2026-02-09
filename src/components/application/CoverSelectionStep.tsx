@@ -81,7 +81,7 @@ export const CoverSelectionStep = ({
                 <FormControl>
                   <RadioGroup
                     onValueChange={field.onChange}
-                    value={field.value}
+                    value={field.value || ""}
                     className="grid grid-cols-1 lg:grid-cols-2 gap-6"
                   >
                     {COVER_OPTIONS.map((option, index) => (

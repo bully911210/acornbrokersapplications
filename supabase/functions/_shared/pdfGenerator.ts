@@ -56,7 +56,10 @@ const consentGreen: [number, number, number] = [34, 197, 94];
 
 export const generateApplicationPDF = (data: ApplicantData): string => {
   const doc = new jsPDF();
-  const coverOption = COVER_OPTIONS.find((opt) => opt.id === data.cover_option)!;
+  const coverOption = COVER_OPTIONS.find((opt) => opt.id === data.cover_option);
+  if (!coverOption) {
+    throw new Error(`Invalid cover option: ${data.cover_option}`);
+  }
   
   const leftMargin = 20;
   const pageWidth = 210;
@@ -178,7 +181,7 @@ export const generateApplicationPDF = (data: ApplicantData): string => {
   const bankingDetails = [
     ["Account Holder:", data.account_holder],
     ["Bank:", data.bank_name],
-    ["Account Type:", data.account_type.charAt(0).toUpperCase() + data.account_type.slice(1)],
+    ["Account Type:", data.account_type ? data.account_type.charAt(0).toUpperCase() + data.account_type.slice(1) : ""],
     ["Account Number:", maskAccountNumber(data.account_number)],
     ["Debit Date:", `${data.preferred_debit_date}${getOrdinalSuffix(data.preferred_debit_date)} of each month`],
   ];
