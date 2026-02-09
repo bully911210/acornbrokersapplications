@@ -1,11 +1,10 @@
 import { z } from "zod";
 
-// SA ID Number validation - accepts any 13 digits (no validation checks)
+// SA ID Number - accepts any input, strips spaces from masked input
 const saIdNumberSchema = z
   .string()
-  .transform((val) => val.replace(/\s/g, '')) // Strip spaces from masked input
-  .refine((val) => val.length === 13, "SA ID number must be 13 digits")
-  .refine((val) => /^\d+$/.test(val), "SA ID number must contain only digits");
+  .min(1, "ID number is required")
+  .transform((val) => val.replace(/\s/g, ''));
 
 // SA Mobile number validation
 const saMobileSchema = z
