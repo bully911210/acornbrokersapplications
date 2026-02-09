@@ -38,9 +38,9 @@ export const AuthorisationsStep = ({
   const form = useForm<AuthorisationsData>({
     resolver: zodResolver(authorisationsSchema),
     defaultValues: {
-      debitOrderConsent: false,
-      declarationConsent: false,
-      popiaConsent: false,
+      debitOrderConsent: false as unknown as true,
+      declarationConsent: false as unknown as true,
+      popiaConsent: false as unknown as true,
     },
   });
 
