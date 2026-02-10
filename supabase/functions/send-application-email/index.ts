@@ -1,11 +1,12 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
+import * as djwt from "https://deno.land/x/djwt@v3.0.2/mod.ts";
 import { generateApplicationPDF } from "../_shared/pdfGenerator.ts";
 import { COVER_OPTIONS, ApplicantData } from "../_shared/types.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-session-id",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-session-token",
 };
 
 const RECIPIENT_EMAILS = [
@@ -318,12 +319,39 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error("Invalid applicantId format");
     }
 
-    // Get session ID from header for validation
-    const sessionId = req.headers.get("x-session-id");
-    if (!sessionId) {
+    // Validate JWT token
+    const sessionToken = req.headers.get("x-session-token");
+    if (!sessionToken) {
       return new Response(
-        JSON.stringify({ error: "Unauthorized: Missing session" }),
+        JSON.stringify({ error: "Unauthorized: Missing session token" }),
         { status: 401, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    const jwtSecret = Deno.env.get("SESSION_JWT_SECRET")!;
+    const key = await crypto.subtle.importKey(
+      "raw",
+      new TextEncoder().encode(jwtSecret),
+      { name: "HMAC", hash: "SHA-512" },
+      false,
+      ["sign", "verify"]
+    );
+
+    let payload: djwt.Payload;
+    try {
+      payload = await djwt.verify(sessionToken, key);
+    } catch {
+      return new Response(
+        JSON.stringify({ error: "Unauthorized: Invalid token" }),
+        { status: 401, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    const tokenApplicantId = payload.applicant_id as string;
+    if (tokenApplicantId !== applicantId) {
+      return new Response(
+        JSON.stringify({ error: "Unauthorized: Token mismatch" }),
+        { status: 403, headers: { "Content-Type": "application/json", ...corsHeaders } }
       );
     }
 
@@ -338,12 +366,11 @@ const handler = async (req: Request): Promise<Response> => {
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Fetch the complete applicant record - verify session_id matches AND status is complete
+    // Fetch the complete applicant record - status must be complete
     const { data: applicant, error: fetchError } = await supabase
       .from("applicants")
       .select("*")
       .eq("id", applicantId)
-      .eq("session_id", sessionId)
       .eq("status", "complete")
       .single();
 
@@ -368,8 +395,7 @@ const handler = async (req: Request): Promise<Response> => {
     const { error: updateError } = await supabase
       .from("applicants")
       .update({ abandonment_email_sent: true })
-      .eq("id", applicantId)
-      .eq("session_id", sessionId);
+      .eq("id", applicantId);
 
     if (updateError) {
       console.error("Error marking email as sent:", updateError);
