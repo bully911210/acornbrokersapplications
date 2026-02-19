@@ -158,179 +158,148 @@ export const AuthorisationsStep = ({
             Legal Authorisations
           </h3>
 
-          <Accordion
-            type="multiple"
-            value={expandedItems}
-            onValueChange={setExpandedItems}
-            className="space-y-3"
-          >
+          <div className="space-y-3">
             {/* Debit Order Authorisation */}
-            <AccordionItem value="debitOrder" className="border border-border rounded-xl bg-muted/20 px-5">
-              <AccordionTrigger className="hover:no-underline py-4">
-                <div className="flex items-center gap-3 text-left">
-                  <FileText className="w-5 h-5 text-primary shrink-0" />
-                  <div>
-                    <span className="font-semibold text-foreground">
-                      Debit Order Authorisation
-                    </span>
-                    <span className="text-primary ml-2 text-sm font-medium">
-                      • {coverOption ? formatCurrency(coverOption.premium) : "R0"}/pm
-                    </span>
-                  </div>
-                </div>
-              </AccordionTrigger>
-              <AccordionContent className="pb-5">
-                <div className="space-y-3 text-sm text-muted-foreground mb-4">
-                  <p>
-                    I hereby request and authorise Firearms Guardian (Pty) Ltd, Acorn Brokers (Pty) Ltd, and/or their authorised agent/s or collection service providers, to draw against my bank account as indicated herein each month and to debit my account with the amount equivalent to the premium due by me in respect of the Firearms Guardian policy, until cancelled by me in writing.
-                  </p>
-                  <p>
-                    In the event of an increase of the premium, Firearms Guardian, Acorn Brokers, or their agent/s have my authority to deduct from my account the increased premium.
-                  </p>
-                  <p>
-                    All such debits against my account shall be treated as though I have signed and done them personally.
-                  </p>
-                  <p>
-                    If the payment day falls on a Sunday or public holiday, the payment day will automatically be the following ordinary business day.
-                  </p>
-                </div>
-                <FormField
-                  control={form.control}
-                  name="debitOrderConsent"
-                  render={({ field }) => (
-                    <FormItem className="pt-4 border-t border-border">
-                      <div className="flex items-center gap-3">
-                        <FormControl>
-                          <Checkbox
-                            checked={field.value}
-                            onCheckedChange={field.onChange}
-                          />
-                        </FormControl>
-                        <label
-                          className="text-sm font-medium text-foreground cursor-pointer"
-                          onClick={() => field.onChange(!field.value)}
-                        >
+            <div className={`border rounded-xl bg-muted/20 px-5 py-4 transition-colors ${form.formState.errors.debitOrderConsent ? 'border-destructive' : 'border-border'}`}>
+              <FormField
+                control={form.control}
+                name="debitOrderConsent"
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="flex items-center gap-3">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <label
+                        className="text-sm font-medium text-foreground cursor-pointer flex-1"
+                        onClick={() => field.onChange(!field.value)}
+                      >
+                        <div className="flex items-center gap-2">
+                          <FileText className="w-4 h-4 text-primary shrink-0" />
                           I agree to the Debit Order Authorisation
-                        </label>
-                      </div>
-                      <FormMessage className="mt-1" />
-                    </FormItem>
-                  )}
-                />
-              </AccordionContent>
-            </AccordionItem>
+                          <span className="text-primary text-xs font-medium">
+                            • {coverOption ? formatCurrency(coverOption.premium) : "R0"}/pm
+                          </span>
+                        </div>
+                      </label>
+                    </div>
+                    <FormMessage className="mt-1 ml-7" />
+                  </FormItem>
+                )}
+              />
+              <Accordion type="multiple" value={expandedItems} onValueChange={setExpandedItems}>
+                <AccordionItem value="debitOrder" className="border-0">
+                  <AccordionTrigger className="hover:no-underline py-2 text-xs text-muted-foreground">
+                    Read full terms
+                  </AccordionTrigger>
+                  <AccordionContent className="pb-2">
+                    <div className="space-y-3 text-sm text-muted-foreground">
+                      <p>I hereby request and authorise Firearms Guardian (Pty) Ltd, Acorn Brokers (Pty) Ltd, and/or their authorised agent/s or collection service providers, to draw against my bank account as indicated herein each month and to debit my account with the amount equivalent to the premium due by me in respect of the Firearms Guardian policy, until cancelled by me in writing.</p>
+                      <p>In the event of an increase of the premium, Firearms Guardian, Acorn Brokers, or their agent/s have my authority to deduct from my account the increased premium.</p>
+                      <p>All such debits against my account shall be treated as though I have signed and done them personally.</p>
+                      <p>If the payment day falls on a Sunday or public holiday, the payment day will automatically be the following ordinary business day.</p>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </div>
 
             {/* Declaration */}
-            <AccordionItem value="declaration" className="border border-border rounded-xl bg-muted/20 px-5">
-              <AccordionTrigger className="hover:no-underline py-4">
-                <div className="flex items-center gap-3 text-left">
-                  <Shield className="w-5 h-5 text-primary shrink-0" />
-                  <span className="font-semibold text-foreground">
-                    Policy Declaration
-                  </span>
-                </div>
-              </AccordionTrigger>
-              <AccordionContent className="pb-5">
-                <div className="space-y-3 text-sm text-muted-foreground mb-4">
-                  <p>
-                    I hereby apply for a Firearms Guardian policy in accordance with all applicable terms and conditions.
-                  </p>
-                  <p>
-                    I personally completed this application and acknowledge that payment of premiums on the due dates is my responsibility.
-                  </p>
-                  <p>
-                    I warrant that all information given in this application form is true, correct, and complete.
-                  </p>
-                  <p>
-                    I understand and accept that this application, together with the applicable terms and conditions, represents the agreement between myself and the underwriter of the Firearms Guardian policy, GENRIC Insurance Company Limited (GENRIC).
-                  </p>
-                  <p>
-                    I further understand that Firearms Guardian (Pty) Ltd and Acorn Brokers (Pty) Ltd act as authorised administrators and/or intermediaries, and that acceptance of my application is in the sole discretion of Firearms Guardian and GENRIC.
-                  </p>
-                </div>
-                <FormField
-                  control={form.control}
-                  name="declarationConsent"
-                  render={({ field }) => (
-                    <FormItem className="pt-4 border-t border-border">
-                      <div className="flex items-center gap-3">
-                        <FormControl>
-                          <Checkbox
-                            checked={field.value}
-                            onCheckedChange={field.onChange}
-                          />
-                        </FormControl>
-                        <label
-                          className="text-sm font-medium text-foreground cursor-pointer"
-                          onClick={() => field.onChange(!field.value)}
-                        >
+            <div className={`border rounded-xl bg-muted/20 px-5 py-4 transition-colors ${form.formState.errors.declarationConsent ? 'border-destructive' : 'border-border'}`}>
+              <FormField
+                control={form.control}
+                name="declarationConsent"
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="flex items-center gap-3">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <label
+                        className="text-sm font-medium text-foreground cursor-pointer flex-1"
+                        onClick={() => field.onChange(!field.value)}
+                      >
+                        <div className="flex items-center gap-2">
+                          <Shield className="w-4 h-4 text-primary shrink-0" />
                           I agree to the Policy Declaration
-                        </label>
-                      </div>
-                      <FormMessage className="mt-1" />
-                    </FormItem>
-                  )}
-                />
-              </AccordionContent>
-            </AccordionItem>
+                        </div>
+                      </label>
+                    </div>
+                    <FormMessage className="mt-1 ml-7" />
+                  </FormItem>
+                )}
+              />
+              <Accordion type="multiple" value={expandedItems} onValueChange={setExpandedItems}>
+                <AccordionItem value="declaration" className="border-0">
+                  <AccordionTrigger className="hover:no-underline py-2 text-xs text-muted-foreground">
+                    Read full terms
+                  </AccordionTrigger>
+                  <AccordionContent className="pb-2">
+                    <div className="space-y-3 text-sm text-muted-foreground">
+                      <p>I hereby apply for a Firearms Guardian policy in accordance with all applicable terms and conditions.</p>
+                      <p>I personally completed this application and acknowledge that payment of premiums on the due dates is my responsibility.</p>
+                      <p>I warrant that all information given in this application form is true, correct, and complete.</p>
+                      <p>I understand and accept that this application, together with the applicable terms and conditions, represents the agreement between myself and the underwriter of the Firearms Guardian policy, GENRIC Insurance Company Limited (GENRIC).</p>
+                      <p>I further understand that Firearms Guardian (Pty) Ltd and Acorn Brokers (Pty) Ltd act as authorised administrators and/or intermediaries, and that acceptance of my application is in the sole discretion of Firearms Guardian and GENRIC.</p>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </div>
 
             {/* POPIA Consent */}
-            <AccordionItem value="popia" className="border border-border rounded-xl bg-muted/20 px-5">
-              <AccordionTrigger className="hover:no-underline py-4">
-                <div className="flex items-center gap-3 text-left">
-                  <Lock className="w-5 h-5 text-primary shrink-0" />
-                  <span className="font-semibold text-foreground">
-                    POPIA Consent & Privacy Notice
-                  </span>
-                </div>
-              </AccordionTrigger>
-              <AccordionContent className="pb-5">
-                <div className="space-y-3 text-sm text-muted-foreground mb-4">
-                  <p>
-                    We at GENRIC Insurance Company Limited (GENRIC), Firearms Guardian (Pty) Ltd, and Acorn Brokers (Pty) Ltd respect your right to privacy.
-                  </p>
-                  <p>
-                    Personal information is collected and processed in accordance with the Protection of Personal Information Act, 4 of 2013 (POPIA), for the primary purpose of providing insurance cover and for all activities incidental and relevant to this purpose.
-                  </p>
-                  <p>
-                    Personal information may be shared with authorised third parties, service providers, reinsurers, legal service providers, payment processors, and regulatory bodies as required by law, including for fraud prevention and compliance purposes.
-                  </p>
-                  <p>
-                    Information will be retained for legally permitted retention periods and handled securely and confidentially.
-                  </p>
-                  <p>
-                    I understand that I may request access to, correction, or deletion of my personal information.
-                  </p>
-                  <p>
-                    I voluntarily consent to GENRIC, Firearms Guardian, and Acorn Brokers processing my personal information for the purposes described above.
-                  </p>
-                </div>
-                <FormField
-                  control={form.control}
-                  name="popiaConsent"
-                  render={({ field }) => (
-                    <FormItem className="pt-4 border-t border-border">
-                      <div className="flex items-center gap-3">
-                        <FormControl>
-                          <Checkbox
-                            checked={field.value}
-                            onCheckedChange={field.onChange}
-                          />
-                        </FormControl>
-                        <label
-                          className="text-sm font-medium text-foreground cursor-pointer"
-                          onClick={() => field.onChange(!field.value)}
-                        >
+            <div className={`border rounded-xl bg-muted/20 px-5 py-4 transition-colors ${form.formState.errors.popiaConsent ? 'border-destructive' : 'border-border'}`}>
+              <FormField
+                control={form.control}
+                name="popiaConsent"
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="flex items-center gap-3">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <label
+                        className="text-sm font-medium text-foreground cursor-pointer flex-1"
+                        onClick={() => field.onChange(!field.value)}
+                      >
+                        <div className="flex items-center gap-2">
+                          <Lock className="w-4 h-4 text-primary shrink-0" />
                           I agree to the POPIA Consent & Privacy Notice
-                        </label>
-                      </div>
-                      <FormMessage className="mt-1" />
-                    </FormItem>
-                  )}
-                />
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
+                        </div>
+                      </label>
+                    </div>
+                    <FormMessage className="mt-1 ml-7" />
+                  </FormItem>
+                )}
+              />
+              <Accordion type="multiple" value={expandedItems} onValueChange={setExpandedItems}>
+                <AccordionItem value="popia" className="border-0">
+                  <AccordionTrigger className="hover:no-underline py-2 text-xs text-muted-foreground">
+                    Read full terms
+                  </AccordionTrigger>
+                  <AccordionContent className="pb-2">
+                    <div className="space-y-3 text-sm text-muted-foreground">
+                      <p>We at GENRIC Insurance Company Limited (GENRIC), Firearms Guardian (Pty) Ltd, and Acorn Brokers (Pty) Ltd respect your right to privacy.</p>
+                      <p>Personal information is collected and processed in accordance with the Protection of Personal Information Act, 4 of 2013 (POPIA), for the primary purpose of providing insurance cover and for all activities incidental and relevant to this purpose.</p>
+                      <p>Personal information may be shared with authorised third parties, service providers, reinsurers, legal service providers, payment processors, and regulatory bodies as required by law, including for fraud prevention and compliance purposes.</p>
+                      <p>Information will be retained for legally permitted retention periods and handled securely and confidentially.</p>
+                      <p>I understand that I may request access to, correction, or deletion of my personal information.</p>
+                      <p>I voluntarily consent to GENRIC, Firearms Guardian, and Acorn Brokers processing my personal information for the purposes described above.</p>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </div>
+          </div>
 
           <div className="flex justify-between pt-6">
             <Button
