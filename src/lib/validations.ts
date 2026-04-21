@@ -98,7 +98,7 @@ export const personalDetailsSchema = z.object({
 
 // Step 3: Cover Selection Schema
 export const coverSelectionSchema = z.object({
-  coverOption: z.enum(["option_a", "option_b"], {
+  coverOption: z.enum(["option_a", "option_b", "option_c"], {
     required_error: "Please select a cover option",
   }),
 });
