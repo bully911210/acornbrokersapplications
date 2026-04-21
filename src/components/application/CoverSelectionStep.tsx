@@ -96,12 +96,12 @@ export const CoverSelectionStep = ({
                         <RadioGroupItem value={option.id} className="sr-only" />
 
                         {/* Header */}
-                        <div className="flex items-start justify-between gap-2 mb-4 min-h-[72px]">
+                        <div className="flex items-start justify-between gap-2 mb-4">
                           <div className="flex-1 min-w-0">
-                            <h3 className="text-lg font-bold text-foreground leading-tight">
+                            <h3 className="text-lg font-bold text-foreground leading-tight whitespace-nowrap">
                               {option.name}
                             </h3>
-                            <p className="text-3xl font-bold text-primary mt-1 whitespace-nowrap">
+                            <p className="text-3xl font-bold text-primary mt-2 whitespace-nowrap">
                               {formatCurrency(option.premium)}
                               <span className="text-sm font-normal text-muted-foreground">
                                 /month
