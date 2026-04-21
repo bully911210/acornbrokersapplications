@@ -12,7 +12,7 @@ interface ApplicationData {
   suburb: string;
   city: string;
   province: string;
-  coverOption: "option_a" | "option_b";
+  coverOption: "option_a" | "option_b" | "option_c";
   accountHolder: string;
   bankName: string;
   accountType: string;

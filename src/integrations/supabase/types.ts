@@ -139,7 +139,7 @@ export type Database = {
       account_type: "cheque" | "savings" | "transmission"
       application_source: "online" | "agent" | "referral" | "other"
       application_status: "partial" | "complete"
-      cover_option: "option_a" | "option_b"
+      cover_option: "option_a" | "option_b" | "option_c"
       firearm_licence_status: "valid" | "in_progress"
     }
     CompositeTypes: {
@@ -271,7 +271,7 @@ export const Constants = {
       account_type: ["cheque", "savings", "transmission"],
       application_source: ["online", "agent", "referral", "other"],
       application_status: ["partial", "complete"],
-      cover_option: ["option_a", "option_b"],
+      cover_option: ["option_a", "option_b", "option_c"],
       firearm_licence_status: ["valid", "in_progress"],
     },
   },
