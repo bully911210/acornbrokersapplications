@@ -96,12 +96,12 @@ export const CoverSelectionStep = ({
                         <RadioGroupItem value={option.id} className="sr-only" />
 
                         {/* Header */}
-                        <div className="flex items-start justify-between mb-4">
-                          <div>
-                            <h3 className="text-lg font-bold text-foreground">
+                        <div className="flex items-start justify-between gap-2 mb-4 min-h-[72px]">
+                          <div className="flex-1 min-w-0">
+                            <h3 className="text-lg font-bold text-foreground leading-tight">
                               {option.name}
                             </h3>
-                            <p className="text-3xl font-bold text-primary mt-1">
+                            <p className="text-3xl font-bold text-primary mt-1 whitespace-nowrap">
                               {formatCurrency(option.premium)}
                               <span className="text-sm font-normal text-muted-foreground">
                                 /month
@@ -109,7 +109,7 @@ export const CoverSelectionStep = ({
                             </p>
                           </div>
                           {field.value === option.id && (
-                            <div className="p-1 rounded-full bg-primary text-primary-foreground">
+                            <div className="p-1 rounded-full bg-primary text-primary-foreground shrink-0">
                               <Check className="w-4 h-4" />
                             </div>
                           )}
@@ -117,19 +117,19 @@ export const CoverSelectionStep = ({
 
                         {/* Limits */}
                         <div className="space-y-2 mb-4 pb-4 border-b border-border">
-                          <div className="flex justify-between text-sm">
+                          <div className="grid grid-cols-[1fr_auto] gap-2 text-sm items-baseline">
                             <span className="text-muted-foreground">
                               Legal Expense Limit
                             </span>
-                            <span className="font-semibold text-foreground">
+                            <span className="font-semibold text-foreground whitespace-nowrap">
                               {formatCurrency(option.legalExpenseLimit)}
                             </span>
                           </div>
-                          <div className="flex justify-between text-sm">
+                          <div className="grid grid-cols-[1fr_auto] gap-2 text-sm items-baseline">
                             <span className="text-muted-foreground">
                               Liability Limit
                             </span>
-                            <span className="font-semibold text-foreground">
+                            <span className="font-semibold text-foreground whitespace-nowrap">
                               {formatCurrency(option.liabilityLimit)}
                             </span>
                           </div>
