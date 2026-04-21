@@ -82,12 +82,12 @@ export const CoverSelectionStep = ({
                   <RadioGroup
                     onValueChange={field.onChange}
                     value={field.value || ""}
-                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                    className="grid grid-cols-1 gap-6 lg:gap-4"
                   >
                     {COVER_OPTIONS.map((option, index) => (
                       <label
                         key={option.id}
-                        className={`cover-card flex flex-col stagger-${index + 1} animate-fade-in opacity-0 ${
+                        className={`cover-card flex flex-col lg:flex-row lg:items-stretch lg:gap-6 stagger-${index + 1} animate-fade-in opacity-0 ${
                           field.value === option.id
                             ? "cover-card-selected"
                             : "cover-card-unselected"
@@ -95,10 +95,10 @@ export const CoverSelectionStep = ({
                       >
                         <RadioGroupItem value={option.id} className="sr-only" />
 
-                        {/* Header */}
-                        <div className="flex items-start justify-between gap-2 mb-4">
+                        {/* Header (mobile) / Name+Price column (desktop) */}
+                        <div className="flex items-start justify-between gap-2 mb-4 lg:mb-0 lg:flex-col lg:justify-center lg:w-56 lg:shrink-0 lg:border-r lg:border-border lg:pr-6">
                           <div className="flex-1 min-w-0">
-                            <h3 className="text-lg font-bold text-foreground leading-tight min-h-[3.5rem] flex items-start">
+                            <h3 className="text-lg font-bold text-foreground leading-tight lg:min-h-0 min-h-[3.5rem] flex items-start lg:items-center">
                               {option.name}
                             </h3>
                             <p className="text-3xl font-bold text-primary mt-2 whitespace-nowrap">
@@ -109,14 +109,14 @@ export const CoverSelectionStep = ({
                             </p>
                           </div>
                           {field.value === option.id && (
-                            <div className="p-1 rounded-full bg-primary text-primary-foreground shrink-0">
+                            <div className="p-1 rounded-full bg-primary text-primary-foreground shrink-0 lg:self-start">
                               <Check className="w-4 h-4" />
                             </div>
                           )}
                         </div>
 
                         {/* Limits */}
-                        <div className="space-y-2 mb-4 pb-4 border-b border-border">
+                        <div className="space-y-2 mb-4 pb-4 border-b border-border lg:mb-0 lg:pb-0 lg:border-b-0 lg:border-r lg:pr-6 lg:flex lg:flex-col lg:justify-center lg:w-64 lg:shrink-0">
                           <div className="flex justify-between gap-2 text-sm items-baseline">
                             <span className="text-muted-foreground whitespace-nowrap">
                               Legal Expense Limit
@@ -135,6 +135,8 @@ export const CoverSelectionStep = ({
                           </div>
                         </div>
 
+                        {/* Benefits + Exclusions wrapper for desktop */}
+                        <div className="lg:flex-1 lg:flex lg:flex-col lg:justify-center lg:min-w-0">
                         {/* Benefits */}
                         <Collapsible
                           open={expandedBenefits === option.id}
@@ -198,6 +200,7 @@ export const CoverSelectionStep = ({
                             ))}
                           </CollapsibleContent>
                         </Collapsible>
+                        </div>
                       </label>
                     ))}
                   </RadioGroup>
