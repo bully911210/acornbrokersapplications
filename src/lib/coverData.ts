@@ -1,5 +1,5 @@
 export interface CoverOption {
-  id: "option_a" | "option_b";
+  id: "option_a" | "option_b" | "option_c";
   name: string;
   premium: number;
   legalExpenseLimit: number;
@@ -60,6 +60,28 @@ export const COVER_OPTIONS: CoverOption[] = [
       "Matters unrelated to lawful firearm ownership/use",
       "Commercial or business-related firearm use",
       "Claims where the insured admits guilt",
+    ],
+  },
+  {
+    id: "option_c",
+    name: "Option C",
+    premium: 295,
+    legalExpenseLimit: 400000,
+    liabilityLimit: 300000,
+    benefits: [
+      "Legal expense protection up to R400,000 per case",
+      "Firearm-liability protection up to R300,000 per annum",
+      "SAPS Delay Assist up to R3,000",
+      "24/7 nationwide access to our panel of 2,500+ practicing attorneys",
+      "Legal representation in High Court and Magistrate's Court",
+      "Spouse and dependent children included, regardless of the number of firearms owned",
+      "Full firearms administrative support (licensing, renewals, estate transfers)",
+    ],
+    exclusions: [
+      "1-month waiting period for court representation",
+      "3-month waiting period for liability claims",
+      "Pre-existing cases at policy inception are excluded",
+      "Premiums are reviewed annually",
     ],
   },
 ];
