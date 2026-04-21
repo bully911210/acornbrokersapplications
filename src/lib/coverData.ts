@@ -64,7 +64,7 @@ export const COVER_OPTIONS: CoverOption[] = [
   },
   {
     id: "option_c",
-    name: "Option C",
+    name: "Premium Cover",
     premium: 295,
     legalExpenseLimit: 400000,
     liabilityLimit: 300000,
