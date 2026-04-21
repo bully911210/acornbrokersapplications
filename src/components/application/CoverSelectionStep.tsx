@@ -98,7 +98,7 @@ export const CoverSelectionStep = ({
                         {/* Header */}
                         <div className="flex items-start justify-between gap-2 mb-4">
                           <div className="flex-1 min-w-0">
-                            <h3 className="text-lg font-bold text-foreground leading-tight whitespace-nowrap">
+                            <h3 className="text-lg font-bold text-foreground leading-tight min-h-[3.5rem] flex items-start">
                               {option.name}
                             </h3>
                             <p className="text-3xl font-bold text-primary mt-2 whitespace-nowrap">
@@ -117,16 +117,16 @@ export const CoverSelectionStep = ({
 
                         {/* Limits */}
                         <div className="space-y-2 mb-4 pb-4 border-b border-border">
-                          <div className="grid grid-cols-[1fr_auto] gap-2 text-sm items-baseline">
-                            <span className="text-muted-foreground">
+                          <div className="flex justify-between gap-2 text-sm items-baseline">
+                            <span className="text-muted-foreground whitespace-nowrap">
                               Legal Expense Limit
                             </span>
                             <span className="font-semibold text-foreground whitespace-nowrap">
                               {formatCurrency(option.legalExpenseLimit)}
                             </span>
                           </div>
-                          <div className="grid grid-cols-[1fr_auto] gap-2 text-sm items-baseline">
-                            <span className="text-muted-foreground">
+                          <div className="flex justify-between gap-2 text-sm items-baseline">
+                            <span className="text-muted-foreground whitespace-nowrap">
                               Liability Limit
                             </span>
                             <span className="font-semibold text-foreground whitespace-nowrap">
