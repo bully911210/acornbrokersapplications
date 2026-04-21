@@ -1,0 +1,1 @@
+ALTER TYPE cover_option ADD VALUE 'option_c';
