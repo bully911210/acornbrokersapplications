@@ -118,12 +118,10 @@ Deno.serve(async (req) => {
     }
 
     // Update applicant record
-    const { data: updatedApplicant, error: updateError } = await supabase
+    const { error: updateError } = await supabase
       .from("applicants")
       .update(sanitizedData)
-      .eq("id", applicantId)
-      .select()
-      .single();
+      .eq("id", applicantId);
 
     if (updateError) {
       console.error("Update error:", updateError);
@@ -134,7 +132,7 @@ Deno.serve(async (req) => {
     }
 
     return new Response(
-      JSON.stringify({ success: true, applicant: updatedApplicant }),
+      JSON.stringify({ success: true }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error) {
