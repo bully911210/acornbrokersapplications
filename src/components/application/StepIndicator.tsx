@@ -20,7 +20,7 @@ interface StepIndicatorProps {
 
 export const StepIndicator = ({ currentStep }: StepIndicatorProps) => {
   return (
-    <div className="w-full mb-6 md:mb-8 rounded-lg border border-border bg-card px-4 py-4 shadow-sm md:px-5">
+    <div className="application-stepper">
       <div className="mb-4 flex items-center justify-between gap-4 border-b border-border pb-3">
         <div>
           <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
@@ -31,11 +31,11 @@ export const StepIndicator = ({ currentStep }: StepIndicatorProps) => {
           </p>
         </div>
         <p className="hidden md:block text-sm text-muted-foreground">
-          Complete each section to proceed securely.
+          Complete each section in sequence to proceed.
         </p>
       </div>
 
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-2">
         {STEPS.map((step, index) => (
           <div key={step.number} className="flex items-center flex-1 last:flex-none">
             <div className="flex flex-col items-center">
@@ -55,7 +55,7 @@ export const StepIndicator = ({ currentStep }: StepIndicatorProps) => {
               </div>
               <span
                 className={cn(
-                  "mt-2 text-[11px] font-medium hidden md:block",
+                  "mt-2 text-[11px] font-medium hidden whitespace-nowrap md:block",
                   currentStep >= step.number
                     ? "text-foreground"
                     : "text-muted-foreground"

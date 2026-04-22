@@ -133,6 +133,46 @@
 }
 
 @layer components {
+  .application-page-frame {
+    @apply px-4 py-6 md:px-6 md:py-10;
+  }
+
+  .application-page-inner {
+    @apply mx-auto w-full max-w-[1120px];
+  }
+
+  .application-dossier {
+    @apply overflow-hidden rounded-lg border border-border bg-card shadow-sm;
+  }
+
+  .application-dossier-header {
+    @apply border-b border-border bg-secondary/35 px-5 py-5 md:px-8 md:py-7;
+  }
+
+  .application-dossier-meta {
+    @apply flex flex-col gap-4;
+  }
+
+  .application-dossier-title-block {
+    @apply space-y-2;
+  }
+
+  .application-compliance-strip {
+    @apply mt-6 grid gap-4 border-y border-border py-4 text-sm md:grid-cols-3;
+  }
+
+  .application-compliance-label {
+    @apply text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground;
+  }
+
+  .application-compliance-value {
+    @apply mt-1 text-sm font-medium leading-5 text-foreground;
+  }
+
+  .application-stepper {
+    @apply mt-6 rounded-md border border-border bg-background px-4 py-4 md:px-5;
+  }
+
   /* Form Container */
   .form-container {
     @apply bg-card rounded-lg border border-border shadow-sm p-5 md:p-8;
@@ -146,8 +186,16 @@
     @apply p-5 md:p-8 lg:p-10;
   }
 
+  .application-shell-dossier {
+    @apply rounded-none border-0 shadow-none;
+  }
+
+  .application-shell-inner-dossier {
+    @apply p-5 md:p-8 lg:p-10;
+  }
+
   .document-section {
-    @apply rounded-lg border border-border bg-card shadow-sm;
+    @apply rounded-md border border-border bg-card shadow-sm;
   }
 
   .document-section-header {

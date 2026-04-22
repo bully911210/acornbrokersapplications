@@ -9,7 +9,6 @@ import { BankingDetailsStep } from "@/components/application/BankingDetailsStep"
 import { AuthorisationsStep } from "@/components/application/AuthorisationsStep";
 import { SuccessScreen } from "@/components/application/SuccessScreen";
 import { StepIndicator } from "@/components/application/StepIndicator";
-import { ApplicationTrustPanel } from "@/components/application/ApplicationTrustPanel";
 import {
   FullApplicationData,
   EligibilityData,
@@ -199,26 +198,45 @@ const Index = () => {
 
   return (
     <Layout currentStep={currentStep}>
-      <div className="container max-w-[1380px] px-4 py-6 md:py-10">
-        <div className="mb-6 md:mb-8">
-          <div className="inline-flex items-center gap-2 rounded-full border border-border bg-secondary/40 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.1em] text-muted-foreground md:text-[13px]">
-            <Shield className="h-3.5 w-3.5 text-primary" />
-            Firearm Legal Cover Application
-          </div>
-          <h1 className="mt-4 text-2xl font-semibold text-foreground md:text-[2rem]">
-            Application for firearm legal expense and liability cover
-          </h1>
-          <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground md:text-base">
-            Complete the regulated application below to submit your details for review, premium confirmation, and policy processing.
-          </p>
-        </div>
+      <div className="application-page-frame">
+        <div className="application-page-inner">
+          <section className="application-dossier">
+            <div className="application-dossier-header">
+              <div className="application-dossier-meta">
+                <div className="inline-flex items-center gap-2 rounded-full border border-border bg-secondary/70 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.1em] text-muted-foreground md:text-[13px]">
+                  <Shield className="h-3.5 w-3.5 text-primary" />
+                  Firearm Legal Cover Application
+                </div>
+                <div className="application-dossier-title-block">
+                  <h1 className="text-2xl font-semibold text-foreground md:text-[2rem]">
+                    Application for firearm legal expense and liability cover
+                  </h1>
+                  <p className="max-w-3xl text-sm leading-6 text-muted-foreground md:text-base">
+                    Complete the regulated application below to submit your details for review, premium confirmation, and policy processing.
+                  </p>
+                </div>
+              </div>
 
-        <div className="flex items-start gap-8">
-          <div className="min-w-0 flex-1">
-            <StepIndicator currentStep={currentStep} />
+              <div className="application-compliance-strip" aria-label="Regulatory disclosures">
+                <div>
+                  <p className="application-compliance-label">Intermediary</p>
+                  <p className="application-compliance-value">Acorn Brokers (Pty) Ltd · FSP 47433</p>
+                </div>
+                <div>
+                  <p className="application-compliance-label">Administrator</p>
+                  <p className="application-compliance-value">Firearms Guardian (Pty) Ltd · FSP 47115</p>
+                </div>
+                <div>
+                  <p className="application-compliance-label">Underwriter</p>
+                  <p className="application-compliance-value">GENRIC Insurance Company Ltd · FSP 43638</p>
+                </div>
+              </div>
 
-            <div className="application-shell">
-              <div className="application-shell-inner">
+              <StepIndicator currentStep={currentStep} />
+            </div>
+
+            <div className="application-shell application-shell-dossier">
+              <div className="application-shell-inner application-shell-inner-dossier">
                 {currentStep === 1 && (
                   <EligibilityStep
                     defaultValues={applicationData}
@@ -256,9 +274,7 @@ const Index = () => {
                 )}
               </div>
             </div>
-          </div>
-
-          <ApplicationTrustPanel currentStep={currentStep} />
+          </section>
         </div>
       </div>
     </Layout>
