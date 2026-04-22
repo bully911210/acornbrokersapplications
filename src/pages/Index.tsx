@@ -197,7 +197,11 @@ const Index = () => {
 
   return (
     <Layout currentStep={currentStep}>
-      <div className="container max-w-3xl px-4 py-4 md:py-12">
+      <div
+        className={`container px-4 py-4 md:py-12 ${
+          currentStep === 3 ? "max-w-6xl" : "max-w-3xl"
+        }`}
+      >
         {/* Hero Section */}
         <div className="text-center mb-4 md:mb-8">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-xs md:text-sm font-medium mb-2 md:mb-4">
