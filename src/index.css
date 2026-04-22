@@ -173,6 +173,58 @@
     @apply mt-6 border-t border-border px-0 pt-5;
   }
 
+  .step-content-intro {
+    @apply mb-6 space-y-2 md:mb-8;
+  }
+
+  .step-content-kicker {
+    @apply text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground;
+  }
+
+  .step-content-title {
+    @apply text-2xl font-semibold text-foreground;
+  }
+
+  .step-content-copy {
+    @apply max-w-2xl text-sm leading-6 text-muted-foreground md:text-base;
+  }
+
+  .fieldset-section {
+    @apply border-t border-border pt-5 first:border-t-0 first:pt-0;
+  }
+
+  .fieldset-title {
+    @apply mb-4;
+  }
+
+  .fieldset-title h3 {
+    @apply text-base font-semibold text-foreground;
+  }
+
+  .fieldset-title p {
+    @apply mt-1 text-sm text-muted-foreground;
+  }
+
+  .field-grid-2 {
+    @apply grid grid-cols-1 gap-4 md:grid-cols-2;
+  }
+
+  .form-actions {
+    @apply flex flex-col-reverse gap-3 border-t border-border pt-6 md:flex-row md:items-center md:justify-between;
+  }
+
+  .option-tile-compact {
+    @apply min-h-[92px] rounded-md border border-border bg-card p-4 transition-all duration-200;
+  }
+
+  .option-tile-compact-selected {
+    @apply border-primary bg-accent/25;
+  }
+
+  .option-tile-compact-muted {
+    @apply border-border hover:border-primary/40;
+  }
+
   /* Form Container */
   .form-container {
     @apply bg-card rounded-lg border border-border shadow-sm p-5 md:p-8;
