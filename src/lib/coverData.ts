@@ -78,7 +78,7 @@ export const COVER_OPTIONS: CoverOption[] = [
       "Full firearms administrative support (licensing, renewals, estate transfers)",
     ],
     exclusions: [
-      "1-month waiting period for court representation",
+      "1-month waiting period for legal representation",
       "3-month waiting period for liability claims",
       "Pre-existing cases at policy inception are excluded",
       "Premiums are reviewed annually",
