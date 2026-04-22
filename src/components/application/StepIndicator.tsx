@@ -35,13 +35,6 @@ export const StepIndicator = ({ currentStep }: StepIndicatorProps) => {
         </p>
       </div>
 
-      <div className="mb-4 h-1.5 overflow-hidden rounded-full bg-muted">
-        <div
-          className="h-full rounded-full bg-primary transition-all duration-300"
-          style={{ width: `${(currentStep / STEPS.length) * 100}%` }}
-        />
-      </div>
-
       <div className="flex items-center justify-between">
         {STEPS.map((step, index) => (
           <div key={step.number} className="flex items-center flex-1 last:flex-none">
