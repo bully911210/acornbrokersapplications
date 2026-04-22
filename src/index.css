@@ -193,9 +193,24 @@
     @apply flex items-start gap-3 p-4 rounded-lg bg-muted/50 border border-border/50 transition-all duration-200 hover:bg-muted;
   }
 
-  /* Summary Section */
-  .summary-section {
-    @apply p-4 rounded-lg bg-secondary/30 border border-border;
+  .review-sheet-section {
+    @apply px-5 py-5 md:px-6;
+  }
+
+  .review-sheet-title {
+    @apply mb-4 flex items-center gap-2;
+  }
+
+  .review-sheet-grid {
+    @apply grid gap-x-6 gap-y-2 text-sm md:grid-cols-[180px_minmax(0,1fr)];
+  }
+
+  .review-sheet-grid dt {
+    @apply text-muted-foreground;
+  }
+
+  .review-sheet-grid dd {
+    @apply min-w-0 font-medium text-foreground;
   }
 }
 
