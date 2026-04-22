@@ -87,6 +87,6 @@ export const COVER_OPTIONS: CoverOption[] = [
 ];
 
 export const WAITING_PERIOD_INFO = {
-  immediate: "Legal advice hotline is available immediately upon policy activation.",
-  representation: "A 3-month waiting period applies to legal representation services. This waiting period is waived for incidents occurring after the waiting period has lapsed.",
+  immediate: "Legal advice is available immediately after policy activation.",
+  representation: "A 1-month waiting period applies to legal representation services. There is a 3-month waiting period for Liability cover.",
 };
