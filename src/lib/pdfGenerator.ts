@@ -194,7 +194,7 @@ export const generateApplicationPDF = (data: ApplicationData): jsPDF => {
   doc.setFont("helvetica", "normal");
   doc.text("• Legal advice hotline is available immediately.", leftMargin + 3, yPosition);
   yPosition += 5;
-  doc.text("• A 3-month waiting period applies to legal representation services.", leftMargin + 3, yPosition);
+  doc.text("• A 1-month waiting period applies to legal representation services.", leftMargin + 3, yPosition);
   
   // Footer on all pages
   const footerY = 285;
