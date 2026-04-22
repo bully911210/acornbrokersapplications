@@ -8,6 +8,8 @@ import { CoverSelectionStep } from "@/components/application/CoverSelectionStep"
 import { BankingDetailsStep } from "@/components/application/BankingDetailsStep";
 import { AuthorisationsStep } from "@/components/application/AuthorisationsStep";
 import { SuccessScreen } from "@/components/application/SuccessScreen";
+import { StepIndicator } from "@/components/application/StepIndicator";
+import { ApplicationTrustPanel } from "@/components/application/ApplicationTrustPanel";
 import {
   FullApplicationData,
   EligibilityData,
@@ -197,62 +199,66 @@ const Index = () => {
 
   return (
     <Layout currentStep={currentStep}>
-      <div
-        className={`container px-4 py-4 md:py-12 ${
-          currentStep === 3 ? "max-w-6xl" : "max-w-3xl"
-        }`}
-      >
-        {/* Hero Section */}
-        <div className="text-center mb-4 md:mb-8">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-xs md:text-sm font-medium mb-2 md:mb-4">
-            <Shield className="w-3.5 h-3.5 md:w-4 md:h-4" />
-            Firearm Legal Cover
+      <div className="container max-w-[1380px] px-4 py-6 md:py-10">
+        <div className="mb-6 md:mb-8">
+          <div className="inline-flex items-center gap-2 rounded-full border border-border bg-secondary/40 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.1em] text-muted-foreground md:text-[13px]">
+            <Shield className="h-3.5 w-3.5 text-primary" />
+            Firearm Legal Cover Application
           </div>
-          <h1 className="text-xl md:text-4xl font-bold text-foreground mb-2 md:mb-3">
-            Protect Your Rights as a Firearm Owner
+          <h1 className="mt-4 text-2xl font-semibold text-foreground md:text-[2rem]">
+            Application for firearm legal expense and liability cover
           </h1>
-          <p className="text-sm md:text-base text-muted-foreground max-w-xl mx-auto">
-            Get comprehensive legal expense and liability insurance designed specifically for South African firearm owners.
+          <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground md:text-base">
+            Complete the regulated application below to submit your details for review, premium confirmation, and policy processing.
           </p>
         </div>
 
-        {/* Form Container */}
-        <div className="form-container">
-          {currentStep === 1 && (
-            <EligibilityStep
-              defaultValues={applicationData}
-              onNext={handleStep1}
-            />
-          )}
-          {currentStep === 2 && (
-            <PersonalDetailsStep
-              defaultValues={applicationData}
-              onNext={handleStep2}
-              onBack={() => setCurrentStep(1)}
-            />
-          )}
-          {currentStep === 3 && (
-            <CoverSelectionStep
-              defaultValues={applicationData}
-              onNext={handleStep3}
-              onBack={() => setCurrentStep(2)}
-            />
-          )}
-          {currentStep === 4 && (
-            <BankingDetailsStep
-              defaultValues={applicationData}
-              onNext={handleStep4}
-              onBack={() => setCurrentStep(3)}
-            />
-          )}
-          {currentStep === 5 && (
-            <AuthorisationsStep
-              applicationData={applicationData}
-              onSubmit={handleStep5}
-              onBack={() => setCurrentStep(4)}
-              isSubmitting={submitApplicationMutation.isPending}
-            />
-          )}
+        <div className="flex items-start gap-8">
+          <div className="min-w-0 flex-1">
+            <StepIndicator currentStep={currentStep} />
+
+            <div className="application-shell">
+              <div className="application-shell-inner">
+                {currentStep === 1 && (
+                  <EligibilityStep
+                    defaultValues={applicationData}
+                    onNext={handleStep1}
+                  />
+                )}
+                {currentStep === 2 && (
+                  <PersonalDetailsStep
+                    defaultValues={applicationData}
+                    onNext={handleStep2}
+                    onBack={() => setCurrentStep(1)}
+                  />
+                )}
+                {currentStep === 3 && (
+                  <CoverSelectionStep
+                    defaultValues={applicationData}
+                    onNext={handleStep3}
+                    onBack={() => setCurrentStep(2)}
+                  />
+                )}
+                {currentStep === 4 && (
+                  <BankingDetailsStep
+                    defaultValues={applicationData}
+                    onNext={handleStep4}
+                    onBack={() => setCurrentStep(3)}
+                  />
+                )}
+                {currentStep === 5 && (
+                  <AuthorisationsStep
+                    applicationData={applicationData}
+                    onSubmit={handleStep5}
+                    onBack={() => setCurrentStep(4)}
+                    isSubmitting={submitApplicationMutation.isPending}
+                  />
+                )}
+              </div>
+            </div>
+          </div>
+
+          <ApplicationTrustPanel currentStep={currentStep} />
         </div>
       </div>
     </Layout>

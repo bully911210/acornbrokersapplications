@@ -135,7 +135,27 @@
 @layer components {
   /* Form Container */
   .form-container {
-    @apply bg-card rounded-xl shadow-card border border-border/50 p-4 md:p-8;
+    @apply bg-card rounded-lg border border-border shadow-sm p-5 md:p-8;
+  }
+
+  .application-shell {
+    @apply rounded-lg border border-border bg-card shadow-sm;
+  }
+
+  .application-shell-inner {
+    @apply p-5 md:p-8 lg:p-10;
+  }
+
+  .document-section {
+    @apply rounded-lg border border-border bg-card shadow-sm;
+  }
+
+  .document-section-header {
+    @apply border-b border-border px-5 py-4 md:px-6;
+  }
+
+  .document-section-body {
+    @apply px-5 py-5 md:px-6 md:py-6;
   }
 
   /* Step Indicator */
@@ -175,7 +195,7 @@
 
   /* Summary Section */
   .summary-section {
-    @apply p-4 rounded-lg bg-muted/30 border border-border/50;
+    @apply p-4 rounded-lg bg-secondary/30 border border-border;
   }
 }
 

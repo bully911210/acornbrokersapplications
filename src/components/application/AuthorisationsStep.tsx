@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/accordion";
 import { authorisationsSchema, AuthorisationsData, FullApplicationData } from "@/lib/validations";
 import { COVER_OPTIONS } from "@/lib/coverData";
-import { ArrowLeft, Loader2, FileText, Shield, Lock } from "lucide-react";
+import { ArrowLeft, Loader2, FileText, Shield, Lock, CircleCheck, Landmark, UserRound } from "lucide-react";
 
 interface AuthorisationsStepProps {
   applicationData: Partial<FullApplicationData>;
@@ -82,74 +82,80 @@ export const AuthorisationsStep = ({
       </div>
 
       {/* Application Summary */}
-      <div className="bg-muted/30 rounded-xl p-6 mb-8 space-y-6">
-        <h3 className="font-semibold text-lg text-foreground">
-          Application Summary
-        </h3>
-
-        {/* Personal Details */}
-        <div className="summary-section">
-          <h4 className="font-medium text-foreground mb-3">Personal Details</h4>
-          <div className="grid grid-cols-2 gap-y-2 text-sm">
-            <span className="text-muted-foreground">Name:</span>
-            <span className="font-medium">
-              {applicationData.firstName} {applicationData.lastName}
-            </span>
-            <span className="text-muted-foreground">ID Number:</span>
-            <span className="font-medium">
-              {maskIdNumber(applicationData.saIdNumber)}
-            </span>
-            <span className="text-muted-foreground">Email:</span>
-            <span className="font-medium">{applicationData.email}</span>
-            <span className="text-muted-foreground">Mobile:</span>
-            <span className="font-medium">{applicationData.mobile}</span>
+      <section className="document-section mb-8">
+        <div className="document-section-header flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+              Pre-submission review
+            </p>
+            <h3 className="mt-1 text-lg font-semibold text-foreground">
+              Review your application summary
+            </h3>
+          </div>
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <CircleCheck className="h-4 w-4 text-success" />
+            Confirm your details before final submission
           </div>
         </div>
 
-        {/* Cover Details */}
-        <div className="summary-section">
-          <h4 className="font-medium text-foreground mb-3">Cover Details</h4>
-          <div className="grid grid-cols-2 gap-y-2 text-sm">
-            <span className="text-muted-foreground">Plan:</span>
-            <span className="font-medium">{coverOption?.name}</span>
-            <span className="text-muted-foreground">Monthly Premium:</span>
-            <span className="font-medium text-primary">
-              {coverOption ? formatCurrency(coverOption.premium) : ""}
-            </span>
-            <span className="text-muted-foreground">Legal Expense Limit:</span>
-            <span className="font-medium">
-              {coverOption ? formatCurrency(coverOption.legalExpenseLimit) : ""}
-            </span>
-            <span className="text-muted-foreground">Liability Limit:</span>
-            <span className="font-medium">
-              {coverOption ? formatCurrency(coverOption.liabilityLimit) : ""}
-            </span>
-          </div>
-        </div>
+        <div className="document-section-body space-y-4">
+          <div className="grid gap-4 xl:grid-cols-3">
+            <div className="summary-section">
+              <div className="mb-4 flex items-center gap-2">
+                <UserRound className="h-4 w-4 text-primary" />
+                <h4 className="font-medium text-foreground">Applicant details</h4>
+              </div>
+              <div className="grid grid-cols-[120px_1fr] gap-y-2 text-sm">
+                <span className="text-muted-foreground">Name</span>
+                <span className="font-medium">{applicationData.firstName} {applicationData.lastName}</span>
+                <span className="text-muted-foreground">ID number</span>
+                <span className="font-medium">{maskIdNumber(applicationData.saIdNumber)}</span>
+                <span className="text-muted-foreground">Email</span>
+                <span className="font-medium break-words">{applicationData.email}</span>
+                <span className="text-muted-foreground">Mobile</span>
+                <span className="font-medium">{applicationData.mobile}</span>
+              </div>
+            </div>
 
-        {/* Banking Details */}
-        <div className="summary-section">
-          <h4 className="font-medium text-foreground mb-3">Banking Details</h4>
-          <div className="grid grid-cols-2 gap-y-2 text-sm">
-            <span className="text-muted-foreground">Account Holder:</span>
-            <span className="font-medium">{applicationData.accountHolder}</span>
-            <span className="text-muted-foreground">Bank:</span>
-            <span className="font-medium">{applicationData.bankName}</span>
-            <span className="text-muted-foreground">Account Number:</span>
-            <span className="font-medium">
-              {maskAccountNumber(applicationData.accountNumber)}
-            </span>
-            <span className="text-muted-foreground">Debit Date:</span>
-            <span className="font-medium">
-              {applicationData.preferredDebitDate}
-              {getOrdinalSuffix(
-                parseInt(applicationData.preferredDebitDate || "1")
-              )}{" "}
-              of each month
-            </span>
+            <div className="summary-section">
+              <div className="mb-4 flex items-center gap-2">
+                <Shield className="h-4 w-4 text-primary" />
+                <h4 className="font-medium text-foreground">Selected cover</h4>
+              </div>
+              <div className="grid grid-cols-[140px_1fr] gap-y-2 text-sm">
+                <span className="text-muted-foreground">Plan</span>
+                <span className="font-medium">{coverOption?.name}</span>
+                <span className="text-muted-foreground">Monthly premium</span>
+                <span className="font-semibold text-primary">{coverOption ? formatCurrency(coverOption.premium) : ""}</span>
+                <span className="text-muted-foreground">Legal expense</span>
+                <span className="font-medium">{coverOption ? formatCurrency(coverOption.legalExpenseLimit) : ""}</span>
+                <span className="text-muted-foreground">Liability cover</span>
+                <span className="font-medium">{coverOption ? formatCurrency(coverOption.liabilityLimit) : ""}</span>
+              </div>
+            </div>
+
+            <div className="summary-section">
+              <div className="mb-4 flex items-center gap-2">
+                <Landmark className="h-4 w-4 text-primary" />
+                <h4 className="font-medium text-foreground">Debit order details</h4>
+              </div>
+              <div className="grid grid-cols-[120px_1fr] gap-y-2 text-sm">
+                <span className="text-muted-foreground">Account holder</span>
+                <span className="font-medium">{applicationData.accountHolder}</span>
+                <span className="text-muted-foreground">Bank</span>
+                <span className="font-medium">{applicationData.bankName}</span>
+                <span className="text-muted-foreground">Account number</span>
+                <span className="font-medium">{maskAccountNumber(applicationData.accountNumber)}</span>
+                <span className="text-muted-foreground">Debit date</span>
+                <span className="font-medium">
+                  {applicationData.preferredDebitDate}
+                  {getOrdinalSuffix(parseInt(applicationData.preferredDebitDate || "1"))} of each month
+                </span>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* Legal Authorisations with Accordions */}
       <Form {...form}>
