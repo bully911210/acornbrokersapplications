@@ -98,7 +98,7 @@ export const AuthorisationsStep = ({
         </div>
 
         <div className="document-section-body">
-          <div className="review-sheet divide-y divide-border rounded-md border border-border bg-background">
+          <div className="review-sheet divide-y divide-border bg-background">
             <div className="review-sheet-section">
               <div className="review-sheet-title">
                 <UserRound className="h-4 w-4 text-primary" />
@@ -165,7 +165,7 @@ export const AuthorisationsStep = ({
 
           <div className="space-y-3">
             {/* Debit Order Authorisation */}
-            <div className={`border rounded-xl bg-muted/20 px-5 py-4 transition-colors ${form.formState.errors.debitOrderConsent ? 'border-destructive' : 'border-border'}`}>
+            <div className={`bg-muted/20 px-5 py-4 transition-colors ${form.formState.errors.debitOrderConsent ? 'border-l-2 border-destructive' : 'border-l-2 border-transparent'}`}>
               <FormField
                 control={form.control}
                 name="debitOrderConsent"
@@ -213,7 +213,7 @@ export const AuthorisationsStep = ({
             </div>
 
             {/* Declaration */}
-            <div className={`border rounded-xl bg-muted/20 px-5 py-4 transition-colors ${form.formState.errors.declarationConsent ? 'border-destructive' : 'border-border'}`}>
+            <div className={`bg-muted/20 px-5 py-4 transition-colors ${form.formState.errors.declarationConsent ? 'border-l-2 border-destructive' : 'border-l-2 border-transparent'}`}>
               <FormField
                 control={form.control}
                 name="declarationConsent"
@@ -259,7 +259,7 @@ export const AuthorisationsStep = ({
             </div>
 
             {/* POPIA Consent */}
-            <div className={`border rounded-xl bg-muted/20 px-5 py-4 transition-colors ${form.formState.errors.popiaConsent ? 'border-destructive' : 'border-border'}`}>
+            <div className={`bg-muted/20 px-5 py-4 transition-colors ${form.formState.errors.popiaConsent ? 'border-l-2 border-destructive' : 'border-l-2 border-transparent'}`}>
               <FormField
                 control={form.control}
                 name="popiaConsent"
