@@ -96,7 +96,7 @@ Deno.serve(async (req) => {
         current_step: 1,
         status: "partial",
       })
-      .select()
+      .select("id")
       .single();
 
     if (insertError) {

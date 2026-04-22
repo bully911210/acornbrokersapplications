@@ -9,7 +9,6 @@ interface GenerateTokenResponse {
 
 interface UpdateApplicationResponse {
   success: boolean;
-  applicant: Record<string, unknown>;
 }
 
 /**

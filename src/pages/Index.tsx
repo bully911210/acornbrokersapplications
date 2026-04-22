@@ -88,7 +88,7 @@ const Index = () => {
       const token = getToken();
       if (!token || !applicantId) throw new Error("No session token or applicant ID");
 
-      const result = await updateApplication(token, {
+      await updateApplication(token, {
         debit_order_consent: consents.debitOrderConsent,
         declaration_consent: consents.declarationConsent,
         popia_consent: consents.popiaConsent,
@@ -97,22 +97,22 @@ const Index = () => {
         current_step: 5,
       });
 
-      return { applicant: result.applicant, token };
+      return { token };
     },
-    onSuccess: (data) => {
-      const token = data.token;
-      const applicantData = data.applicant as Record<string, unknown>;
+    onSuccess: ({ token: sessionToken }) => {
+      if (!applicantId) return;
+
       
       clearSession();
       setCompletedData({
         ...applicationData as FullApplicationData,
-        id: applicantData.id as string,
-        createdAt: applicantData.created_at as string,
+        id: applicantId,
+        createdAt: new Date().toISOString(),
       });
       setIsComplete(true);
 
       // Fire-and-forget: Send application email notification
-      sendApplicationEmail(applicantData.id as string, token).catch((err) => 
+      sendApplicationEmail(applicantId, sessionToken).catch((err) => 
         console.error("Failed to send application email:", err)
       );
     },
