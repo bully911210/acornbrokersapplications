@@ -81,7 +81,6 @@ export const AuthorisationsStep = ({
         </p>
       </div>
 
-      {/* Application Summary */}
       <section className="document-section mb-8">
         <div className="document-section-header flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div>
@@ -98,60 +97,60 @@ export const AuthorisationsStep = ({
           </div>
         </div>
 
-        <div className="document-section-body space-y-4">
-          <div className="grid gap-4 xl:grid-cols-3">
-            <div className="summary-section">
-              <div className="mb-4 flex items-center gap-2">
+        <div className="document-section-body">
+          <div className="review-sheet divide-y divide-border rounded-md border border-border bg-background">
+            <div className="review-sheet-section">
+              <div className="review-sheet-title">
                 <UserRound className="h-4 w-4 text-primary" />
                 <h4 className="font-medium text-foreground">Applicant details</h4>
               </div>
-              <div className="grid grid-cols-[120px_1fr] gap-y-2 text-sm">
-                <span className="text-muted-foreground">Name</span>
-                <span className="font-medium">{applicationData.firstName} {applicationData.lastName}</span>
-                <span className="text-muted-foreground">ID number</span>
-                <span className="font-medium">{maskIdNumber(applicationData.saIdNumber)}</span>
-                <span className="text-muted-foreground">Email</span>
-                <span className="font-medium break-words">{applicationData.email}</span>
-                <span className="text-muted-foreground">Mobile</span>
-                <span className="font-medium">{applicationData.mobile}</span>
-              </div>
+              <dl className="review-sheet-grid">
+                <dt>Name</dt>
+                <dd>{applicationData.firstName} {applicationData.lastName}</dd>
+                <dt>ID number</dt>
+                <dd>{maskIdNumber(applicationData.saIdNumber)}</dd>
+                <dt>Email</dt>
+                <dd className="break-words">{applicationData.email}</dd>
+                <dt>Mobile</dt>
+                <dd>{applicationData.mobile}</dd>
+              </dl>
             </div>
 
-            <div className="summary-section">
-              <div className="mb-4 flex items-center gap-2">
+            <div className="review-sheet-section">
+              <div className="review-sheet-title">
                 <Shield className="h-4 w-4 text-primary" />
                 <h4 className="font-medium text-foreground">Selected cover</h4>
               </div>
-              <div className="grid grid-cols-[140px_1fr] gap-y-2 text-sm">
-                <span className="text-muted-foreground">Plan</span>
-                <span className="font-medium">{coverOption?.name}</span>
-                <span className="text-muted-foreground">Monthly premium</span>
-                <span className="font-semibold text-primary">{coverOption ? formatCurrency(coverOption.premium) : ""}</span>
-                <span className="text-muted-foreground">Legal expense</span>
-                <span className="font-medium">{coverOption ? formatCurrency(coverOption.legalExpenseLimit) : ""}</span>
-                <span className="text-muted-foreground">Liability cover</span>
-                <span className="font-medium">{coverOption ? formatCurrency(coverOption.liabilityLimit) : ""}</span>
-              </div>
+              <dl className="review-sheet-grid">
+                <dt>Plan</dt>
+                <dd>{coverOption?.name}</dd>
+                <dt>Monthly premium</dt>
+                <dd className="font-semibold text-primary">{coverOption ? formatCurrency(coverOption.premium) : ""}</dd>
+                <dt>Legal expense</dt>
+                <dd>{coverOption ? formatCurrency(coverOption.legalExpenseLimit) : ""}</dd>
+                <dt>Liability cover</dt>
+                <dd>{coverOption ? formatCurrency(coverOption.liabilityLimit) : ""}</dd>
+              </dl>
             </div>
 
-            <div className="summary-section">
-              <div className="mb-4 flex items-center gap-2">
+            <div className="review-sheet-section">
+              <div className="review-sheet-title">
                 <Landmark className="h-4 w-4 text-primary" />
                 <h4 className="font-medium text-foreground">Debit order details</h4>
               </div>
-              <div className="grid grid-cols-[120px_1fr] gap-y-2 text-sm">
-                <span className="text-muted-foreground">Account holder</span>
-                <span className="font-medium">{applicationData.accountHolder}</span>
-                <span className="text-muted-foreground">Bank</span>
-                <span className="font-medium">{applicationData.bankName}</span>
-                <span className="text-muted-foreground">Account number</span>
-                <span className="font-medium">{maskAccountNumber(applicationData.accountNumber)}</span>
-                <span className="text-muted-foreground">Debit date</span>
-                <span className="font-medium">
+              <dl className="review-sheet-grid">
+                <dt>Account holder</dt>
+                <dd>{applicationData.accountHolder}</dd>
+                <dt>Bank</dt>
+                <dd>{applicationData.bankName}</dd>
+                <dt>Account number</dt>
+                <dd>{maskAccountNumber(applicationData.accountNumber)}</dd>
+                <dt>Debit date</dt>
+                <dd>
                   {applicationData.preferredDebitDate}
                   {getOrdinalSuffix(parseInt(applicationData.preferredDebitDate || "1"))} of each month
-                </span>
-              </div>
+                </dd>
+              </dl>
             </div>
           </div>
         </div>
