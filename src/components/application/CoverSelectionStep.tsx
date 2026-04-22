@@ -63,17 +63,16 @@ export const CoverSelectionStep = ({
 
   return (
     <div className="animate-fade-in">
-      <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold text-foreground mb-2">
-          Choose Your Cover
-        </h2>
-        <p className="text-muted-foreground">
-          Select the insurance plan that best suits your needs.
+      <div className="step-content-intro">
+        <p className="step-content-kicker">Section 3</p>
+        <h2 className="step-content-title">Choose your cover</h2>
+        <p className="step-content-copy">
+          Select the cover option that best matches your needs and review the included limits before continuing.
         </p>
       </div>
 
       <Form {...form}>
-        <form noValidate onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <form noValidate onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <FormField
             control={form.control}
             name="coverOption"
@@ -205,7 +204,8 @@ export const CoverSelectionStep = ({
           />
 
           {/* Waiting Period Disclosure */}
-          <div className="bg-warning-light border border-warning/30 rounded-lg p-4 animate-fade-in opacity-0" style={{ animationDelay: "0.3s" }}>
+          <div className="fieldset-section">
+            <div className="rounded-md bg-warning-light p-4 animate-fade-in opacity-0" style={{ animationDelay: "0.3s" }}>
             <div className="flex items-start gap-3">
               <Clock className="w-5 h-5 text-warning mt-0.5" />
               <div className="space-y-2">
@@ -221,8 +221,9 @@ export const CoverSelectionStep = ({
               </div>
             </div>
           </div>
+          </div>
 
-          <div className="flex justify-between pt-4">
+          <div className="form-actions">
             <Button
               type="button"
               variant="outline"

@@ -72,12 +72,11 @@ export const AuthorisationsStep = ({
 
   return (
     <div className="animate-fade-in">
-      <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold text-foreground mb-2">
-          Review & Confirm
-        </h2>
-        <p className="text-muted-foreground">
-          Please review your application details and provide the required authorisations.
+      <div className="step-content-intro">
+        <p className="step-content-kicker">Section 5</p>
+        <h2 className="step-content-title">Review and confirm</h2>
+        <p className="step-content-copy">
+          Review the captured details below, then confirm the required authorisations to submit your application.
         </p>
       </div>
 
@@ -158,10 +157,12 @@ export const AuthorisationsStep = ({
 
       {/* Legal Authorisations with Accordions */}
       <Form {...form}>
-        <form noValidate onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-          <h3 className="font-semibold text-lg text-foreground">
-            Legal Authorisations
-          </h3>
+        <form noValidate onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
+          <section className="fieldset-section">
+            <div className="fieldset-title">
+              <h3>Legal authorisations</h3>
+              <p>Each declaration must be accepted before the application can be submitted.</p>
+            </div>
 
           <div className="space-y-3">
             {/* Debit Order Authorisation */}
@@ -305,8 +306,9 @@ export const AuthorisationsStep = ({
               </Accordion>
             </div>
           </div>
+          </section>
 
-          <div className="flex justify-between pt-6">
+          <div className="form-actions">
             <Button
               type="button"
               variant="outline"

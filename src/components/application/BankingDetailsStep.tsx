@@ -51,160 +51,168 @@ export const BankingDetailsStep = ({
 
   return (
     <div className="animate-fade-in">
-      <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold text-foreground mb-2">
-          Banking Details
-        </h2>
-        <p className="text-muted-foreground">
-          Provide your banking information for the monthly debit order.
+      <div className="step-content-intro">
+        <p className="step-content-kicker">Section 4</p>
+        <h2 className="step-content-title">Banking details</h2>
+        <p className="step-content-copy">
+          Provide the account details to be used for the monthly debit order instruction.
         </p>
       </div>
 
       <Form {...form}>
-        <form noValidate onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <FormField
-            control={form.control}
-            name="accountHolder"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Account Holder Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="Name as it appears on your bank account" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+        <form noValidate onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <section className="fieldset-section">
+            <div className="fieldset-title">
+              <h3>Account details</h3>
+              <p>These details will be used only for premium collection and policy administration.</p>
+            </div>
 
-          <FormField
-            control={form.control}
-            name="bankName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Bank Name</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value || ""}>
+            <FormField
+              control={form.control}
+              name="accountHolder"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Account Holder Name</FormLabel>
                   <FormControl>
-                    <SelectTrigger>
-                      <div className="flex items-center gap-2">
-                        <Building2 className="w-4 h-4 text-muted-foreground" />
-                        <SelectValue placeholder="Select your bank" />
-                      </div>
-                    </SelectTrigger>
+                    <Input placeholder="Name as it appears on your bank account" {...field} />
                   </FormControl>
-                  <SelectContent>
-                    {SA_BANKS.map((bank) => (
-                      <SelectItem key={bank} value={bank}>
-                        {bank}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <FormField
-            control={form.control}
-            name="accountType"
-            render={({ field }) => (
-              <FormItem className="space-y-3">
-                <FormLabel>Account Type</FormLabel>
-                <FormControl>
-                  <RadioGroup
-                    onValueChange={field.onChange}
-                    value={field.value || ""}
-                    className="grid grid-cols-3 gap-3"
-                  >
-                    {[
-                      { value: "cheque", label: "Cheque" },
-                      { value: "savings", label: "Savings" },
-                      { value: "transmission", label: "Transmission" },
-                    ].map(({ value, label }) => (
-                      <label
-                        key={value}
-                        className={`cover-card text-center py-3 ${
-                          field.value === value
-                            ? "cover-card-selected"
-                            : "cover-card-unselected"
-                        }`}
-                      >
-                        <RadioGroupItem value={value} className="sr-only" />
-                        <CreditCard className="w-5 h-5 mx-auto mb-1.5 text-primary" />
-                        <p className="text-sm font-medium">{label}</p>
-                      </label>
-                    ))}
-                  </RadioGroup>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+            <FormField
+              control={form.control}
+              name="bankName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Bank Name</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value || ""}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <div className="flex items-center gap-2">
+                          <Building2 className="w-4 h-4 text-muted-foreground" />
+                          <SelectValue placeholder="Select your bank" />
+                        </div>
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {SA_BANKS.map((bank) => (
+                        <SelectItem key={bank} value={bank}>
+                          {bank}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <FormField
-            control={form.control}
-            name="accountNumber"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Account Number</FormLabel>
-                <FormControl>
-                  <MaskedInput
-                    maskType="accountNumber"
-                    value={field.value}
-                    onValueChange={field.onChange}
-                    placeholder="1234 5678 90"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+            <FormField
+              control={form.control}
+              name="accountNumber"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Account Number</FormLabel>
+                  <FormControl>
+                    <MaskedInput
+                      maskType="accountNumber"
+                      value={field.value}
+                      onValueChange={field.onChange}
+                      placeholder="1234 5678 90"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </section>
 
-          <FormField
-            control={form.control}
-            name="preferredDebitDate"
-            render={({ field }) => (
-              <FormItem className="space-y-3">
-                <FormLabel>Preferred Debit Date</FormLabel>
-                <FormControl>
-                  <RadioGroup
-                    onValueChange={field.onChange}
-                    value={field.value || ""}
-                    className="grid grid-cols-3 gap-3"
-                  >
-                    {[
-                      { value: "1", label: "1st" },
-                      { value: "15", label: "15th" },
-                      { value: "25", label: "25th" },
-                    ].map(({ value, label }) => (
-                      <label
-                        key={value}
-                        className={`cover-card text-center py-3 ${
-                          field.value === value
-                            ? "cover-card-selected"
-                            : "cover-card-unselected"
-                        }`}
-                      >
-                        <RadioGroupItem value={value} className="sr-only" />
-                        <Calendar className="w-5 h-5 mx-auto mb-1.5 text-primary" />
-                        <p className="text-sm font-medium">{label}</p>
-                        <p className="text-xs text-muted-foreground">of month</p>
-                      </label>
-                    ))}
-                  </RadioGroup>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <section className="fieldset-section">
+            <div className="fieldset-title">
+              <h3>Collection preferences</h3>
+              <p>Select the account type and preferred monthly debit date.</p>
+            </div>
 
-          <div className="flex justify-between pt-4">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onBack}
-              className="gap-2"
-            >
+            <FormField
+              control={form.control}
+              name="accountType"
+              render={({ field }) => (
+                <FormItem className="space-y-3">
+                  <FormLabel>Account Type</FormLabel>
+                  <FormControl>
+                    <RadioGroup
+                      onValueChange={field.onChange}
+                      value={field.value || ""}
+                      className="grid grid-cols-1 gap-3 md:grid-cols-3"
+                    >
+                      {[
+                        { value: "cheque", label: "Cheque" },
+                        { value: "savings", label: "Savings" },
+                        { value: "transmission", label: "Transmission" },
+                      ].map(({ value, label }) => (
+                        <label
+                          key={value}
+                          className={`option-tile-compact text-center ${
+                            field.value === value
+                              ? "option-tile-compact-selected"
+                              : "option-tile-compact-muted"
+                          }`}
+                        >
+                          <RadioGroupItem value={value} className="sr-only" />
+                          <CreditCard className="mx-auto mb-1.5 h-5 w-5 text-primary" />
+                          <p className="text-sm font-medium text-foreground">{label}</p>
+                        </label>
+                      ))}
+                    </RadioGroup>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="preferredDebitDate"
+              render={({ field }) => (
+                <FormItem className="space-y-3">
+                  <FormLabel>Preferred Debit Date</FormLabel>
+                  <FormControl>
+                    <RadioGroup
+                      onValueChange={field.onChange}
+                      value={field.value || ""}
+                      className="grid grid-cols-1 gap-3 md:grid-cols-3"
+                    >
+                      {[
+                        { value: "1", label: "1st" },
+                        { value: "15", label: "15th" },
+                        { value: "25", label: "25th" },
+                      ].map(({ value, label }) => (
+                        <label
+                          key={value}
+                          className={`option-tile-compact text-center ${
+                            field.value === value
+                              ? "option-tile-compact-selected"
+                              : "option-tile-compact-muted"
+                          }`}
+                        >
+                          <RadioGroupItem value={value} className="sr-only" />
+                          <Calendar className="mx-auto mb-1.5 h-5 w-5 text-primary" />
+                          <p className="text-sm font-medium text-foreground">{label}</p>
+                          <p className="text-xs text-muted-foreground">of month</p>
+                        </label>
+                      ))}
+                    </RadioGroup>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </section>
+
+          <div className="form-actions">
+            <Button type="button" variant="outline" onClick={onBack} className="gap-2">
               <ArrowLeft className="w-4 h-4" />
               Back
             </Button>
