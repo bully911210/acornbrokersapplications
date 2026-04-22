@@ -9,7 +9,6 @@ import { BankingDetailsStep } from "@/components/application/BankingDetailsStep"
 import { AuthorisationsStep } from "@/components/application/AuthorisationsStep";
 import { SuccessScreen } from "@/components/application/SuccessScreen";
 import { StepIndicator } from "@/components/application/StepIndicator";
-import { ApplicationTrustPanel } from "@/components/application/ApplicationTrustPanel";
 import {
   FullApplicationData,
   EligibilityData,
