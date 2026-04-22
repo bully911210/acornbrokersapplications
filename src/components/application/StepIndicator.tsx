@@ -20,7 +20,28 @@ interface StepIndicatorProps {
 
 export const StepIndicator = ({ currentStep }: StepIndicatorProps) => {
   return (
-    <div className="w-full mb-4 md:mb-8">
+    <div className="w-full mb-6 md:mb-8 rounded-lg border border-border bg-card px-4 py-4 shadow-sm md:px-5">
+      <div className="mb-4 flex items-center justify-between gap-4 border-b border-border pb-3">
+        <div>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+            Application progress
+          </p>
+          <p className="mt-1 text-sm font-medium text-foreground">
+            Step {currentStep} of {STEPS.length}: {STEPS[currentStep - 1]?.title}
+          </p>
+        </div>
+        <p className="hidden md:block text-sm text-muted-foreground">
+          Complete each section to proceed securely.
+        </p>
+      </div>
+
+      <div className="mb-4 h-1.5 overflow-hidden rounded-full bg-muted">
+        <div
+          className="h-full rounded-full bg-primary transition-all duration-300"
+          style={{ width: `${(currentStep / STEPS.length) * 100}%` }}
+        />
+      </div>
+
       <div className="flex items-center justify-between">
         {STEPS.map((step, index) => (
           <div key={step.number} className="flex items-center flex-1 last:flex-none">
@@ -41,7 +62,7 @@ export const StepIndicator = ({ currentStep }: StepIndicatorProps) => {
               </div>
               <span
                 className={cn(
-                  "mt-1 md:mt-2 text-xs font-medium hidden md:block",
+                  "mt-2 text-[11px] font-medium hidden md:block",
                   currentStep >= step.number
                     ? "text-foreground"
                     : "text-muted-foreground"
@@ -62,7 +83,7 @@ export const StepIndicator = ({ currentStep }: StepIndicatorProps) => {
         ))}
       </div>
       <p className="text-center text-xs text-muted-foreground mt-2 md:hidden">
-        Step {currentStep}: {STEPS[currentStep - 1]?.title}
+        {STEPS[currentStep - 1]?.title}
       </p>
     </div>
   );
