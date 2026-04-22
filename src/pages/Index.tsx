@@ -99,8 +99,9 @@ const Index = () => {
 
       return { token };
     },
-    onSuccess: ({ token }) => {
-      const token = data.token;
+    onSuccess: ({ token: sessionToken }) => {
+      if (!applicantId) return;
+
       
       clearSession();
       setCompletedData({
@@ -111,7 +112,7 @@ const Index = () => {
       setIsComplete(true);
 
       // Fire-and-forget: Send application email notification
-      sendApplicationEmail(applicantId, token).catch((err) => 
+      sendApplicationEmail(applicantId, sessionToken).catch((err) => 
         console.error("Failed to send application email:", err)
       );
     },
