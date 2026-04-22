@@ -2,7 +2,6 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { FullApplicationData } from "@/lib/validations";
 import { COVER_OPTIONS } from "@/lib/coverData";
-import { downloadPDF } from "@/lib/pdfGenerator";
 import {
   CheckCircle2,
   Download,
@@ -29,7 +28,9 @@ export const SuccessScreen = ({ applicationData }: SuccessScreenProps) => {
     }).format(amount);
   };
 
-  const handleDownloadPDF = () => {
+  const handleDownloadPDF = async () => {
+    const { downloadPDF } = await import("@/lib/pdfGenerator");
+
     downloadPDF({
       id: applicationData.id,
       firstName: applicationData.firstName,
