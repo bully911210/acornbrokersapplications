@@ -45,7 +45,7 @@ export const EligibilityStep = ({ defaultValues, onNext }: EligibilityStepProps)
       </div>
 
       <Form {...form}>
-        <form noValidate onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <form noValidate onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <section className="fieldset-section">
             <div className="fieldset-title">
               <h3>Licence position</h3>
@@ -56,10 +56,7 @@ export const EligibilityStep = ({ defaultValues, onNext }: EligibilityStepProps)
               control={form.control}
               name="firearmLicenceStatus"
               render={({ field }) => (
-                <FormItem className="space-y-4">
-                  <FormLabel className="text-sm md:text-base font-semibold">
-                    What is your firearm licence status?
-                  </FormLabel>
+                <FormItem className="space-y-2">
                   <FormControl>
                     <RadioGroup
                       onValueChange={field.onChange}
@@ -118,17 +115,14 @@ export const EligibilityStep = ({ defaultValues, onNext }: EligibilityStepProps)
           <section className="fieldset-section">
             <div className="fieldset-title">
               <h3>Referral source</h3>
-              <p>This helps Acorn Brokers track how applicants find the product.</p>
+              <p>How did you hear about us? This helps Acorn Brokers track how applicants find the product.</p>
             </div>
 
             <FormField
               control={form.control}
               name="source"
               render={({ field }) => (
-                <FormItem className="space-y-4">
-                  <FormLabel className="text-sm md:text-base font-semibold">
-                    How did you hear about us?
-                  </FormLabel>
+                <FormItem className="space-y-2">
                   <FormControl>
                     <RadioGroup
                       onValueChange={field.onChange}
@@ -143,7 +137,7 @@ export const EligibilityStep = ({ defaultValues, onNext }: EligibilityStepProps)
                       ].map(({ value, label, icon: Icon }) => (
                         <label
                           key={value}
-                          className={`option-tile-compact flex min-h-[88px] flex-col items-start justify-between ${
+                          className={`option-tile-compact flex min-h-[76px] flex-col items-start justify-between ${
                             field.value === value
                               ? "option-tile-compact-selected"
                               : "option-tile-compact-muted"
