@@ -79,7 +79,7 @@ export const PersonalDetailsStep = ({
       </div>
 
       <Form {...form}>
-        <form noValidate onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <form noValidate onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <section className="fieldset-section">
             <div className="fieldset-title">
               <h3>Identity details</h3>

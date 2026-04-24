@@ -60,7 +60,7 @@ export const BankingDetailsStep = ({
       </div>
 
       <Form {...form}>
-        <form noValidate onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <form noValidate onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <section className="fieldset-section">
             <div className="fieldset-title">
               <h3>Account details</h3>
