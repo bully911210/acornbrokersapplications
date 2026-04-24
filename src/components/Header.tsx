@@ -41,12 +41,20 @@ export const Header = ({ currentStep = 1, showStepIndicator = true }: HeaderProp
 
       <div className="container flex h-16 lg:h-[4.5rem] items-center justify-between gap-4">
         {/* Logo - Left (25% larger) */}
-        <Link to="/" className="flex-shrink-0" onClick={() => window.location.reload()}>
+        <Link to="/" className="flex-shrink-0 flex items-center gap-3" onClick={() => window.location.reload()}>
           <img 
             src={acornLogo} 
             alt="Acorn Brokers" 
-            className="h-12 lg:h-16 w-auto" 
+            className="h-15 lg:h-20 w-auto" 
           />
+          <div className="hidden sm:flex flex-col leading-tight border-l border-border pl-3">
+            <span className="text-[10px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
+              Product
+            </span>
+            <span className="text-sm lg:text-base font-semibold text-foreground">
+              Firearms Guardian
+            </span>
+          </div>
         </Link>
 
         {/* Step Indicator - Centre */}
