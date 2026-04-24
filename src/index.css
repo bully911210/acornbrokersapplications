@@ -194,7 +194,7 @@
   }
 
   .fieldset-title {
-    @apply mb-4;
+    @apply mb-3;
   }
 
   .fieldset-title h3 {
@@ -202,7 +202,7 @@
   }
 
   .fieldset-title p {
-    @apply mt-1 text-sm text-muted-foreground;
+    @apply mt-0.5 text-sm text-muted-foreground;
   }
 
   .field-grid-2 {
@@ -210,7 +210,7 @@
   }
 
   .form-actions {
-    @apply flex flex-col-reverse gap-3 border-t border-border pt-6 md:flex-row md:items-center md:justify-between;
+    @apply flex flex-col-reverse gap-3 border-t border-border pt-5 mt-2 md:flex-row md:items-center md:justify-between;
   }
 
   .option-tile-compact {
