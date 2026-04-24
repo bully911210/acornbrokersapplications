@@ -21,12 +21,12 @@ interface StepIndicatorProps {
 export const StepIndicator = ({ currentStep }: StepIndicatorProps) => {
   return (
     <div className="application-stepper">
-      <div className="mb-4 flex items-center justify-between gap-4 border-b border-border pb-3">
+      <div className="mb-3 flex items-center justify-between gap-4">
         <div>
           <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
             Application progress
           </p>
-          <p className="mt-1 text-sm font-medium text-foreground">
+          <p className="mt-0.5 text-sm font-medium text-foreground">
             Step {currentStep} of {STEPS.length}: {STEPS[currentStep - 1]?.title}
           </p>
         </div>
