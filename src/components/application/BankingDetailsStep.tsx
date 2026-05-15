@@ -140,30 +140,46 @@ export const BankingDetailsStep = ({
                 <FormItem className="space-y-3">
                   <FormLabel>Account Type</FormLabel>
                   <FormControl>
-                    <RadioGroup
-                      onValueChange={field.onChange}
+                    <ToggleGroup
+                      type="single"
                       value={field.value || ""}
-                      className="grid grid-cols-1 gap-3 md:grid-cols-3"
+                      onValueChange={(v) => v && field.onChange(v)}
+                      className="grid w-full grid-cols-3 gap-1 rounded-md border border-border bg-muted/40 p-1"
                     >
-                      {[
-                        { value: "cheque", label: "Cheque" },
-                        { value: "savings", label: "Savings" },
-                        { value: "transmission", label: "Transmission" },
-                      ].map(({ value, label }) => (
-                        <label
-                          key={value}
-                          className={`option-tile-compact text-center ${
-                            field.value === value
-                              ? "option-tile-compact-selected"
-                              : "option-tile-compact-muted"
-                          }`}
-                        >
-                          <RadioGroupItem value={value} className="sr-only" />
-                          <CreditCard className="mx-auto mb-1.5 h-5 w-5 text-primary" />
-                          <p className="text-sm font-medium text-foreground">{label}</p>
-                        </label>
-                      ))}
-                    </RadioGroup>
+                      <ToggleGroupItem
+                        value="cheque"
+                        className="h-10 rounded-[6px] text-sm font-medium data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+                      >
+                        Cheque
+                      </ToggleGroupItem>
+                      <ToggleGroupItem
+                        value="savings"
+                        className="h-10 rounded-[6px] text-sm font-medium data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+                      >
+                        Savings
+                      </ToggleGroupItem>
+                      <ToggleGroupItem
+                        value="transmission"
+                        className="h-10 gap-1 rounded-[6px] text-sm font-medium data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+                      >
+                        <span>Transmission (Business)</span>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <span
+                                className="inline-flex"
+                                onClick={(e) => e.stopPropagation()}
+                                role="button"
+                                aria-label="More info"
+                              >
+                                <Info className="h-3.5 w-3.5 opacity-70" />
+                              </span>
+                            </TooltipTrigger>
+                            <TooltipContent>Used for business cheque accounts.</TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      </ToggleGroupItem>
+                    </ToggleGroup>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -177,31 +193,26 @@ export const BankingDetailsStep = ({
                 <FormItem className="space-y-3">
                   <FormLabel>Preferred Debit Date</FormLabel>
                   <FormControl>
-                    <RadioGroup
-                      onValueChange={field.onChange}
+                    <ToggleGroup
+                      type="single"
                       value={field.value || ""}
-                      className="grid grid-cols-1 gap-3 md:grid-cols-3"
+                      onValueChange={(v) => v && field.onChange(v)}
+                      className="grid w-full grid-cols-3 gap-1 rounded-md border border-border bg-muted/40 p-1"
                     >
                       {[
                         { value: "1", label: "1st" },
                         { value: "15", label: "15th" },
                         { value: "25", label: "25th" },
                       ].map(({ value, label }) => (
-                        <label
+                        <ToggleGroupItem
                           key={value}
-                          className={`option-tile-compact text-center ${
-                            field.value === value
-                              ? "option-tile-compact-selected"
-                              : "option-tile-compact-muted"
-                          }`}
+                          value={value}
+                          className="h-10 rounded-[6px] text-sm font-medium data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
                         >
-                          <RadioGroupItem value={value} className="sr-only" />
-                          <Calendar className="mx-auto mb-1.5 h-5 w-5 text-primary" />
-                          <p className="text-sm font-medium text-foreground">{label}</p>
-                          <p className="text-xs text-muted-foreground">of month</p>
-                        </label>
+                          {label}
+                        </ToggleGroupItem>
                       ))}
-                    </RadioGroup>
+                    </ToggleGroup>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
