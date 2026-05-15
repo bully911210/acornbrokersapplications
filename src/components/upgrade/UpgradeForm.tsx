@@ -47,7 +47,7 @@ export const UpgradeForm = () => {
       email: "",
       currentCoverOption: undefined,
       requestedCoverOption: undefined,
-      effectiveDatePreference: undefined,
+      
       notes: "",
       signatureName: "",
       signatureConsent: false as unknown as true,
