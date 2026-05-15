@@ -21,20 +21,6 @@ interface StepIndicatorProps {
 export const StepIndicator = ({ currentStep }: StepIndicatorProps) => {
   return (
     <div className="application-stepper">
-      <div className="mb-3 flex items-center justify-between gap-4">
-        <div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-            Application progress
-          </p>
-          <p className="mt-0.5 text-sm font-medium text-foreground">
-            Step {currentStep} of {STEPS.length}: {STEPS[currentStep - 1]?.title}
-          </p>
-        </div>
-        <p className="hidden md:block text-sm text-muted-foreground">
-          Complete each section in sequence to proceed.
-        </p>
-      </div>
-
       <div className="flex items-center justify-between gap-2">
         {STEPS.map((step, index) => (
           <div key={step.number} className="flex items-center flex-1 last:flex-none">

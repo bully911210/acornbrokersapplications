@@ -51,14 +51,6 @@ export const BankingDetailsStep = ({
 
   return (
     <div className="animate-fade-in">
-      <div className="step-content-intro">
-        <p className="step-content-kicker">Section 4</p>
-        <h2 className="step-content-title">Banking details</h2>
-        <p className="step-content-copy">
-          Provide the account details to be used for the monthly debit order instruction.
-        </p>
-      </div>
-
       <Form {...form}>
         <form noValidate onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <section className="fieldset-section">

@@ -63,14 +63,6 @@ export const CoverSelectionStep = ({
 
   return (
     <div className="animate-fade-in">
-      <div className="step-content-intro">
-        <p className="step-content-kicker">Section 3</p>
-        <h2 className="step-content-title">Choose your cover</h2>
-        <p className="step-content-copy">
-          Select the cover option that best matches your needs and review the included limits before continuing.
-        </p>
-      </div>
-
       <Form {...form}>
         <form noValidate onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <FormField
