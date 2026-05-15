@@ -176,21 +176,8 @@ export const UpgradeForm = () => {
         <section className="fieldset-section">
           <div className="fieldset-title">
             <h3>Current policy</h3>
-            <p>Tell us which policy you'd like to upgrade.</p>
+            <p>Tell us which cover you currently have.</p>
           </div>
-          <FormField
-            control={form.control}
-            name="currentPolicyNumber"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Existing policy number</FormLabel>
-                <FormControl>
-                  <Input placeholder="e.g. FG-00012345" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
           <FormField
             control={form.control}
             name="currentCoverOption"
