@@ -207,7 +207,9 @@ const Index = () => {
   if (isComplete && completedData) {
     return (
       <Layout showStepIndicator={false}>
-        <SuccessScreen applicationData={completedData} />
+        <Suspense fallback={<StepFallback />}>
+          <SuccessScreen applicationData={completedData} />
+        </Suspense>
       </Layout>
     );
   }
