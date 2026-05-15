@@ -369,7 +369,7 @@ export const AuthorisationsStep = ({
             </div>
           </section>
 
-          <div className="form-actions">
+          <div className="form-actions pb-12">
             <Button
               type="button"
               variant="outline"
