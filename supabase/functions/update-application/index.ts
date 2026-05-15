@@ -100,7 +100,7 @@ Deno.serve(async (req) => {
       "cover_option",
       "account_holder", "bank_name", "account_type", "account_number", "preferred_debit_date",
       "debit_order_consent", "declaration_consent", "popia_consent",
-      "consent_timestamp", "status", "current_step",
+      "consent_timestamp", "status", "current_step", "source",
     ];
 
     const sanitizedData: Record<string, unknown> = {};
