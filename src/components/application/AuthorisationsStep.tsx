@@ -41,15 +41,28 @@ export const AuthorisationsStep = ({
   isSubmitting,
 }: AuthorisationsStepProps) => {
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
-  
+  const [showIndividualDeclarations, setShowIndividualDeclarations] = useState(false);
+
   const form = useForm<AuthorisationsData>({
     resolver: zodResolver(authorisationsSchema),
     defaultValues: {
+      source: undefined,
       debitOrderConsent: false as unknown as true,
       declarationConsent: false as unknown as true,
       popiaConsent: false as unknown as true,
     },
   });
+
+  const debitConsent = form.watch("debitOrderConsent");
+  const declConsent = form.watch("declarationConsent");
+  const popiaConsent = form.watch("popiaConsent");
+  const allAccepted = !!debitConsent && !!declConsent && !!popiaConsent;
+
+  const toggleAll = (next: boolean) => {
+    form.setValue("debitOrderConsent", next as unknown as true, { shouldValidate: true });
+    form.setValue("declarationConsent", next as unknown as true, { shouldValidate: true });
+    form.setValue("popiaConsent", next as unknown as true, { shouldValidate: true });
+  };
 
   const coverOption = COVER_OPTIONS.find(
     (opt) => opt.id === applicationData.coverOption
