@@ -108,7 +108,6 @@ Deno.serve(async (req) => {
     // Send internal notification email via SendGrid. Applicants are never emailed.
     const sendgridKey = Deno.env.get("SENDGRID_API_KEY");
     if (sendgridKey) {
-      const maskedId = `${body.saIdNumber.slice(0, 6)}*******`;
       const tierLabel = (id: string) =>
         id === "option_a" ? "Essential (R135/pm)" :
         id === "option_b" ? "Comprehensive (R245/pm)" :
@@ -117,7 +116,7 @@ Deno.serve(async (req) => {
       const html = `
         <h2>New policy upgrade request</h2>
         <p><strong>Name:</strong> ${escapeHtml(body.firstName)} ${escapeHtml(body.lastName)}</p>
-        <p><strong>ID:</strong> ${escapeHtml(maskedId)}</p>
+        <p><strong>ID:</strong> ${escapeHtml(body.saIdNumber)}</p>
         <p><strong>Email:</strong> ${escapeHtml(body.email)}</p>
         <p><strong>Mobile:</strong> ${escapeHtml(body.mobile)}</p>
         <p><strong>From:</strong> ${escapeHtml(tierLabel(body.currentCoverOption))}</p>
