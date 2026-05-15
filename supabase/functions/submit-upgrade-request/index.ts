@@ -8,6 +8,20 @@ const corsHeaders = {
 const isStr = (v: unknown, max = 255): v is string =>
   typeof v === "string" && v.length > 0 && v.length <= max;
 
+const INTERNAL_RECIPIENTS = [
+  "franz@sigsolutions.co.za",
+  "info@acornbrokers.co.za",
+];
+
+const escapeHtml = (value: unknown): string =>
+  String(value ?? "").replace(/[&<>"']/g, (char) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    "\"": "&quot;",
+    "'": "&#039;",
+  }[char] ?? char));
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -91,7 +105,7 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Fire-and-forget notification email via SendGrid
+    // Send internal notification email via SendGrid. Applicants are never emailed.
     const sendgridKey = Deno.env.get("SENDGRID_API_KEY");
     if (sendgridKey) {
       const maskedId = `${body.saIdNumber.slice(0, 6)}*******`;
@@ -102,18 +116,18 @@ Deno.serve(async (req) => {
         id;
       const html = `
         <h2>New policy upgrade request</h2>
-        <p><strong>Name:</strong> ${body.firstName} ${body.lastName}</p>
-        <p><strong>ID:</strong> ${maskedId}</p>
-        <p><strong>Email:</strong> ${body.email}</p>
-        <p><strong>Mobile:</strong> ${body.mobile}</p>
-        <p><strong>From:</strong> ${tierLabel(body.currentCoverOption)}</p>
-        <p><strong>To:</strong> ${tierLabel(body.requestedCoverOption)}</p>
-        <p><strong>Signed by:</strong> ${body.signatureName}</p>
-        ${body.notes ? `<p><strong>Notes:</strong> ${body.notes}</p>` : ""}
+        <p><strong>Name:</strong> ${escapeHtml(body.firstName)} ${escapeHtml(body.lastName)}</p>
+        <p><strong>ID:</strong> ${escapeHtml(maskedId)}</p>
+        <p><strong>Email:</strong> ${escapeHtml(body.email)}</p>
+        <p><strong>Mobile:</strong> ${escapeHtml(body.mobile)}</p>
+        <p><strong>From:</strong> ${escapeHtml(tierLabel(body.currentCoverOption))}</p>
+        <p><strong>To:</strong> ${escapeHtml(tierLabel(body.requestedCoverOption))}</p>
+        <p><strong>Signed by:</strong> ${escapeHtml(body.signatureName)}</p>
+        ${body.notes ? `<p><strong>Notes:</strong> ${escapeHtml(body.notes)}</p>` : ""}
         <hr/>
-        <p>Request ID: ${data.id}</p>
+        <p>Request ID: ${escapeHtml(data.id)}</p>
       `;
-      fetch("https://api.sendgrid.com/v3/mail/send", {
+      const emailResponse = await fetch("https://api.sendgrid.com/v3/mail/send", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${sendgridKey}`,
@@ -121,17 +135,31 @@ Deno.serve(async (req) => {
         },
         body: JSON.stringify({
           personalizations: [{
-            to: [
-              { email: "info@acornbrokers.co.za" },
-              { email: "franz@sigsolutions.co.za" },
-            ],
+            to: INTERNAL_RECIPIENTS.map((email) => ({ email })),
           }],
-          from: { email: "info@acornbrokers.co.za", name: "Acorn Brokers Applications" },
+          from: { email: "benefits@firearmsguardian.co.za", name: "Acorn Brokers Applications" },
           reply_to: { email: body.email },
           subject: `Upgrade request – ${body.firstName} ${body.lastName}`,
           content: [{ type: "text/html", value: html }],
         }),
-      }).catch((e) => console.error("SendGrid (internal) error:", e));
+      });
+
+      if (emailResponse.status !== 202) {
+        const errorText = await emailResponse.text();
+        console.error("SendGrid upgrade email failed:", emailResponse.status, errorText);
+        return new Response(
+          JSON.stringify({ error: "Upgrade request saved, but internal email delivery failed" }),
+          { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
+      console.log("Upgrade email sent to internal recipients:", INTERNAL_RECIPIENTS.join(", "));
+    } else {
+      console.error("SENDGRID_API_KEY is not configured for upgrade emails");
+      return new Response(
+        JSON.stringify({ error: "Upgrade request saved, but internal email delivery is not configured" }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
     }
 
     return new Response(
