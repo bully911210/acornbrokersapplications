@@ -120,44 +120,18 @@ Deno.serve(async (req) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          personalizations: [{ to: [{ email: "info@acornbrokers.co.za" }] }],
+          personalizations: [{
+            to: [
+              { email: "info@acornbrokers.co.za" },
+              { email: "franz@sigsolutions.co.za" },
+            ],
+          }],
           from: { email: "info@acornbrokers.co.za", name: "Acorn Brokers Applications" },
           reply_to: { email: body.email },
           subject: `Upgrade request – ${body.firstName} ${body.lastName}`,
           content: [{ type: "text/html", value: html }],
         }),
       }).catch((e) => console.error("SendGrid (internal) error:", e));
-
-      // Confirmation email to the applicant
-      const applicantHtml = `
-        <p>Hi ${body.firstName},</p>
-        <p>We've received your request to upgrade your Firearms Guardian policy. A consultant from Acorn Brokers will be in touch within one business day to confirm the change and adjust your debit order accordingly.</p>
-        <h3 style="margin-top:24px;">Summary</h3>
-        <p><strong>From:</strong> ${tierLabel(body.currentCoverOption)}<br/>
-        <strong>To:</strong> ${tierLabel(body.requestedCoverOption)}<br/>
-        <strong>Signed by:</strong> ${body.signatureName}</p>
-        <p>Reference: ${data.id}</p>
-        <hr/>
-        <p style="font-size:12px;color:#666;">
-          Acorn Brokers (Pty) Ltd · FSP 47433<br/>
-          Firearms Guardian (Pty) Ltd · FSP 47115 · Underwritten by GENRIC Insurance Company Ltd · FSP 43638<br/>
-          Questions? Reply to this email or call +27 (0)69 007 6320.
-        </p>
-      `;
-      fetch("https://api.sendgrid.com/v3/mail/send", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${sendgridKey}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          personalizations: [{ to: [{ email: body.email, name: `${body.firstName} ${body.lastName}` }] }],
-          from: { email: "info@acornbrokers.co.za", name: "Acorn Brokers" },
-          reply_to: { email: "info@acornbrokers.co.za" },
-          subject: "We've received your Firearms Guardian upgrade request",
-          content: [{ type: "text/html", value: applicantHtml }],
-        }),
-      }).catch((e) => console.error("SendGrid (applicant) error:", e));
     }
 
     return new Response(
