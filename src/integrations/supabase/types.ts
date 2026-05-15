@@ -128,6 +128,81 @@ export type Database = {
         }
         Relationships: []
       }
+      upgrade_requests: {
+        Row: {
+          agent_id: string | null
+          consent_timestamp: string | null
+          created_at: string
+          current_cover_option: string | null
+          current_policy_number: string | null
+          effective_date_preference: string | null
+          email: string
+          first_name: string
+          id: string
+          ip_address: string | null
+          last_name: string
+          mobile: string
+          notes: string | null
+          popia_consent: boolean
+          requested_cover_option: Database["public"]["Enums"]["cover_option"]
+          sa_id_number: string
+          session_id: string | null
+          signature_consent: boolean
+          signature_name: string
+          status: string
+          updated_at: string
+          user_agent: string | null
+        }
+        Insert: {
+          agent_id?: string | null
+          consent_timestamp?: string | null
+          created_at?: string
+          current_cover_option?: string | null
+          current_policy_number?: string | null
+          effective_date_preference?: string | null
+          email: string
+          first_name: string
+          id?: string
+          ip_address?: string | null
+          last_name: string
+          mobile: string
+          notes?: string | null
+          popia_consent?: boolean
+          requested_cover_option: Database["public"]["Enums"]["cover_option"]
+          sa_id_number: string
+          session_id?: string | null
+          signature_consent?: boolean
+          signature_name: string
+          status?: string
+          updated_at?: string
+          user_agent?: string | null
+        }
+        Update: {
+          agent_id?: string | null
+          consent_timestamp?: string | null
+          created_at?: string
+          current_cover_option?: string | null
+          current_policy_number?: string | null
+          effective_date_preference?: string | null
+          email?: string
+          first_name?: string
+          id?: string
+          ip_address?: string | null
+          last_name?: string
+          mobile?: string
+          notes?: string | null
+          popia_consent?: boolean
+          requested_cover_option?: Database["public"]["Enums"]["cover_option"]
+          sa_id_number?: string
+          session_id?: string | null
+          signature_consent?: boolean
+          signature_name?: string
+          status?: string
+          updated_at?: string
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
