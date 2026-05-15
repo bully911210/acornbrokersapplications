@@ -45,7 +45,6 @@ export const UpgradeForm = () => {
       saIdNumber: "",
       mobile: "",
       email: "",
-      currentPolicyNumber: "",
       currentCoverOption: undefined,
       requestedCoverOption: undefined,
       effectiveDatePreference: undefined,
