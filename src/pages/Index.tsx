@@ -1,14 +1,29 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, lazy, Suspense } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { createApplication, updateApplication, sendApplicationEmail } from "@/lib/apiClient";
 import { Layout } from "@/components/Layout";
 import { EligibilityStep } from "@/components/application/EligibilityStep";
-import { PersonalDetailsStep } from "@/components/application/PersonalDetailsStep";
-import { CoverSelectionStep } from "@/components/application/CoverSelectionStep";
-import { BankingDetailsStep } from "@/components/application/BankingDetailsStep";
-import { AuthorisationsStep } from "@/components/application/AuthorisationsStep";
-import { SuccessScreen } from "@/components/application/SuccessScreen";
 import { StepIndicator } from "@/components/application/StepIndicator";
+
+const PersonalDetailsStep = lazy(() =>
+  import("@/components/application/PersonalDetailsStep").then((m) => ({ default: m.PersonalDetailsStep }))
+);
+const CoverSelectionStep = lazy(() =>
+  import("@/components/application/CoverSelectionStep").then((m) => ({ default: m.CoverSelectionStep }))
+);
+const BankingDetailsStep = lazy(() =>
+  import("@/components/application/BankingDetailsStep").then((m) => ({ default: m.BankingDetailsStep }))
+);
+const AuthorisationsStep = lazy(() =>
+  import("@/components/application/AuthorisationsStep").then((m) => ({ default: m.AuthorisationsStep }))
+);
+const SuccessScreen = lazy(() =>
+  import("@/components/application/SuccessScreen").then((m) => ({ default: m.SuccessScreen }))
+);
+
+const StepFallback = () => (
+  <div className="py-16 text-center text-sm text-muted-foreground">Loading…</div>
+);
 import {
   FullApplicationData,
   EligibilityData,
