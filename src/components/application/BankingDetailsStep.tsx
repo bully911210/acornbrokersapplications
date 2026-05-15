@@ -17,10 +17,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Button } from "@/components/ui/button";
 import { bankingDetailsSchema, BankingDetailsData, SA_BANKS } from "@/lib/validations";
-import { ArrowLeft, Building2, CreditCard, Calendar } from "lucide-react";
+import { ArrowLeft, Building2, Info } from "lucide-react";
 
 interface BankingDetailsStepProps {
   defaultValues?: Partial<BankingDetailsData>;
