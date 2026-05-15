@@ -122,6 +122,9 @@ export const bankingDetailsSchema = z.object({
 
 // Step 5: Authorisations Schema
 export const authorisationsSchema = z.object({
+  source: z.enum(["online", "agent", "referral", "other"], {
+    required_error: "Please tell us how you heard about us",
+  }),
   debitOrderConsent: z.literal(true, {
     errorMap: () => ({ message: "You must agree to the debit order authorisation" }),
   }),
