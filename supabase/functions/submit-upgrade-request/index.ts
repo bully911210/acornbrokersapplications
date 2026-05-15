@@ -19,7 +19,7 @@ Deno.serve(async (req) => {
     // Validate required fields
     const required = [
       "firstName", "lastName", "saIdNumber", "mobile", "email",
-      "currentPolicyNumber", "currentCoverOption", "requestedCoverOption",
+      "currentCoverOption", "requestedCoverOption",
       "effectiveDatePreference", "signatureName",
     ];
     for (const k of required) {
