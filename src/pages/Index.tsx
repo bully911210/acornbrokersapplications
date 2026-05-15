@@ -90,6 +90,7 @@ const Index = () => {
       if (!token || !applicantId) throw new Error("No session token or applicant ID");
 
       await updateApplication(token, {
+        source: consents.source,
         debit_order_consent: consents.debitOrderConsent,
         declaration_consent: consents.declarationConsent,
         popia_consent: consents.popiaConsent,
