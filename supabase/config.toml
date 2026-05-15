@@ -8,3 +8,6 @@ verify_jwt = false
 
 [functions.update-application]
 verify_jwt = false
+
+[functions.submit-upgrade-request]
+verify_jwt = false
