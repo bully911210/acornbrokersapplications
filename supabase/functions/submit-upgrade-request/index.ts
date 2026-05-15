@@ -19,8 +19,7 @@ Deno.serve(async (req) => {
     // Validate required fields
     const required = [
       "firstName", "lastName", "saIdNumber", "mobile", "email",
-      "currentCoverOption", "requestedCoverOption",
-      "effectiveDatePreference", "signatureName",
+      "currentCoverOption", "requestedCoverOption", "signatureName",
     ];
     for (const k of required) {
       if (!isStr(body[k])) {
@@ -31,15 +30,10 @@ Deno.serve(async (req) => {
       }
     }
 
-    if (!["option_a", "option_b", "unsure"].includes(body.currentCoverOption)) {
+    const validTiers = ["option_a", "option_b", "option_c"];
+    if (!validTiers.includes(body.currentCoverOption) || !validTiers.includes(body.requestedCoverOption)) {
       return new Response(
-        JSON.stringify({ error: "Invalid currentCoverOption" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-    if (!["option_a", "option_b"].includes(body.requestedCoverOption)) {
-      return new Response(
-        JSON.stringify({ error: "Invalid requestedCoverOption" }),
+        JSON.stringify({ error: "Invalid cover option" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }

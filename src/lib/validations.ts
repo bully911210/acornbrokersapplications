@@ -165,15 +165,13 @@ export const upgradeRequestSchema = z.object({
   saIdNumber: saIdNumberSchema,
   mobile: saMobileSchema,
   email: z.string().email("Enter a valid email address").max(255),
-  currentCoverOption: z.enum(["option_a", "option_b", "unsure"], {
+  currentCoverOption: z.enum(["option_a", "option_b", "option_c"], {
     required_error: "Please select your current cover",
   }),
-  requestedCoverOption: z.enum(["option_a", "option_b"], {
+  requestedCoverOption: z.enum(["option_a", "option_b", "option_c"], {
     required_error: "Please select the cover you want to upgrade to",
   }),
-  effectiveDatePreference: z.enum(["asap", "next_debit", "next_month"], {
-    required_error: "Please select an effective date preference",
-  }),
+  effectiveDatePreference: z.enum(["asap", "next_debit", "next_month"]).optional(),
   notes: z.string().max(1000).optional(),
   signatureName: z
     .string()
