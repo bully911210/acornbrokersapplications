@@ -72,7 +72,6 @@ Deno.serve(async (req) => {
         sa_id_number: body.saIdNumber,
         mobile: body.mobile,
         email: body.email,
-        current_policy_number: body.currentPolicyNumber,
         current_cover_option: body.currentCoverOption,
         requested_cover_option: body.requestedCoverOption,
         effective_date_preference: body.effectiveDatePreference,
@@ -112,7 +111,6 @@ Deno.serve(async (req) => {
         <p><strong>ID:</strong> ${maskedId}</p>
         <p><strong>Email:</strong> ${body.email}</p>
         <p><strong>Mobile:</strong> ${body.mobile}</p>
-        <p><strong>Current policy #:</strong> ${body.currentPolicyNumber}</p>
         <p><strong>Current cover:</strong> ${tierLabel(body.currentCoverOption)}</p>
         <p><strong>Requested cover:</strong> ${tierLabel(body.requestedCoverOption)}</p>
         <p><strong>Effective:</strong> ${body.effectiveDatePreference}</p>
