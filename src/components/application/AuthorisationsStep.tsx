@@ -6,6 +6,7 @@ import {
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -16,9 +17,15 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { authorisationsSchema, AuthorisationsData, FullApplicationData } from "@/lib/validations";
 import { COVER_OPTIONS } from "@/lib/coverData";
-import { ArrowLeft, Loader2, FileText, Shield, Lock, CircleCheck, Landmark, UserRound } from "lucide-react";
+import { ArrowLeft, Loader2, FileText, Shield, Lock, CircleCheck, Landmark, UserRound, ChevronDown, Globe, Users, UserPlus } from "lucide-react";
 
 interface AuthorisationsStepProps {
   applicationData: Partial<FullApplicationData>;
