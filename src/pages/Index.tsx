@@ -1,14 +1,29 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, lazy, Suspense } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { createApplication, updateApplication, sendApplicationEmail } from "@/lib/apiClient";
 import { Layout } from "@/components/Layout";
 import { EligibilityStep } from "@/components/application/EligibilityStep";
-import { PersonalDetailsStep } from "@/components/application/PersonalDetailsStep";
-import { CoverSelectionStep } from "@/components/application/CoverSelectionStep";
-import { BankingDetailsStep } from "@/components/application/BankingDetailsStep";
-import { AuthorisationsStep } from "@/components/application/AuthorisationsStep";
-import { SuccessScreen } from "@/components/application/SuccessScreen";
 import { StepIndicator } from "@/components/application/StepIndicator";
+
+const PersonalDetailsStep = lazy(() =>
+  import("@/components/application/PersonalDetailsStep").then((m) => ({ default: m.PersonalDetailsStep }))
+);
+const CoverSelectionStep = lazy(() =>
+  import("@/components/application/CoverSelectionStep").then((m) => ({ default: m.CoverSelectionStep }))
+);
+const BankingDetailsStep = lazy(() =>
+  import("@/components/application/BankingDetailsStep").then((m) => ({ default: m.BankingDetailsStep }))
+);
+const AuthorisationsStep = lazy(() =>
+  import("@/components/application/AuthorisationsStep").then((m) => ({ default: m.AuthorisationsStep }))
+);
+const SuccessScreen = lazy(() =>
+  import("@/components/application/SuccessScreen").then((m) => ({ default: m.SuccessScreen }))
+);
+
+const StepFallback = () => (
+  <div className="py-16 text-center text-sm text-muted-foreground">Loading…</div>
+);
 import {
   FullApplicationData,
   EligibilityData,
@@ -42,6 +57,18 @@ const Index = () => {
   // Scroll to top when step changes
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [currentStep]);
+
+  // Prefetch the next step's chunk to avoid loading delay on click
+  useEffect(() => {
+    const prefetchers: Record<number, () => Promise<unknown>> = {
+      1: () => import("@/components/application/PersonalDetailsStep"),
+      2: () => import("@/components/application/CoverSelectionStep"),
+      3: () => import("@/components/application/BankingDetailsStep"),
+      4: () => import("@/components/application/AuthorisationsStep"),
+      5: () => import("@/components/application/SuccessScreen"),
+    };
+    prefetchers[currentStep]?.().catch(() => {});
   }, [currentStep]);
 
   const createApplicantMutation = useMutation({
@@ -192,7 +219,9 @@ const Index = () => {
   if (isComplete && completedData) {
     return (
       <Layout showStepIndicator={false}>
-        <SuccessScreen applicationData={completedData} />
+        <Suspense fallback={<StepFallback />}>
+          <SuccessScreen applicationData={completedData} />
+        </Suspense>
       </Layout>
     );
   }
@@ -236,34 +265,38 @@ const Index = () => {
                     onNext={handleStep1}
                   />
                 )}
-                {currentStep === 2 && (
-                  <PersonalDetailsStep
-                    defaultValues={applicationData}
-                    onNext={handleStep2}
-                    onBack={() => setCurrentStep(1)}
-                  />
-                )}
-                {currentStep === 3 && (
-                  <CoverSelectionStep
-                    defaultValues={applicationData}
-                    onNext={handleStep3}
-                    onBack={() => setCurrentStep(2)}
-                  />
-                )}
-                {currentStep === 4 && (
-                  <BankingDetailsStep
-                    defaultValues={applicationData}
-                    onNext={handleStep4}
-                    onBack={() => setCurrentStep(3)}
-                  />
-                )}
-                {currentStep === 5 && (
-                  <AuthorisationsStep
-                    applicationData={applicationData}
-                    onSubmit={handleStep5}
-                    onBack={() => setCurrentStep(4)}
-                    isSubmitting={submitApplicationMutation.isPending}
-                  />
+                {currentStep > 1 && (
+                  <Suspense fallback={<StepFallback />}>
+                    {currentStep === 2 && (
+                      <PersonalDetailsStep
+                        defaultValues={applicationData}
+                        onNext={handleStep2}
+                        onBack={() => setCurrentStep(1)}
+                      />
+                    )}
+                    {currentStep === 3 && (
+                      <CoverSelectionStep
+                        defaultValues={applicationData}
+                        onNext={handleStep3}
+                        onBack={() => setCurrentStep(2)}
+                      />
+                    )}
+                    {currentStep === 4 && (
+                      <BankingDetailsStep
+                        defaultValues={applicationData}
+                        onNext={handleStep4}
+                        onBack={() => setCurrentStep(3)}
+                      />
+                    )}
+                    {currentStep === 5 && (
+                      <AuthorisationsStep
+                        applicationData={applicationData}
+                        onSubmit={handleStep5}
+                        onBack={() => setCurrentStep(4)}
+                        isSubmitting={submitApplicationMutation.isPending}
+                      />
+                    )}
+                  </Suspense>
                 )}
               </div>
             </div>
