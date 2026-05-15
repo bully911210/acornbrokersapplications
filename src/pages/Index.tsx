@@ -211,16 +211,18 @@ const Index = () => {
           </div>
           <section className="application-dossier">
             <div className="application-dossier-header">
-              <div className="application-dossier-meta">
-                <div className="application-dossier-title-block">
-                  <h1 className="text-xl font-semibold text-foreground md:text-[1.5rem] leading-tight">
-                    Application for firearm legal expense and liability cover
-                  </h1>
-                  <p className="max-w-3xl text-sm leading-snug text-muted-foreground">
-                    Complete the regulated application below to submit your details for review, premium confirmation, and policy processing.
-                  </p>
+              {currentStep === 1 && (
+                <div className="application-dossier-meta">
+                  <div className="application-dossier-title-block">
+                    <h1 className="text-xl font-semibold text-foreground md:text-[1.5rem] leading-tight">
+                      Application for firearm legal expense and liability cover
+                    </h1>
+                    <p className="max-w-3xl text-sm leading-snug text-muted-foreground">
+                      Complete the regulated application below to submit your details for review, premium confirmation, and policy processing.
+                    </p>
+                  </div>
                 </div>
-              </div>
+              )}
 
               <StepIndicator currentStep={currentStep} />
             </div>
