@@ -253,34 +253,38 @@ const Index = () => {
                     onNext={handleStep1}
                   />
                 )}
-                {currentStep === 2 && (
-                  <PersonalDetailsStep
-                    defaultValues={applicationData}
-                    onNext={handleStep2}
-                    onBack={() => setCurrentStep(1)}
-                  />
-                )}
-                {currentStep === 3 && (
-                  <CoverSelectionStep
-                    defaultValues={applicationData}
-                    onNext={handleStep3}
-                    onBack={() => setCurrentStep(2)}
-                  />
-                )}
-                {currentStep === 4 && (
-                  <BankingDetailsStep
-                    defaultValues={applicationData}
-                    onNext={handleStep4}
-                    onBack={() => setCurrentStep(3)}
-                  />
-                )}
-                {currentStep === 5 && (
-                  <AuthorisationsStep
-                    applicationData={applicationData}
-                    onSubmit={handleStep5}
-                    onBack={() => setCurrentStep(4)}
-                    isSubmitting={submitApplicationMutation.isPending}
-                  />
+                {currentStep > 1 && (
+                  <Suspense fallback={<StepFallback />}>
+                    {currentStep === 2 && (
+                      <PersonalDetailsStep
+                        defaultValues={applicationData}
+                        onNext={handleStep2}
+                        onBack={() => setCurrentStep(1)}
+                      />
+                    )}
+                    {currentStep === 3 && (
+                      <CoverSelectionStep
+                        defaultValues={applicationData}
+                        onNext={handleStep3}
+                        onBack={() => setCurrentStep(2)}
+                      />
+                    )}
+                    {currentStep === 4 && (
+                      <BankingDetailsStep
+                        defaultValues={applicationData}
+                        onNext={handleStep4}
+                        onBack={() => setCurrentStep(3)}
+                      />
+                    )}
+                    {currentStep === 5 && (
+                      <AuthorisationsStep
+                        applicationData={applicationData}
+                        onSubmit={handleStep5}
+                        onBack={() => setCurrentStep(4)}
+                        isSubmitting={submitApplicationMutation.isPending}
+                      />
+                    )}
+                  </Suspense>
                 )}
               </div>
             </div>
