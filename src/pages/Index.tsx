@@ -59,6 +59,18 @@ const Index = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [currentStep]);
 
+  // Prefetch the next step's chunk to avoid loading delay on click
+  useEffect(() => {
+    const prefetchers: Record<number, () => Promise<unknown>> = {
+      1: () => import("@/components/application/PersonalDetailsStep"),
+      2: () => import("@/components/application/CoverSelectionStep"),
+      3: () => import("@/components/application/BankingDetailsStep"),
+      4: () => import("@/components/application/AuthorisationsStep"),
+      5: () => import("@/components/application/SuccessScreen"),
+    };
+    prefetchers[currentStep]?.().catch(() => {});
+  }, [currentStep]);
+
   const createApplicantMutation = useMutation({
     mutationFn: async (data: EligibilityData) => {
       const session = initSession();
