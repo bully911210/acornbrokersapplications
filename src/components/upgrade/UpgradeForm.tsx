@@ -47,7 +47,7 @@ export const UpgradeForm = () => {
       email: "",
       currentCoverOption: undefined,
       requestedCoverOption: undefined,
-      effectiveDatePreference: undefined,
+      
       notes: "",
       signatureName: "",
       signatureConsent: false as unknown as true,
@@ -175,108 +175,55 @@ export const UpgradeForm = () => {
 
         <section className="fieldset-section">
           <div className="fieldset-title">
-            <h3>Current policy</h3>
-            <p>Tell us which cover you currently have.</p>
+            <h3>Upgrade selection</h3>
+            <p>Choose your current cover and the cover you'd like to move to.</p>
           </div>
-          <FormField
-            control={form.control}
-            name="currentCoverOption"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Current cover</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value || ""}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select your current cover" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="option_a">Essential (R135/pm)</SelectItem>
-                    <SelectItem value="option_b">Comprehensive (R245/pm)</SelectItem>
-                    <SelectItem value="unsure">I'm not sure</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </section>
-
-        <section className="fieldset-section">
-          <div className="fieldset-title">
-            <h3>Requested change</h3>
-            <p>Choose the cover tier you would like to move to.</p>
+          <div className="field-grid-2">
+            <FormField
+              control={form.control}
+              name="currentCoverOption"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>From</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value || ""}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select current cover" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="option_a">R135 / month — Essential</SelectItem>
+                      <SelectItem value="option_b">R245 / month — Comprehensive</SelectItem>
+                      <SelectItem value="option_c">R325 / month — Premium</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="requestedCoverOption"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>To</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value || ""}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select new cover" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="option_a">R135 / month — Essential</SelectItem>
+                      <SelectItem value="option_b">R245 / month — Comprehensive</SelectItem>
+                      <SelectItem value="option_c">R325 / month — Premium</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
-          <FormField
-            control={form.control}
-            name="requestedCoverOption"
-            render={({ field }) => (
-              <FormItem className="space-y-3">
-                <FormControl>
-                  <RadioGroup
-                    onValueChange={field.onChange}
-                    value={field.value || ""}
-                    className="grid grid-cols-1 gap-3 md:grid-cols-2"
-                  >
-                    {[
-                      {
-                        value: "option_a",
-                        title: "Essential",
-                        price: "R135 / month",
-                        copy: "R100,000 legal expense and liability cover.",
-                      },
-                      {
-                        value: "option_b",
-                        title: "Comprehensive",
-                        price: "R245 / month",
-                        copy: "R300,000 legal expense and liability cover.",
-                      },
-                    ].map((opt) => (
-                      <label
-                        key={opt.value}
-                        className={`option-tile-compact ${
-                          field.value === opt.value
-                            ? "option-tile-compact-selected"
-                            : "option-tile-compact-muted"
-                        }`}
-                      >
-                        <RadioGroupItem value={opt.value} className="sr-only" />
-                        <div>
-                          <p className="font-semibold text-foreground">{opt.title}</p>
-                          <p className="text-sm font-medium text-primary">{opt.price}</p>
-                          <p className="mt-1 text-sm text-muted-foreground">{opt.copy}</p>
-                        </div>
-                      </label>
-                    ))}
-                  </RadioGroup>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="effectiveDatePreference"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>When should the change take effect?</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value || ""}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select preference" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="asap">As soon as possible</SelectItem>
-                    <SelectItem value="next_debit">From my next debit order</SelectItem>
-                    <SelectItem value="next_month">From the 1st of next month</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
 
           <FormField
             control={form.control}

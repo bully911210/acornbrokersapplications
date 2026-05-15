@@ -19,8 +19,7 @@ Deno.serve(async (req) => {
     // Validate required fields
     const required = [
       "firstName", "lastName", "saIdNumber", "mobile", "email",
-      "currentCoverOption", "requestedCoverOption",
-      "effectiveDatePreference", "signatureName",
+      "currentCoverOption", "requestedCoverOption", "signatureName",
     ];
     for (const k of required) {
       if (!isStr(body[k])) {
@@ -31,15 +30,10 @@ Deno.serve(async (req) => {
       }
     }
 
-    if (!["option_a", "option_b", "unsure"].includes(body.currentCoverOption)) {
+    const validTiers = ["option_a", "option_b", "option_c"];
+    if (!validTiers.includes(body.currentCoverOption) || !validTiers.includes(body.requestedCoverOption)) {
       return new Response(
-        JSON.stringify({ error: "Invalid currentCoverOption" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-    if (!["option_a", "option_b"].includes(body.requestedCoverOption)) {
-      return new Response(
-        JSON.stringify({ error: "Invalid requestedCoverOption" }),
+        JSON.stringify({ error: "Invalid cover option" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
@@ -74,7 +68,7 @@ Deno.serve(async (req) => {
         email: body.email,
         current_cover_option: body.currentCoverOption,
         requested_cover_option: body.requestedCoverOption,
-        effective_date_preference: body.effectiveDatePreference,
+        effective_date_preference: typeof body.effectiveDatePreference === "string" ? body.effectiveDatePreference : null,
         signature_name: body.signatureName,
         signature_consent: true,
         popia_consent: true,
@@ -104,16 +98,16 @@ Deno.serve(async (req) => {
       const tierLabel = (id: string) =>
         id === "option_a" ? "Essential (R135/pm)" :
         id === "option_b" ? "Comprehensive (R245/pm)" :
-        "Unsure";
+        id === "option_c" ? "Premium (R325/pm)" :
+        id;
       const html = `
         <h2>New policy upgrade request</h2>
         <p><strong>Name:</strong> ${body.firstName} ${body.lastName}</p>
         <p><strong>ID:</strong> ${maskedId}</p>
         <p><strong>Email:</strong> ${body.email}</p>
         <p><strong>Mobile:</strong> ${body.mobile}</p>
-        <p><strong>Current cover:</strong> ${tierLabel(body.currentCoverOption)}</p>
-        <p><strong>Requested cover:</strong> ${tierLabel(body.requestedCoverOption)}</p>
-        <p><strong>Effective:</strong> ${body.effectiveDatePreference}</p>
+        <p><strong>From:</strong> ${tierLabel(body.currentCoverOption)}</p>
+        <p><strong>To:</strong> ${tierLabel(body.requestedCoverOption)}</p>
         <p><strong>Signed by:</strong> ${body.signatureName}</p>
         ${body.notes ? `<p><strong>Notes:</strong> ${body.notes}</p>` : ""}
         <hr/>
