@@ -134,7 +134,6 @@ export type Database = {
           consent_timestamp: string | null
           created_at: string
           current_cover_option: string | null
-          current_policy_number: string | null
           effective_date_preference: string | null
           email: string
           first_name: string
@@ -158,7 +157,6 @@ export type Database = {
           consent_timestamp?: string | null
           created_at?: string
           current_cover_option?: string | null
-          current_policy_number?: string | null
           effective_date_preference?: string | null
           email: string
           first_name: string
@@ -182,7 +180,6 @@ export type Database = {
           consent_timestamp?: string | null
           created_at?: string
           current_cover_option?: string | null
-          current_policy_number?: string | null
           effective_date_preference?: string | null
           email?: string
           first_name?: string

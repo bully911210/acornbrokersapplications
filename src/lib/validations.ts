@@ -165,10 +165,6 @@ export const upgradeRequestSchema = z.object({
   saIdNumber: saIdNumberSchema,
   mobile: saMobileSchema,
   email: z.string().email("Enter a valid email address").max(255),
-  currentPolicyNumber: z
-    .string()
-    .min(1, "Policy number is required")
-    .max(50),
   currentCoverOption: z.enum(["option_a", "option_b", "unsure"], {
     required_error: "Please select your current cover",
   }),
