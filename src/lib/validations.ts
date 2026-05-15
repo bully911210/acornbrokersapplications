@@ -56,9 +56,6 @@ export const eligibilitySchema = z.object({
   firearmLicenceStatus: z.enum(["valid", "in_progress"], {
     required_error: "Please select your firearm licence status",
   }),
-  source: z.enum(["online", "agent", "referral", "other"], {
-    required_error: "Please select how you heard about us",
-  }),
 });
 
 // Step 2: Personal Details Schema
@@ -149,3 +146,46 @@ export type CoverSelectionData = z.infer<typeof coverSelectionSchema>;
 export type BankingDetailsData = z.infer<typeof bankingDetailsSchema>;
 export type AuthorisationsData = z.infer<typeof authorisationsSchema>;
 export type FullApplicationData = z.infer<typeof fullApplicationSchema>;
+
+// Upgrade Request Schema
+export const upgradeRequestSchema = z.object({
+  firstName: z
+    .string()
+    .min(2, "First name is required")
+    .max(50)
+    .regex(/^[a-zA-Z\s'-]+$/, "Invalid characters"),
+  lastName: z
+    .string()
+    .min(2, "Last name is required")
+    .max(50)
+    .regex(/^[a-zA-Z\s'-]+$/, "Invalid characters"),
+  saIdNumber: saIdNumberSchema,
+  mobile: saMobileSchema,
+  email: z.string().email("Enter a valid email address").max(255),
+  currentPolicyNumber: z
+    .string()
+    .min(1, "Policy number is required")
+    .max(50),
+  currentCoverOption: z.enum(["option_a", "option_b", "unsure"], {
+    required_error: "Please select your current cover",
+  }),
+  requestedCoverOption: z.enum(["option_a", "option_b"], {
+    required_error: "Please select the cover you want to upgrade to",
+  }),
+  effectiveDatePreference: z.enum(["asap", "next_debit", "next_month"], {
+    required_error: "Please select an effective date preference",
+  }),
+  notes: z.string().max(1000).optional(),
+  signatureName: z
+    .string()
+    .min(2, "Type your full name to sign")
+    .max(100),
+  signatureConsent: z.literal(true, {
+    errorMap: () => ({ message: "You must authorise the upgrade" }),
+  }),
+  popiaConsent: z.literal(true, {
+    errorMap: () => ({ message: "You must agree to the POPIA consent" }),
+  }),
+});
+
+export type UpgradeRequestData = z.infer<typeof upgradeRequestSchema>;

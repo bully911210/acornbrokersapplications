@@ -37,10 +37,10 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { firearmLicenceStatus, source, agentId, userAgent } = await req.json();
+    const { firearmLicenceStatus, agentId, userAgent } = await req.json();
 
     // Validate required fields
-    if (!firearmLicenceStatus || !source) {
+    if (!firearmLicenceStatus) {
       return new Response(
         JSON.stringify({ error: "Missing required fields" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -49,18 +49,10 @@ Deno.serve(async (req) => {
 
     // Validate enum values
     const VALID_LICENCE_STATUSES = ["valid", "in_progress"];
-    const VALID_SOURCES = ["online", "agent", "referral", "other"];
 
     if (!VALID_LICENCE_STATUSES.includes(firearmLicenceStatus)) {
       return new Response(
         JSON.stringify({ error: "Invalid firearm licence status" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
-    if (!VALID_SOURCES.includes(source)) {
-      return new Response(
-        JSON.stringify({ error: "Invalid source" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
@@ -89,7 +81,7 @@ Deno.serve(async (req) => {
       .from("applicants")
       .insert({
         firearm_licence_status: firearmLicenceStatus,
-        source: source,
+        source: agentId ? "agent" : "online",
         session_id: sessionId,
         agent_id: agentId || null,
         user_agent: userAgent || null,

@@ -72,14 +72,6 @@ export const AuthorisationsStep = ({
 
   return (
     <div className="animate-fade-in">
-      <div className="step-content-intro">
-        <p className="step-content-kicker">Section 5</p>
-        <h2 className="step-content-title">Review and confirm</h2>
-        <p className="step-content-copy">
-          Review the captured details below, then confirm the required authorisations to submit your application.
-        </p>
-      </div>
-
       <section className="document-section mb-8">
         <div className="document-section-header flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div>

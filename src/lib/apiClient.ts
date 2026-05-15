@@ -16,7 +16,6 @@ interface UpdateApplicationResponse {
  */
 export const createApplication = async (data: {
   firearmLicenceStatus: string;
-  source: string;
   agentId?: string;
   userAgent?: string;
 }): Promise<GenerateTokenResponse> => {
@@ -78,4 +77,24 @@ export const sendApplicationEmail = async (
   if (!response.ok) {
     console.error("Failed to send application email");
   }
+};
+
+/**
+ * Submit a policy upgrade request
+ */
+export const submitUpgradeRequest = async (
+  data: Record<string, unknown>
+): Promise<{ success: boolean; id?: string }> => {
+  const response = await fetch(`${SUPABASE_URL}/functions/v1/submit-upgrade-request`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}));
+    throw new Error(error.error || "Failed to submit upgrade request");
+  }
+
+  return response.json();
 };

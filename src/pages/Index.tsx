@@ -20,6 +20,7 @@ import {
 } from "@/lib/validations";
 import { initSession, updateSession, clearSession, getClientInfo, getSession, getToken } from "@/lib/sessionManager";
 import { useToast } from "@/hooks/use-toast";
+import { Link } from "react-router-dom";
 import { Shield } from "lucide-react";
 
 const Index = () => {
@@ -50,7 +51,6 @@ const Index = () => {
       
       const result = await createApplication({
         firearmLicenceStatus: data.firearmLicenceStatus,
-        source: data.source,
         agentId: session.agentId,
         userAgent: clientInfo.userAgent,
       });
@@ -200,13 +200,18 @@ const Index = () => {
     <Layout currentStep={currentStep}>
       <div className="application-page-frame">
         <div className="application-page-inner">
+          <div className="mb-4 flex justify-end">
+            <Link
+              to="/upgrade"
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-xs font-semibold text-foreground transition-colors hover:bg-secondary md:text-sm"
+            >
+              Already have a policy and want to upgrade?
+              <span className="text-primary" aria-hidden="true">→</span>
+            </Link>
+          </div>
           <section className="application-dossier">
             <div className="application-dossier-header">
               <div className="application-dossier-meta">
-                <div className="inline-flex items-center gap-2 rounded-full border border-border bg-secondary/70 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.1em] text-muted-foreground md:text-[13px]">
-                  <Shield className="h-3.5 w-3.5 text-primary" />
-                  Firearm Legal Cover Application
-                </div>
                 <div className="application-dossier-title-block">
                   <h1 className="text-xl font-semibold text-foreground md:text-[1.5rem] leading-tight">
                     Application for firearm legal expense and liability cover
