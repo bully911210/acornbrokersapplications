@@ -86,7 +86,7 @@ export const CoverSelectionStep = ({
                       {COVER_OPTIONS.map((option, index) => (
                         <label
                           key={option.id}
-                          className={`cover-card flex flex-col stagger-${index + 1} animate-fade-in opacity-0 ${
+                          className={`cover-card relative flex flex-col stagger-${index + 1} animate-fade-in opacity-0 ${
                             field.value === option.id
                               ? "cover-card-selected"
                               : "cover-card-unselected"
@@ -94,9 +94,15 @@ export const CoverSelectionStep = ({
                         >
                           <RadioGroupItem value={option.id} className="sr-only" />
 
-                          <div className="mb-4 flex items-start justify-between gap-2">
+                          {option.id === "option_b" && (
+                            <span className="absolute right-3 top-3 rounded-full bg-primary px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-primary-foreground">
+                              Most Popular
+                            </span>
+                          )}
+
+                          <div className="mb-3 flex items-start justify-between gap-2 pr-24">
                             <div className="min-w-0 flex-1">
-                              <h3 className="min-h-[3.5rem] text-lg font-bold leading-tight text-foreground">
+                              <h3 className="text-lg font-bold leading-tight text-foreground">
                                 {option.name}
                               </h3>
                               <p className="mt-2 whitespace-nowrap text-3xl font-bold text-primary">
@@ -113,7 +119,7 @@ export const CoverSelectionStep = ({
                             )}
                           </div>
 
-                          <div className="mb-4 space-y-2 border-b border-border pb-4">
+                          <div className="mb-3 space-y-2 border-b border-border pb-3">
                             <div className="flex items-baseline justify-between gap-2 text-sm">
                               <span className="whitespace-nowrap text-muted-foreground">
                                 Legal Expense Limit
