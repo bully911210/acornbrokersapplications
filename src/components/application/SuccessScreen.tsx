@@ -1,4 +1,6 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
+
 import { Button } from "@/components/ui/button";
 import { FullApplicationData } from "@/lib/validations";
 import { COVER_OPTIONS } from "@/lib/coverData";
