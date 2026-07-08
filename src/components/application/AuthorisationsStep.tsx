@@ -149,7 +149,7 @@ export const AuthorisationsStep = ({
 
       {/* Referral Source + Legal Authorisations */}
       <Form {...form}>
-        <form noValidate onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+        <form noValidate onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <section className="fieldset-section">
             <div className="fieldset-title">
               <h3>How did you hear about us?</h3>
