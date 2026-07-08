@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { FullApplicationData } from "@/lib/validations";
 import { COVER_OPTIONS } from "@/lib/coverData";
+import { formatCurrency, getOrdinalSuffix } from "@/lib/formatters";
 import {
   CheckCircle2,
   Download,
@@ -34,13 +35,7 @@ export const SuccessScreen = ({ applicationData }: SuccessScreenProps) => {
   }, [applicationData.id]);
 
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("en-ZA", {
-      style: "currency",
-      currency: "ZAR",
-      minimumFractionDigits: 0,
-    }).format(amount);
-  };
+
 
   const handleDownloadPDF = async () => {
     const { downloadPDF } = await import("@/lib/pdfGenerator");
@@ -182,13 +177,4 @@ export const SuccessScreen = ({ applicationData }: SuccessScreenProps) => {
       </div>
     </div>
   );
-};
-
-const getOrdinalSuffix = (num: number): string => {
-  const j = num % 10;
-  const k = num % 100;
-  if (j === 1 && k !== 11) return "st";
-  if (j === 2 && k !== 12) return "nd";
-  if (j === 3 && k !== 13) return "rd";
-  return "th";
 };

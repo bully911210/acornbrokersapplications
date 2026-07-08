@@ -11,7 +11,7 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
 import { eligibilitySchema, EligibilityData } from "@/lib/validations";
-import { Shield, Users, Globe, UserPlus } from "lucide-react";
+import { Shield } from "lucide-react";
 
 interface EligibilityStepProps {
   defaultValues?: Partial<EligibilityData>;
@@ -27,14 +27,10 @@ export const EligibilityStep = ({ defaultValues, onNext }: EligibilityStepProps)
     },
   });
 
-  const onSubmit = (data: EligibilityData) => {
-    onNext(data);
-  };
-
   return (
     <div className="animate-fade-in">
       <Form {...form}>
-        <form noValidate onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <form noValidate onSubmit={form.handleSubmit(onNext)} className="space-y-6">
           <FormField
             control={form.control}
             name="firearmLicenceStatus"

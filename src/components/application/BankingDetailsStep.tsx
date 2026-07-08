@@ -51,14 +51,10 @@ export const BankingDetailsStep = ({
     },
   });
 
-  const onSubmit = (data: BankingDetailsData) => {
-    onNext(data);
-  };
-
   return (
     <div className="animate-fade-in">
       <Form {...form}>
-        <form noValidate onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <form noValidate onSubmit={form.handleSubmit(onNext)} className="space-y-6">
           <section className="fieldset-section">
             <div className="fieldset-title">
               <h3>Account details</h3>

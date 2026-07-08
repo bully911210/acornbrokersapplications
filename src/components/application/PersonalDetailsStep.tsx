@@ -64,14 +64,10 @@ export const PersonalDetailsStep = ({
     return null;
   }, [watchedIdNumber]);
 
-  const onSubmit = (data: PersonalDetailsData) => {
-    onNext(data);
-  };
-
   return (
     <div className="animate-fade-in">
       <Form {...form}>
-        <form noValidate onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <form noValidate onSubmit={form.handleSubmit(onNext)} className="space-y-6">
           <section className="fieldset-section">
             <div className="fieldset-title">
               <h3>Identity details</h3>

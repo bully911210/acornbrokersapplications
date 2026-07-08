@@ -7,22 +7,6 @@ export interface SAIdInfo {
 }
 
 /**
- * Validates SA ID using Luhn algorithm
- */
-const luhnCheck = (idNumber: string): boolean => {
-  let sum = 0;
-  for (let i = 0; i < 13; i++) {
-    let digit = parseInt(idNumber[i], 10);
-    if (i % 2 === 1) {
-      digit *= 2;
-      if (digit > 9) digit -= 9;
-    }
-    sum += digit;
-  }
-  return sum % 10 === 0;
-};
-
-/**
  * Parses a South African ID number and extracts personal information
  * SA ID format: YYMMDD SSSS C A Z
  * - YYMMDD: Date of birth
@@ -89,41 +73,3 @@ export function formatDateOfBirth(date: Date): string {
   return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
 }
 
-/**
- * Formats SA ID with visual chunking: 910210 5009 08 7
- */
-export function formatSAId(idNumber: string): string {
-  const clean = idNumber.replace(/\D/g, '');
-  let formatted = '';
-  
-  // 6-4-2-1 pattern
-  if (clean.length > 0) formatted += clean.substring(0, 6);
-  if (clean.length > 6) formatted += ' ' + clean.substring(6, 10);
-  if (clean.length > 10) formatted += ' ' + clean.substring(10, 12);
-  if (clean.length > 12) formatted += ' ' + clean.substring(12, 13);
-  
-  return formatted;
-}
-
-/**
- * Formats mobile number: 082 123 4567
- */
-export function formatMobile(mobile: string): string {
-  const clean = mobile.replace(/\D/g, '');
-  let formatted = '';
-  
-  if (clean.length > 0) formatted += clean.substring(0, 3);
-  if (clean.length > 3) formatted += ' ' + clean.substring(3, 6);
-  if (clean.length > 6) formatted += ' ' + clean.substring(6, 10);
-  
-  return formatted;
-}
-
-/**
- * Formats account number in groups of 4: 1234 5678 90
- */
-export function formatAccountNumber(accountNumber: string): string {
-  const clean = accountNumber.replace(/\D/g, '');
-  const groups = clean.match(/.{1,4}/g) || [];
-  return groups.join(' ');
-}

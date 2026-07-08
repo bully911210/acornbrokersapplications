@@ -18,6 +18,7 @@ import {
 import { DesktopCoverComparison } from "@/components/application/DesktopCoverComparison";
 import { coverSelectionSchema, CoverSelectionData } from "@/lib/validations";
 import { COVER_OPTIONS, WAITING_PERIOD_INFO } from "@/lib/coverData";
+import { formatCurrency } from "@/lib/formatters";
 import {
   ArrowLeft,
   Check,
@@ -49,22 +50,10 @@ export const CoverSelectionStep = ({
     },
   });
 
-  const onSubmit = (data: CoverSelectionData) => {
-    onNext(data);
-  };
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("en-ZA", {
-      style: "currency",
-      currency: "ZAR",
-      minimumFractionDigits: 0,
-    }).format(amount);
-  };
-
   return (
     <div className="animate-fade-in">
       <Form {...form}>
-        <form noValidate onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <form noValidate onSubmit={form.handleSubmit(onNext)} className="space-y-6">
           <FormField
             control={form.control}
             name="coverOption"
@@ -75,7 +64,6 @@ export const CoverSelectionStep = ({
                     <DesktopCoverComparison
                       selectedId={field.value}
                       onSelect={field.onChange}
-                      formatCurrency={formatCurrency}
                     />
 
                     <RadioGroup
