@@ -1,5 +1,11 @@
 import jsPDF from "jspdf";
 import { COVER_OPTIONS } from "./coverData";
+import {
+  formatCurrency,
+  getOrdinalSuffix,
+  maskAccountNumber,
+  maskIdNumber,
+} from "./formatters";
 
 interface ApplicationData {
   id: string;
@@ -21,29 +27,12 @@ interface ApplicationData {
   createdAt: string;
 }
 
-// Mask sensitive data
-const maskIdNumber = (id: string): string => {
-  return id.substring(0, 6) + "*******";
-};
-
-const maskAccountNumber = (account: string): string => {
-  return "*".repeat(Math.max(0, account.length - 3)) + account.slice(-3);
-};
-
 const formatDate = (dateString: string): string => {
   return new Date(dateString).toLocaleDateString("en-ZA", {
     day: "2-digit",
     month: "long",
     year: "numeric",
   });
-};
-
-const formatCurrency = (amount: number): string => {
-  return new Intl.NumberFormat("en-ZA", {
-    style: "currency",
-    currency: "ZAR",
-    minimumFractionDigits: 0,
-  }).format(amount);
 };
 
 export const generateApplicationPDF = (data: ApplicationData): jsPDF => {
@@ -208,15 +197,6 @@ export const generateApplicationPDF = (data: ApplicationData): jsPDF => {
   doc.text(`Generated: ${new Date().toLocaleDateString("en-ZA")}`, pageWidth - leftMargin - 35, footerY);
   
   return doc;
-};
-
-const getOrdinalSuffix = (num: number): string => {
-  const j = num % 10;
-  const k = num % 100;
-  if (j === 1 && k !== 11) return "st";
-  if (j === 2 && k !== 12) return "nd";
-  if (j === 3 && k !== 13) return "rd";
-  return "th";
 };
 
 export const downloadPDF = (data: ApplicationData): void => {

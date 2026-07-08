@@ -25,6 +25,7 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { authorisationsSchema, AuthorisationsData, FullApplicationData } from "@/lib/validations";
 import { COVER_OPTIONS } from "@/lib/coverData";
+import { formatCurrency, getOrdinalSuffix, maskAccountNumber, maskIdNumber } from "@/lib/formatters";
 import { ArrowLeft, Loader2, FileText, Shield, Lock, CircleCheck, Landmark, UserRound, ChevronDown, Globe, Users, UserPlus } from "lucide-react";
 
 interface AuthorisationsStepProps {
@@ -68,27 +69,6 @@ export const AuthorisationsStep = ({
     (opt) => opt.id === applicationData.coverOption
   );
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("en-ZA", {
-      style: "currency",
-      currency: "ZAR",
-      minimumFractionDigits: 0,
-    }).format(amount);
-  };
-
-  const maskIdNumber = (id: string | undefined) => {
-    if (!id) return "";
-    return id.substring(0, 6) + "*******";
-  };
-
-  const maskAccountNumber = (account: string | undefined) => {
-    if (!account) return "";
-    return "*".repeat(Math.max(0, account.length - 3)) + account.slice(-3);
-  };
-
-  const handleSubmit = (data: AuthorisationsData) => {
-    onSubmit(data);
-  };
 
   return (
     <div className="animate-fade-in">
@@ -169,7 +149,7 @@ export const AuthorisationsStep = ({
 
       {/* Referral Source + Legal Authorisations */}
       <Form {...form}>
-        <form noValidate onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+        <form noValidate onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <section className="fieldset-section">
             <div className="fieldset-title">
               <h3>How did you hear about us?</h3>
@@ -402,11 +382,3 @@ export const AuthorisationsStep = ({
   );
 };
 
-const getOrdinalSuffix = (num: number): string => {
-  const j = num % 10;
-  const k = num % 100;
-  if (j === 1 && k !== 11) return "st";
-  if (j === 2 && k !== 12) return "nd";
-  if (j === 3 && k !== 13) return "rd";
-  return "th";
-};

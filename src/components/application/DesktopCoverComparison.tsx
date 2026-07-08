@@ -1,10 +1,10 @@
 import { Check, Circle } from "lucide-react";
 import { COVER_OPTIONS, type CoverOption } from "@/lib/coverData";
+import { formatCurrency } from "@/lib/formatters";
 
 interface DesktopCoverComparisonProps {
   selectedId?: CoverOption["id"];
   onSelect: (id: CoverOption["id"]) => void;
-  formatCurrency: (amount: number) => string;
 }
 
 const DETAIL_COPY: Record<
@@ -43,7 +43,6 @@ const DETAIL_COPY: Record<
 export const DesktopCoverComparison = ({
   selectedId,
   onSelect,
-  formatCurrency,
 }: DesktopCoverComparisonProps) => {
   const activeOption =
     COVER_OPTIONS.find((option) => option.id === selectedId) ?? COVER_OPTIONS[1];

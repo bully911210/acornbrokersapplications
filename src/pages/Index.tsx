@@ -33,10 +33,10 @@ import {
   AuthorisationsData,
   normalizePhone,
 } from "@/lib/validations";
-import { initSession, updateSession, clearSession, getClientInfo, getSession, getToken } from "@/lib/sessionManager";
+import { initSession, updateSession, clearSession, getClientInfo, getToken } from "@/lib/sessionManager";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
-import { Shield } from "lucide-react";
+import { ComplianceStrip } from "@/components/ComplianceStrip";
 
 const Index = () => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -74,7 +74,7 @@ const Index = () => {
   const createApplicantMutation = useMutation({
     mutationFn: async (data: EligibilityData) => {
       const session = initSession();
-      const clientInfo = await getClientInfo();
+      const clientInfo = getClientInfo();
       
       const result = await createApplication({
         firearmLicenceStatus: data.firearmLicenceStatus,
@@ -303,20 +303,7 @@ const Index = () => {
           </section>
         </div>
 
-        <div className="application-compliance-strip mt-10" aria-label="Regulatory disclosures">
-          <div>
-            <p className="application-compliance-label">Intermediary</p>
-            <p className="application-compliance-value">Acorn Brokers (Pty) Ltd · FSP 47433</p>
-          </div>
-          <div>
-            <p className="application-compliance-label">Administrator</p>
-            <p className="application-compliance-value">Firearms Guardian (Pty) Ltd · FSP 47115</p>
-          </div>
-          <div>
-            <p className="application-compliance-label">Underwriter</p>
-            <p className="application-compliance-value">GENRIC Insurance Company Ltd · FSP 43638</p>
-          </div>
-        </div>
+        <ComplianceStrip />
       </div>
     </Layout>
   );

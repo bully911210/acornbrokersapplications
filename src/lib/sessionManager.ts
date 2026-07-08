@@ -77,7 +77,7 @@ export const getUserAgent = (): string => {
 };
 
 // Get client info
-export const getClientInfo = async (): Promise<{ ip?: string; userAgent: string }> => {
+export const getClientInfo = (): { ip?: string; userAgent: string } => {
   return {
     userAgent: getUserAgent(),
   };
