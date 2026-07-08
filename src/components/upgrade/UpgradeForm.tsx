@@ -30,6 +30,8 @@ import {
 } from "@/lib/validations";
 import { submitUpgradeRequest } from "@/lib/apiClient";
 import { extractAgentAttribution } from "@/lib/sessionManager";
+import { COVER_OPTIONS } from "@/lib/coverData";
+import { formatCurrency } from "@/lib/formatters";
 import { useToast } from "@/hooks/use-toast";
 import { CheckCircle2, Loader2, ShieldCheck } from "lucide-react";
 
@@ -192,9 +194,11 @@ export const UpgradeForm = () => {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="option_a">R135 / month — Essential</SelectItem>
-                      <SelectItem value="option_b">R245 / month — Comprehensive</SelectItem>
-                      <SelectItem value="option_c">R325 / month — Premium</SelectItem>
+                      {COVER_OPTIONS.map((opt) => (
+                        <SelectItem key={opt.id} value={opt.id}>
+                          {formatCurrency(opt.premium)} / month — {opt.name.replace(/ Cover$/, "")}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -214,9 +218,11 @@ export const UpgradeForm = () => {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="option_a">R135 / month — Essential</SelectItem>
-                      <SelectItem value="option_b">R245 / month — Comprehensive</SelectItem>
-                      <SelectItem value="option_c">R325 / month — Premium</SelectItem>
+                      {COVER_OPTIONS.map((opt) => (
+                        <SelectItem key={opt.id} value={opt.id}>
+                          {formatCurrency(opt.premium)} / month — {opt.name.replace(/ Cover$/, "")}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                   <FormMessage />
