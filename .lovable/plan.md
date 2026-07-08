@@ -1,29 +1,58 @@
-## Swap conversion label to new Purchase page-load event
+# Code Simplification Plan — Acorn Brokers Applications
 
-The base Google tag (`AW-18302872132`) already loaded in `index.html` stays as-is — it's the same account. Only the conversion label changes, and only the page-load variant is used (SuccessScreen mount = purchase confirmation equivalent).
+## Google Tag Verification (Read-Only)
 
-### Change
+The Google Ads tag flow is correct and complete:
 
-`src/components/application/SuccessScreen.tsx` — update the `useEffect` conversion call:
+1. `index.html` — Loads `gtag.js` for `AW-18302872132`, fires `gtag('config', ...)` on page load
+2. `src/vite-env.d.ts` — TypeScript declarations for `window.gtag` and `window.dataLayer`
+3. `src/components/application/SuccessScreen.tsx` — Fires conversion on mount: label `AW-18302872132/l55TCIKl18wcEMTUvpdE`, value 1.0 ZAR, `transaction_id` = application ID
 
-- Old `send_to`: `AW-18302872132/F72WCNWI2MscEMTUvpdE`
-- New `send_to`: `AW-18302872132/l55TCIKl18wcEMTUvpdE`
+Fires exactly once per completed application. No changes needed.
 
-Keep the existing behaviour:
-- Fires once on mount (page-load pattern, matching Google's snippet)
-- `value: 1.0`, `currency: 'ZAR'`
-- `transaction_id: applicationData.id` (real applicant ID — better than Google's empty-string default for dedup)
-- `window.gtag` existence guard preserved
+---
 
-### Not changing
+## Phase 1: Remove Dead Code & Unused Imports (zero risk)
 
-- `index.html` gtag loader — same AW ID, no edit needed.
-- `src/vite-env.d.ts` — `window.gtag` type already declared.
-- Upgrade flow — still no conversion fired (per prior decision).
-- The click-handler variant (`gtag_report_conversion`) is not needed: the SuccessScreen render itself is the post-conversion page, so the page-load snippet is the correct pattern.
+| Change | File |
+|--------|------|
+| Remove unused icons (`Users`, `Globe`, `UserPlus`); keep `Shield` | `EligibilityStep.tsx` |
+| Remove unused `Shield` (lucide) and `getSession` imports | `pages/Index.tsx` |
+| Delete unused component | `ApplicationTrustPanel.tsx` |
+| Delete unused helpers `luhnCheck`, `formatSAId`, `formatMobile`, `formatAccountNumber` | `lib/saIdParser.ts` |
+| Remove Sonner Toaster (unused) + delete `components/ui/sonner.tsx` | `App.tsx` |
+| Delete unused Supabase client file (all API via `apiClient.ts`) | `integrations/supabase/client.ts` |
 
-### Verification after edit
+## Phase 2: Consolidate Duplicated Utilities (low risk)
 
-Drive the preview with Playwright to the success screen and confirm:
-1. `dataLayer` receives an `event: 'conversion'` push with the new `send_to`.
-2. A network request to `googleads.g.doubleclick.net` / `www.google.com/pagead/1p-conversion` fires with the new label.
+Create `src/lib/formatters.ts` with:
+- `formatCurrency(amount)` — dedupe 4x
+- `getOrdinalSuffix(num)` — dedupe 3x
+- `maskIdNumber(id)` — dedupe 2x
+- `maskAccountNumber(account)` — dedupe 2x
+
+Remove local copies from `pdfGenerator.ts`, `CoverSelectionStep.tsx`, `AuthorisationsStep.tsx`, `SuccessScreen.tsx`. Update `DesktopCoverComparison.tsx` to import `formatCurrency` directly instead of receiving as prop.
+
+## Phase 3: Simplify Wrappers (low risk)
+
+- Remove redundant `onSubmit` wrappers in 5 step components; pass prop directly to `form.handleSubmit()`
+- Remove `async` from `getClientInfo` in `sessionManager.ts`; update `Index.tsx` call site
+
+## Phase 4: Extract Shared UI (medium risk)
+
+- Create `src/components/ComplianceStrip.tsx` — extract identical regulatory strip from `Index.tsx` and `Upgrade.tsx`
+- `UpgradeForm.tsx` — render cover option select items from `COVER_OPTIONS` + `formatCurrency` instead of hardcoding
+
+## Deferred
+
+- Google Ads tag ID → env var (needs Vite plugin for `index.html`)
+- Shared step nav buttons (too much variation)
+- `fullApplicationSchema` (needed by `z.infer`)
+
+## Verification
+
+1. `npm run build` after each phase
+2. Walk all 5 form steps in dev
+3. Confirm SuccessScreen renders and conversion fires
+4. Check `/upgrade`, `/privacy`, `/terms`, `/contact`
+5. `npm run lint`
