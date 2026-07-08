@@ -33,10 +33,10 @@ import {
   AuthorisationsData,
   normalizePhone,
 } from "@/lib/validations";
-import { initSession, updateSession, clearSession, getClientInfo, getSession, getToken } from "@/lib/sessionManager";
+import { initSession, updateSession, clearSession, getClientInfo, getToken } from "@/lib/sessionManager";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
-import { Shield } from "lucide-react";
+import { ComplianceStrip } from "@/components/ComplianceStrip";
 
 const Index = () => {
   const [currentStep, setCurrentStep] = useState(1);
