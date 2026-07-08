@@ -1,44 +1,29 @@
-## Google Ads Pixel Integration (AW-18302872132)
+## Swap conversion label to new Purchase page-load event
 
-### 1. Site-wide Google tag
-Add the base gtag loader to `index.html` inside `<head>`:
+The base Google tag (`AW-18302872132`) already loaded in `index.html` stays as-is — it's the same account. Only the conversion label changes, and only the page-load variant is used (SuccessScreen mount = purchase confirmation equivalent).
 
-```html
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=AW-18302872132"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'AW-18302872132');
-</script>
-```
+### Change
 
-This loads on every route (Index, Upgrade, Privacy, Terms, Contact) since it's an SPA served from a single `index.html`.
+`src/components/application/SuccessScreen.tsx` — update the `useEffect` conversion call:
 
-### 2. Fire Subscribe conversion on new application success
-In `src/components/application/SuccessScreen.tsx`, add a `useEffect` that fires once on mount:
+- Old `send_to`: `AW-18302872132/F72WCNWI2MscEMTUvpdE`
+- New `send_to`: `AW-18302872132/l55TCIKl18wcEMTUvpdE`
 
-```ts
-useEffect(() => {
-  if (typeof window !== "undefined" && typeof (window as any).gtag === "function") {
-    (window as any).gtag('event', 'conversion', {
-      send_to: 'AW-18302872132/F72WCNWI2MscEMTUvpdE',
-      value: 1.0,
-      currency: 'ZAR',
-    });
-  }
-}, []);
-```
+Keep the existing behaviour:
+- Fires once on mount (page-load pattern, matching Google's snippet)
+- `value: 1.0`, `currency: 'ZAR'`
+- `transaction_id: applicationData.id` (real applicant ID — better than Google's empty-string default for dedup)
+- `window.gtag` existence guard preserved
 
-Add a minimal TypeScript declaration for `window.gtag` in `src/vite-env.d.ts` to keep types clean.
+### Not changing
 
-### 3. Scope
-- Upgrade flow: no conversion event fired (per user's answer).
-- No changes to edge functions, backend, or existing form logic.
-- No cookie banner changes (existing POPIA consent copy already covers analytics).
+- `index.html` gtag loader — same AW ID, no edit needed.
+- `src/vite-env.d.ts` — `window.gtag` type already declared.
+- Upgrade flow — still no conversion fired (per prior decision).
+- The click-handler variant (`gtag_report_conversion`) is not needed: the SuccessScreen render itself is the post-conversion page, so the page-load snippet is the correct pattern.
 
-### Files to change
-- `index.html` — add gtag loader in `<head>`
-- `src/components/application/SuccessScreen.tsx` — fire conversion on mount
-- `src/vite-env.d.ts` — add `gtag` window type
+### Verification after edit
+
+Drive the preview with Playwright to the success screen and confirm:
+1. `dataLayer` receives an `event: 'conversion'` push with the new `send_to`.
+2. A network request to `googleads.g.doubleclick.net` / `www.google.com/pagead/1p-conversion` fires with the new label.

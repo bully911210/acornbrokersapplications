@@ -25,7 +25,7 @@ export const SuccessScreen = ({ applicationData }: SuccessScreenProps) => {
   useEffect(() => {
     if (typeof window !== "undefined" && typeof window.gtag === "function") {
       window.gtag("event", "conversion", {
-        send_to: "AW-18302872132/F72WCNWI2MscEMTUvpdE",
+        send_to: "AW-18302872132/l55TCIKl18wcEMTUvpdE",
         value: 1.0,
         currency: "ZAR",
         transaction_id: applicationData.id,
