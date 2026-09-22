@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, lazy, Suspense } from "react";
+import { useState, useEffect, useCallback, lazy, Suspense, useRef } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { createApplication, updateApplication, sendApplicationEmail } from "@/lib/apiClient";
 import { Layout } from "@/components/Layout";
@@ -37,6 +37,7 @@ import { initSession, updateSession, clearSession, getClientInfo, getToken } fro
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
 import { ComplianceStrip } from "@/components/ComplianceStrip";
+import { PolicyIntroduction } from "@/components/PolicyIntroduction";
 
 const Index = () => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -45,18 +46,17 @@ const Index = () => {
   const [isComplete, setIsComplete] = useState(false);
   const [completedData, setCompletedData] = useState<(FullApplicationData & { id: string; createdAt: string }) | null>(null);
   const { toast } = useToast();
+  const applicationRef = useRef<HTMLElement>(null);
 
   // Initialize session and restore state on mount
   useEffect(() => {
     const session = initSession();
-    if (session.applicantId) {
+    if (session.applicantId && session.token) {
       setApplicantId(session.applicantId);
-    }
-    if (session.currentStep) {
       setCurrentStep(session.currentStep);
-    }
-    if (session.formData) {
-      setApplicationData(session.formData);
+      if (session.formData) {
+        setApplicationData(session.formData as Partial<FullApplicationData>);
+      }
     }
   }, []);
 
@@ -195,8 +195,8 @@ const Index = () => {
       setApplicationData(normalizedData);
       updateSession({ currentStep: nextStep, formData: normalizedData });
       setCurrentStep(nextStep);
-    } catch (e) {
-      // Error handled by mutation onError
+    } catch {
+      return;
     }
   }, [updateApplicantMutation, applicationData]);
 
@@ -213,7 +213,9 @@ const Index = () => {
       setApplicationData(updatedData);
       updateSession({ currentStep: nextStep, formData: updatedData });
       setCurrentStep(nextStep);
-    } catch (e) {}
+    } catch {
+      return;
+    }
   }, [updateApplicantMutation, applicationData]);
 
   const handleStep4 = useCallback(async (data: BankingDetailsData) => {
@@ -235,12 +237,19 @@ const Index = () => {
       setApplicationData(updatedData);
       updateSession({ currentStep: nextStep, formData: updatedData });
       setCurrentStep(nextStep);
-    } catch (e) {}
+    } catch {
+      return;
+    }
   }, [updateApplicantMutation, applicationData]);
 
   const handleStep5 = useCallback((data: AuthorisationsData) => {
     submitApplicationMutation.mutate(data);
   }, [submitApplicationMutation]);
+
+  const scrollToApplication = useCallback(() => {
+    applicationRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    window.setTimeout(() => applicationRef.current?.querySelector<HTMLElement>("input, button")?.focus(), 500);
+  }, []);
 
   if (isComplete && completedData) {
     return (
@@ -254,6 +263,7 @@ const Index = () => {
 
   return (
     <Layout currentStep={currentStep}>
+      {currentStep === 1 && <PolicyIntroduction onStartApplication={scrollToApplication} />}
       <div className="application-page-frame">
         <div className="application-page-inner">
           <div className="mb-4 flex justify-end">
@@ -265,16 +275,16 @@ const Index = () => {
               <span className="text-primary" aria-hidden="true">→</span>
             </Link>
           </div>
-          <section className="application-dossier">
+          <section className="application-dossier scroll-mt-36" ref={applicationRef} aria-labelledby="application-title">
             <div className="application-dossier-header">
               {currentStep === 1 && (
                 <div className="application-dossier-meta">
                   <div className="application-dossier-title-block">
-                    <h1 className="text-xl font-semibold text-foreground md:text-[1.5rem] leading-tight">
-                      Application for firearm legal expense and liability cover
-                    </h1>
+                    <h2 id="application-title" className="text-xl font-semibold text-foreground md:text-[1.5rem] leading-tight">
+                      Start your application
+                    </h2>
                     <p className="max-w-3xl text-sm leading-snug text-muted-foreground">
-                      Complete the regulated application below to submit your details for review, premium confirmation, and policy processing.
+                      First, confirm your current firearm licence position.
                     </p>
                   </div>
                 </div>

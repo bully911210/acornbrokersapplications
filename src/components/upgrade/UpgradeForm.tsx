@@ -107,7 +107,7 @@ export const UpgradeForm = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>First name</FormLabel>
-                  <FormControl><Input autoComplete="given-name" {...field} /></FormControl>
+                  <FormControl><Input autoComplete="family-name" {...field} /></FormControl>
                   <FormMessage />
                 </FormItem>
               )}
