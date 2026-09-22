@@ -7,6 +7,7 @@ interface MaskedInputProps extends Omit<React.InputHTMLAttributes<HTMLInputEleme
   value: string;
   onValueChange: (rawValue: string) => void;
   maskType: MaskType;
+  autoComplete?: string;
 }
 
 const formatters: Record<MaskType, (value: string) => string> = {
@@ -42,7 +43,7 @@ const maxLengths: Record<MaskType, number> = {
 };
 
 const MaskedInput = React.forwardRef<HTMLInputElement, MaskedInputProps>(
-  ({ className, value, onValueChange, maskType, ...props }, ref) => {
+  ({ className, value, onValueChange, maskType, autoComplete, ...props }, ref) => {
     const formattedValue = formatters[maskType](value);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,7 +58,6 @@ const MaskedInput = React.forwardRef<HTMLInputElement, MaskedInputProps>(
         type="text"
         inputMode="numeric"
         pattern="[0-9]*"
-        autoComplete="off"
         className={cn(
           "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
           className

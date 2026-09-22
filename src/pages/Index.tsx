@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, lazy, Suspense } from "react";
+import { useState, useEffect, useCallback, lazy, Suspense, useRef } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { createApplication, updateApplication, sendApplicationEmail } from "@/lib/apiClient";
 import { Layout } from "@/components/Layout";
@@ -37,6 +37,7 @@ import { initSession, updateSession, clearSession, getClientInfo, getToken } fro
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
 import { ComplianceStrip } from "@/components/ComplianceStrip";
+import { PolicyIntroduction } from "@/components/PolicyIntroduction";
 
 const Index = () => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -45,12 +46,17 @@ const Index = () => {
   const [isComplete, setIsComplete] = useState(false);
   const [completedData, setCompletedData] = useState<(FullApplicationData & { id: string; createdAt: string }) | null>(null);
   const { toast } = useToast();
+  const applicationRef = useRef<HTMLElement>(null);
 
-  // Initialize session on mount
+  // Initialize session and restore state on mount
   useEffect(() => {
     const session = initSession();
-    if (session.applicantId) {
+    if (session.applicantId && session.token) {
       setApplicantId(session.applicantId);
+      setCurrentStep(session.currentStep);
+      if (session.formData) {
+        setApplicationData(session.formData as Partial<FullApplicationData>);
+      }
     }
   }, []);
 
@@ -59,7 +65,7 @@ const Index = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [currentStep]);
 
-  // Prefetch the next step's chunk to avoid loading delay on click
+  // Prefetch chunks
   useEffect(() => {
     const prefetchers: Record<number, () => Promise<unknown>> = {
       1: () => import("@/components/application/PersonalDetailsStep"),
@@ -84,14 +90,18 @@ const Index = () => {
 
       return result;
     },
-    onSuccess: (result) => {
+    onSuccess: (result, variables) => {
       setApplicantId(result.applicantId);
+      const nextStep = 2;
+      const updatedData = { ...applicationData, ...variables };
+      setApplicationData(updatedData);
       updateSession({ 
         applicantId: result.applicantId, 
         token: result.token,
-        currentStep: 2 
+        currentStep: nextStep,
+        formData: updatedData
       });
-      setCurrentStep(2);
+      setCurrentStep(nextStep);
     },
     onError: () => {
       toast({
@@ -106,9 +116,15 @@ const Index = () => {
     mutationFn: async ({ step, data }: { step: number; data: Record<string, unknown> }) => {
       const token = getToken();
       if (!token) throw new Error("No session token");
-
       await updateApplication(token, { ...data, current_step: step });
     },
+    onError: () => {
+      toast({
+        title: "Progress not saved",
+        description: "We couldn't save your progress. Please check your connection and try again.",
+        variant: "destructive",
+      });
+    }
   });
 
   const submitApplicationMutation = useMutation({
@@ -130,7 +146,6 @@ const Index = () => {
     },
     onSuccess: ({ token: sessionToken }) => {
       if (!applicantId) return;
-
       
       clearSession();
       setCompletedData({
@@ -140,7 +155,6 @@ const Index = () => {
       });
       setIsComplete(true);
 
-      // Fire-and-forget: Send application email notification
       sendApplicationEmail(applicantId, sessionToken).catch((err) => 
         console.error("Failed to send application email:", err)
       );
@@ -155,66 +169,87 @@ const Index = () => {
   });
 
   const handleStep1 = useCallback((data: EligibilityData) => {
-    setApplicationData((prev) => ({ ...prev, ...data }));
     createApplicantMutation.mutate(data);
   }, [createApplicantMutation]);
 
-  const handleStep2 = useCallback((data: PersonalDetailsData) => {
-    const normalizedData = { ...data, mobile: normalizePhone(data.mobile) };
-    setApplicationData((prev) => ({ ...prev, ...normalizedData }));
+  const handleStep2 = useCallback(async (data: PersonalDetailsData) => {
+    const normalizedData = { ...applicationData, ...data, mobile: normalizePhone(data.mobile) };
     
-    updateApplicantMutation.mutate({
-      step: 2,
-      data: {
-        first_name: data.firstName,
-        last_name: data.lastName,
-        sa_id_number: data.saIdNumber,
-        mobile: normalizePhone(data.mobile),
-        email: data.email,
-        street_address: data.streetAddress,
-        suburb: data.suburb,
-        city: data.city,
-        province: data.province,
-      },
-    });
-    
-    updateSession({ currentStep: 3 });
-    setCurrentStep(3);
-  }, [updateApplicantMutation]);
+    try {
+      await updateApplicantMutation.mutateAsync({
+        step: 2,
+        data: {
+          first_name: data.firstName,
+          last_name: data.lastName,
+          sa_id_number: data.saIdNumber,
+          mobile: normalizePhone(data.mobile),
+          email: data.email,
+          street_address: data.streetAddress,
+          suburb: data.suburb,
+          city: data.city,
+          province: data.province,
+        },
+      });
+      
+      const nextStep = 3;
+      setApplicationData(normalizedData);
+      updateSession({ currentStep: nextStep, formData: normalizedData });
+      setCurrentStep(nextStep);
+    } catch {
+      return;
+    }
+  }, [updateApplicantMutation, applicationData]);
 
-  const handleStep3 = useCallback((data: CoverSelectionData) => {
-    setApplicationData((prev) => ({ ...prev, ...data }));
+  const handleStep3 = useCallback(async (data: CoverSelectionData) => {
+    const updatedData = { ...applicationData, ...data };
     
-    updateApplicantMutation.mutate({
-      step: 3,
-      data: { cover_option: data.coverOption },
-    });
-    
-    updateSession({ currentStep: 4 });
-    setCurrentStep(4);
-  }, [updateApplicantMutation]);
+    try {
+      await updateApplicantMutation.mutateAsync({
+        step: 3,
+        data: { cover_option: data.coverOption },
+      });
+      
+      const nextStep = 4;
+      setApplicationData(updatedData);
+      updateSession({ currentStep: nextStep, formData: updatedData });
+      setCurrentStep(nextStep);
+    } catch {
+      return;
+    }
+  }, [updateApplicantMutation, applicationData]);
 
-  const handleStep4 = useCallback((data: BankingDetailsData) => {
-    setApplicationData((prev) => ({ ...prev, ...data }));
+  const handleStep4 = useCallback(async (data: BankingDetailsData) => {
+    const updatedData = { ...applicationData, ...data };
     
-    updateApplicantMutation.mutate({
-      step: 4,
-      data: {
-        account_holder: data.accountHolder,
-        bank_name: data.bankName,
-        account_type: data.accountType,
-        account_number: data.accountNumber,
-        preferred_debit_date: parseInt(data.preferredDebitDate),
-      },
-    });
-    
-    updateSession({ currentStep: 5 });
-    setCurrentStep(5);
-  }, [updateApplicantMutation]);
+    try {
+      await updateApplicantMutation.mutateAsync({
+        step: 4,
+        data: {
+          account_holder: data.accountHolder,
+          bank_name: data.bankName,
+          account_type: data.accountType,
+          account_number: data.accountNumber,
+          preferred_debit_date: parseInt(data.preferredDebitDate),
+        },
+      });
+      
+      const nextStep = 5;
+      setApplicationData(updatedData);
+      updateSession({ currentStep: nextStep, formData: updatedData });
+      setCurrentStep(nextStep);
+    } catch {
+      return;
+    }
+  }, [updateApplicantMutation, applicationData]);
 
   const handleStep5 = useCallback((data: AuthorisationsData) => {
     submitApplicationMutation.mutate(data);
   }, [submitApplicationMutation]);
+
+  const scrollToApplication = useCallback(() => {
+    applicationRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    window.setTimeout(() => applicationRef.current?.querySelector<HTMLElement>("input, button")?.focus(), 500);
+  }, []);
 
   if (isComplete && completedData) {
     return (
@@ -228,6 +263,7 @@ const Index = () => {
 
   return (
     <Layout currentStep={currentStep}>
+      {currentStep === 1 && <PolicyIntroduction onStartApplication={scrollToApplication} />}
       <div className="application-page-frame">
         <div className="application-page-inner">
           <div className="mb-4 flex justify-end">
@@ -239,21 +275,20 @@ const Index = () => {
               <span className="text-primary" aria-hidden="true">→</span>
             </Link>
           </div>
-          <section className="application-dossier">
+          <section className="application-dossier scroll-mt-36" ref={applicationRef} aria-labelledby="application-title">
             <div className="application-dossier-header">
               {currentStep === 1 && (
                 <div className="application-dossier-meta">
                   <div className="application-dossier-title-block">
-                    <h1 className="text-xl font-semibold text-foreground md:text-[1.5rem] leading-tight">
-                      Application for firearm legal expense and liability cover
-                    </h1>
+                    <h2 id="application-title" className="text-xl font-semibold text-foreground md:text-[1.5rem] leading-tight">
+                      Start your application
+                    </h2>
                     <p className="max-w-3xl text-sm leading-snug text-muted-foreground">
-                      Complete the regulated application below to submit your details for review, premium confirmation, and policy processing.
+                      First, confirm your current firearm licence position.
                     </p>
                   </div>
                 </div>
               )}
-
               <StepIndicator currentStep={currentStep} />
             </div>
 
@@ -263,6 +298,7 @@ const Index = () => {
                   <EligibilityStep
                     defaultValues={applicationData}
                     onNext={handleStep1}
+                    isLoading={createApplicantMutation.isPending}
                   />
                 )}
                 {currentStep > 1 && (
@@ -272,6 +308,7 @@ const Index = () => {
                         defaultValues={applicationData}
                         onNext={handleStep2}
                         onBack={() => setCurrentStep(1)}
+                        isSaving={updateApplicantMutation.isPending}
                       />
                     )}
                     {currentStep === 3 && (
@@ -279,6 +316,7 @@ const Index = () => {
                         defaultValues={applicationData}
                         onNext={handleStep3}
                         onBack={() => setCurrentStep(2)}
+                        isSaving={updateApplicantMutation.isPending}
                       />
                     )}
                     {currentStep === 4 && (
@@ -286,6 +324,7 @@ const Index = () => {
                         defaultValues={applicationData}
                         onNext={handleStep4}
                         onBack={() => setCurrentStep(3)}
+                        isSaving={updateApplicantMutation.isPending}
                       />
                     )}
                     {currentStep === 5 && (
@@ -302,7 +341,6 @@ const Index = () => {
             </div>
           </section>
         </div>
-
         <ComplianceStrip />
       </div>
     </Layout>

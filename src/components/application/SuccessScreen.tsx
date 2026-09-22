@@ -145,7 +145,7 @@ export const SuccessScreen = ({ applicationData }: SuccessScreenProps) => {
             </li>
             <li className="flex items-start gap-2">
               <span className="font-semibold text-primary">4.</span>
-              Full legal representation becomes available after the 3-month waiting period.
+              Legal representation becomes available after the 1-month waiting period; liability cover has a 3-month waiting period.
             </li>
           </ol>
         </div>

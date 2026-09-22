@@ -41,7 +41,7 @@ export const Header = ({ currentStep = 1, showStepIndicator = true }: HeaderProp
 
       <div className="container flex h-20 lg:h-[5.625rem] items-center justify-between gap-4">
         {/* Logo - Left (1.25x larger) */}
-        <Link to="/" className="flex-shrink-0 flex items-center gap-3" onClick={() => window.location.reload()}>
+        <Link to="/" className="flex-shrink-0 flex items-center gap-3">
           <img 
             src={acornLogo} 
             alt="Acorn Brokers" 

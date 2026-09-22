@@ -11,14 +11,15 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
 import { eligibilitySchema, EligibilityData } from "@/lib/validations";
-import { Shield } from "lucide-react";
+import { Loader2, Shield } from "lucide-react";
 
 interface EligibilityStepProps {
   defaultValues?: Partial<EligibilityData>;
   onNext: (data: EligibilityData) => void;
+  isLoading?: boolean;
 }
 
-export const EligibilityStep = ({ defaultValues, onNext }: EligibilityStepProps) => {
+export const EligibilityStep = ({ defaultValues, onNext, isLoading }: EligibilityStepProps) => {
   const form = useForm<EligibilityData>({
     resolver: zodResolver(eligibilitySchema),
     defaultValues: {
@@ -94,8 +95,8 @@ export const EligibilityStep = ({ defaultValues, onNext }: EligibilityStepProps)
           />
 
           <div className="form-actions md:justify-end">
-            <Button type="submit" size="lg" className="w-full md:w-auto md:min-w-[200px]">
-              Continue
+            <Button type="submit" size="lg" className="w-full md:w-auto md:min-w-[200px]" disabled={isLoading}>
+              {isLoading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please wait...</> : "Continue"}
             </Button>
           </div>
         </form>

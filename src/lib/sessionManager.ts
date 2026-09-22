@@ -7,6 +7,7 @@ export interface SessionData {
   startTime: number;
   currentStep: number;
   token?: string; // Signed JWT token from server
+  formData?: Record<string, unknown>;
 }
 
 const SESSION_KEY = "acorn_application_session";
@@ -23,7 +24,18 @@ export const initSession = (): SessionData => {
   
   if (existingSession) {
     try {
-      return JSON.parse(existingSession);
+      const parsed = JSON.parse(existingSession) as Partial<SessionData>;
+      const hasResumableApplication = Boolean(parsed.applicantId && parsed.token);
+      const storedStep = Number(parsed.currentStep);
+      return {
+        sessionId: typeof parsed.sessionId === "string" ? parsed.sessionId : "",
+        applicantId: hasResumableApplication ? parsed.applicantId : undefined,
+        token: hasResumableApplication ? parsed.token : undefined,
+        agentId: typeof parsed.agentId === "string" ? parsed.agentId : extractAgentAttribution() || undefined,
+        startTime: typeof parsed.startTime === "number" ? parsed.startTime : Date.now(),
+        currentStep: hasResumableApplication && storedStep >= 2 && storedStep <= 5 ? storedStep : 1,
+        formData: parsed.formData && typeof parsed.formData === "object" ? parsed.formData : undefined,
+      };
     } catch {
       // Invalid session, create new one
     }

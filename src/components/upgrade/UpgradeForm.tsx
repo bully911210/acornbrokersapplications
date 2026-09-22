@@ -107,7 +107,7 @@ export const UpgradeForm = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>First name</FormLabel>
-                  <FormControl><Input {...field} /></FormControl>
+                  <FormControl><Input autoComplete="family-name" {...field} /></FormControl>
                   <FormMessage />
                 </FormItem>
               )}
@@ -118,7 +118,7 @@ export const UpgradeForm = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Last name</FormLabel>
-                  <FormControl><Input {...field} /></FormControl>
+                  <FormControl><Input autoComplete="given-name" {...field} /></FormControl>
                   <FormMessage />
                 </FormItem>
               )}
@@ -135,7 +135,7 @@ export const UpgradeForm = () => {
                     maskType="saId"
                     value={field.value}
                     onValueChange={field.onChange}
-                    placeholder="910210 5009 08 7"
+                    placeholder="910210 5009 08 7" autoComplete="off"
                   />
                 </FormControl>
                 <FormMessage />
@@ -154,7 +154,7 @@ export const UpgradeForm = () => {
                       maskType="mobile"
                       value={field.value}
                       onValueChange={field.onChange}
-                      placeholder="082 123 4567"
+                      placeholder="082 123 4567" autoComplete="tel"
                     />
                   </FormControl>
                   <FormMessage />
@@ -167,7 +167,7 @@ export const UpgradeForm = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Email</FormLabel>
-                  <FormControl><Input type="email" {...field} /></FormControl>
+                  <FormControl><Input type="email" autoComplete="email" {...field} /></FormControl>
                   <FormMessage />
                 </FormItem>
               )}
@@ -263,7 +263,7 @@ export const UpgradeForm = () => {
               <FormItem>
                 <FormLabel>Type your full name as electronic signature</FormLabel>
                 <FormControl>
-                  <Input placeholder="Full legal name" {...field} />
+                  <Input placeholder="Full legal name" autoComplete="name" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

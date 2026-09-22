@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/form";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
 import {
   Collapsible,
   CollapsibleContent,
@@ -32,12 +33,14 @@ interface CoverSelectionStepProps {
   defaultValues?: Partial<CoverSelectionData>;
   onNext: (data: CoverSelectionData) => void;
   onBack: () => void;
+  isSaving?: boolean;
 }
 
 export const CoverSelectionStep = ({
   defaultValues,
   onNext,
   onBack,
+  isSaving = false,
 }: CoverSelectionStepProps) => {
   const [expandedBenefits, setExpandedBenefits] = useState<string | null>(null);
   const [expandedExclusions, setExpandedExclusions] = useState<string | null>(null);
@@ -215,12 +218,13 @@ export const CoverSelectionStep = ({
               variant="outline"
               onClick={onBack}
               className="gap-2"
+              disabled={isSaving}
             >
               <ArrowLeft className="w-4 h-4" />
               Back
             </Button>
-            <Button type="submit" size="lg" className="min-w-[200px]">
-              Continue
+            <Button type="submit" size="lg" className="min-w-[200px]" disabled={isSaving}>
+              {isSaving ? "Saving…" : "Continue"}
             </Button>
           </div>
         </form>
