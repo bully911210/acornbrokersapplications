@@ -9,3 +9,4 @@
 - [x] Resolve actionable lint issues and refresh compatibility data
 - [x] Run full build and browser regression checks
 - [x] Open up the application form spacing and verify desktop and mobile layouts
+- [ ] Refine the cover comparison panels and verify responsive presentation
