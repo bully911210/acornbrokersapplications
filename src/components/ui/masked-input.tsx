@@ -7,6 +7,7 @@ interface MaskedInputProps extends Omit<React.InputHTMLAttributes<HTMLInputEleme
   value: string;
   onValueChange: (rawValue: string) => void;
   maskType: MaskType;
+  autoComplete?: string;
 }
 
 const formatters: Record<MaskType, (value: string) => string> = {
@@ -42,7 +43,7 @@ const maxLengths: Record<MaskType, number> = {
 };
 
 const MaskedInput = React.forwardRef<HTMLInputElement, MaskedInputProps>(
-  ({ className, value, onValueChange, maskType, ...props }, ref) => {
+  ({ className, value, onValueChange, maskType, autoComplete, ...props }, ref) => {
     const formattedValue = formatters[maskType](value);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
