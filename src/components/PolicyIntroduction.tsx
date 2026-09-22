@@ -116,7 +116,11 @@ export const PolicyIntroduction = ({ onStartApplication }: PolicyIntroductionPro
 
       <div className="policy-plan-grid">
         {COVER_OPTIONS.map((option) => (
-          <article key={option.id} className="policy-plan">
+          <article
+            key={option.id}
+            className={`policy-plan ${option.id === "option_b" ? "policy-plan-featured" : ""}`}
+          >
+            {option.id === "option_b" && <span className="policy-plan-badge">Most popular</span>}
             <div className="policy-plan-heading">
               <div>
                 <h3>{option.name}</h3>
@@ -124,7 +128,6 @@ export const PolicyIntroduction = ({ onStartApplication }: PolicyIntroductionPro
                   {formatCurrency(option.premium)} <span>/ month</span>
                 </p>
               </div>
-              {option.id === "option_b" && <span className="policy-plan-badge">Most Popular</span>}
             </div>
 
             <dl className="policy-plan-limits">

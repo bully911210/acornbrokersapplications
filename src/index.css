@@ -196,23 +196,27 @@
   }
 
   .policy-plan-grid {
-    @apply grid gap-5 lg:grid-cols-3;
+    @apply grid items-stretch gap-5 lg:grid-cols-3 lg:gap-6;
   }
 
   .policy-plan {
-    @apply rounded-md border border-border bg-card p-5;
+    @apply relative flex flex-col rounded-md border border-border bg-card px-6 pb-5 pt-7;
+  }
+
+  .policy-plan-featured {
+    @apply border-primary bg-accent/20;
   }
 
   .policy-plan-heading {
-    @apply flex min-h-[76px] items-start justify-between gap-3;
+    @apply min-h-[92px];
   }
 
   .policy-plan-heading h3 {
-    @apply text-lg font-semibold text-foreground;
+    @apply max-w-[15rem] text-lg font-semibold leading-6 text-foreground;
   }
 
   .policy-plan-price {
-    @apply mt-2 text-2xl font-bold text-primary;
+    @apply mt-3 text-3xl font-bold text-primary;
   }
 
   .policy-plan-price span {
@@ -220,11 +224,11 @@
   }
 
   .policy-plan-badge {
-    @apply rounded-full bg-primary px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-primary-foreground;
+    @apply absolute right-0 top-0 rounded-bl-md rounded-tr-md bg-primary px-4 py-2 text-[10px] font-semibold uppercase tracking-wide text-primary-foreground;
   }
 
   .policy-plan-limits {
-    @apply my-4 space-y-2 border-y border-border py-4 text-sm;
+    @apply mb-5 space-y-3 border-t border-border pt-5 text-sm;
   }
 
   .policy-plan-limits div {
@@ -240,15 +244,15 @@
   }
 
   .policy-plan-benefits {
-    @apply min-h-[120px] space-y-2 text-sm leading-5 text-muted-foreground;
+    @apply min-h-[132px] flex-1 space-y-3 text-sm leading-6 text-muted-foreground;
   }
 
   .policy-plan-benefits li {
-    @apply flex items-start gap-2;
+    @apply flex items-start gap-3;
   }
 
   .policy-plan-benefits svg {
-    @apply mt-0.5 shrink-0;
+    @apply mt-1 shrink-0;
   }
 
   .policy-process {
