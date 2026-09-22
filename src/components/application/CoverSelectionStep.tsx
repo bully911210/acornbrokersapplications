@@ -33,12 +33,10 @@ interface CoverSelectionStepProps {
   defaultValues?: Partial<CoverSelectionData>;
   onNext: (data: CoverSelectionData) => void;
   onBack: () => void;
-  isLoading?: boolean;
   isSaving?: boolean;
 }
 
 export const CoverSelectionStep = ({
-  isLoading,
   defaultValues,
   onNext,
   onBack,

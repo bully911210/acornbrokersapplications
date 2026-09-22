@@ -32,12 +32,10 @@ interface PersonalDetailsStepProps {
   defaultValues?: Partial<PersonalDetailsData>;
   onNext: (data: PersonalDetailsData) => void;
   onBack: () => void;
-  isLoading?: boolean;
   isSaving?: boolean;
 }
 
 export const PersonalDetailsStep = ({
-  isLoading,
   defaultValues,
   onNext,
   onBack,
