@@ -32,12 +32,14 @@ interface BankingDetailsStepProps {
   defaultValues?: Partial<BankingDetailsData>;
   onNext: (data: BankingDetailsData) => void;
   onBack: () => void;
+  isSaving?: boolean;
 }
 
 export const BankingDetailsStep = ({
   defaultValues,
   onNext,
   onBack,
+  isSaving = false,
 }: BankingDetailsStepProps) => {
   const form = useForm<BankingDetailsData>({
     resolver: zodResolver(bankingDetailsSchema),
@@ -68,7 +70,7 @@ export const BankingDetailsStep = ({
                 <FormItem>
                   <FormLabel>Account Holder Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Name as it appears on your bank account" {...field} />
+                    <Input autoComplete="name" placeholder="Name as it appears on your bank account" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -115,6 +117,7 @@ export const BankingDetailsStep = ({
                       value={field.value}
                       onValueChange={field.onChange}
                       placeholder="1234 5678 90"
+                      autoComplete="off"
                     />
                   </FormControl>
                   <FormMessage />
@@ -217,12 +220,12 @@ export const BankingDetailsStep = ({
           </section>
 
           <div className="form-actions">
-            <Button type="button" variant="outline" onClick={onBack} className="gap-2">
+            <Button type="button" variant="outline" onClick={onBack} className="gap-2" disabled={isSaving}>
               <ArrowLeft className="w-4 h-4" />
               Back
             </Button>
-            <Button type="submit" size="lg" className="min-w-[200px]">
-              Continue
+            <Button type="submit" size="lg" className="min-w-[200px]" disabled={isSaving}>
+              {isSaving ? "Saving…" : "Continue"}
             </Button>
           </div>
         </form>

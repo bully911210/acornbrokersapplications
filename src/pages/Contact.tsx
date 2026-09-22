@@ -1,9 +1,9 @@
 import { Layout } from "@/components/Layout";
-import { Phone, Mail, MapPin, Clock } from "lucide-react";
+import { Phone, Mail } from "lucide-react";
 
 const Contact = () => {
   return (
-    <Layout>
+    <Layout showStepIndicator={false}>
       <div className="container max-w-4xl py-12">
         <h1 className="text-3xl font-bold text-foreground mb-8">Contact Us</h1>
         
@@ -34,33 +34,6 @@ const Contact = () => {
                 </div>
               </div>
               
-              <div className="flex items-start gap-4">
-                <div className="p-3 rounded-lg bg-primary/10">
-                  <MapPin className="w-5 h-5 text-primary" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-foreground">Address</h3>
-                  <p className="text-muted-foreground">
-                    123 Main Street<br />
-                    Sandton, Gauteng<br />
-                    South Africa
-                  </p>
-                </div>
-              </div>
-              
-              <div className="flex items-start gap-4">
-                <div className="p-3 rounded-lg bg-primary/10">
-                  <Clock className="w-5 h-5 text-primary" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-foreground">Business Hours</h3>
-                  <p className="text-muted-foreground">
-                    Monday - Friday: 08:00 - 17:00<br />
-                    Saturday: 08:00 - 13:00<br />
-                    Sunday: Closed
-                  </p>
-                </div>
-              </div>
             </div>
           </div>
           

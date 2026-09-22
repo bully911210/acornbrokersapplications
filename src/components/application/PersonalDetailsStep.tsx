@@ -31,12 +31,14 @@ interface PersonalDetailsStepProps {
   defaultValues?: Partial<PersonalDetailsData>;
   onNext: (data: PersonalDetailsData) => void;
   onBack: () => void;
+  isSaving?: boolean;
 }
 
 export const PersonalDetailsStep = ({
   defaultValues,
   onNext,
   onBack,
+  isSaving = false,
 }: PersonalDetailsStepProps) => {
   const form = useForm<PersonalDetailsData>({
     resolver: zodResolver(personalDetailsSchema),
@@ -82,7 +84,7 @@ export const PersonalDetailsStep = ({
                   <FormItem>
                     <FormLabel>First Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="First name" {...field} />
+                      <Input autoComplete="given-name" placeholder="First name" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -96,7 +98,7 @@ export const PersonalDetailsStep = ({
                   <FormItem>
                     <FormLabel>Last Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="Last name" {...field} />
+                      <Input autoComplete="family-name" placeholder="Last name" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -116,11 +118,12 @@ export const PersonalDetailsStep = ({
                       value={field.value}
                       onValueChange={field.onChange}
                       placeholder="910210 5009 08 7"
+                      autoComplete="off"
                     />
                   </FormControl>
                   {idInfo?.isValid && (
-                    <div className="mt-1.5 flex items-center gap-2 text-sm text-emerald-600 dark:text-emerald-500">
-                      <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-500" />
+                    <div className="mt-1.5 flex items-center gap-2 text-sm text-success">
+                      <CheckCircle2 className="h-4 w-4 text-success" />
                       <span>
                         Verified: Born {idInfo.formattedDOB} • {idInfo.gender} • {idInfo.citizenship}
                       </span>
@@ -151,6 +154,7 @@ export const PersonalDetailsStep = ({
                         value={field.value}
                         onValueChange={field.onChange}
                         placeholder="082 123 4567"
+                        autoComplete="tel"
                       />
                     </FormControl>
                     <FormMessage />
@@ -165,7 +169,7 @@ export const PersonalDetailsStep = ({
                   <FormItem>
                     <FormLabel>Email Address</FormLabel>
                     <FormControl>
-                      <Input type="email" placeholder="you@example.com" {...field} />
+                      <Input type="email" autoComplete="email" placeholder="you@example.com" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -187,7 +191,7 @@ export const PersonalDetailsStep = ({
                 <FormItem>
                   <FormLabel>Street Address</FormLabel>
                   <FormControl>
-                    <Input placeholder="123 Main Street" {...field} />
+                    <Input autoComplete="street-address" placeholder="123 Main Street" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -202,7 +206,7 @@ export const PersonalDetailsStep = ({
                   <FormItem>
                     <FormLabel>Suburb</FormLabel>
                     <FormControl>
-                      <Input placeholder="Suburb" {...field} />
+                      <Input autoComplete="address-level3" placeholder="Suburb" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -216,7 +220,7 @@ export const PersonalDetailsStep = ({
                   <FormItem>
                     <FormLabel>City</FormLabel>
                     <FormControl>
-                      <Input placeholder="City" {...field} />
+                      <Input autoComplete="address-level2" placeholder="City" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -251,12 +255,12 @@ export const PersonalDetailsStep = ({
           </section>
 
           <div className="form-actions">
-            <Button type="button" variant="outline" onClick={onBack} className="gap-2">
+             <Button type="button" variant="outline" onClick={onBack} className="gap-2" disabled={isSaving}>
               <ArrowLeft className="w-4 h-4" />
               Back
             </Button>
-            <Button type="submit" size="lg" className="min-w-[200px]">
-              Continue
+             <Button type="submit" size="lg" className="min-w-[200px]" disabled={isSaving}>
+               {isSaving ? "Saving…" : "Continue"}
             </Button>
           </div>
         </form>

@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -135,6 +133,146 @@
 @layer components {
   .application-page-frame {
     @apply px-4 py-6 md:px-6 md:py-10;
+  }
+
+  .policy-introduction {
+    @apply mx-auto w-full max-w-[1120px] space-y-14 px-4 pb-4 pt-8 md:space-y-20 md:px-6 md:pt-12;
+  }
+
+  .policy-hero {
+    @apply grid items-center gap-8 lg:grid-cols-[minmax(0,1.3fr)_minmax(300px,0.7fr)] lg:gap-14;
+  }
+
+  .policy-hero-copy h1 {
+    @apply mt-2 text-4xl font-bold leading-tight text-foreground md:text-5xl;
+  }
+
+  .policy-eyebrow {
+    @apply text-xs font-semibold uppercase tracking-[0.12em] text-primary;
+  }
+
+  .policy-hero-lead {
+    @apply mt-4 max-w-2xl text-base leading-7 text-muted-foreground md:text-lg;
+  }
+
+  .policy-price-anchor {
+    @apply mt-6 flex flex-wrap items-baseline gap-x-2 text-sm text-muted-foreground;
+  }
+
+  .policy-price-anchor strong {
+    @apply text-3xl font-bold text-foreground;
+  }
+
+  .policy-hero-actions {
+    @apply mt-6 flex flex-col gap-3 sm:flex-row;
+  }
+
+  .policy-reassurance {
+    @apply mt-4 flex items-start gap-2 text-xs leading-5 text-muted-foreground;
+  }
+
+  .policy-highlights {
+    @apply grid grid-cols-1 gap-1 border-y border-border py-2 sm:grid-cols-2 lg:grid-cols-1;
+  }
+
+  .policy-highlight {
+    @apply flex min-h-14 items-center gap-3 border-b border-border px-1 py-3 text-sm font-medium text-foreground last:border-b-0 sm:[&:nth-last-child(2)]:border-b-0 lg:[&:nth-last-child(2)]:border-b;
+  }
+
+  .policy-section {
+    @apply scroll-mt-36;
+  }
+
+  .policy-section-heading {
+    @apply mx-auto mb-7 max-w-2xl text-center;
+  }
+
+  .policy-section-heading h2 {
+    @apply mt-2 text-2xl font-bold text-foreground md:text-3xl;
+  }
+
+  .policy-section-heading > p:last-child:not(.policy-eyebrow) {
+    @apply mt-3 text-sm leading-6 text-muted-foreground md:text-base;
+  }
+
+  .policy-plan-grid {
+    @apply grid gap-5 lg:grid-cols-3;
+  }
+
+  .policy-plan {
+    @apply rounded-md border border-border bg-card p-5;
+  }
+
+  .policy-plan-heading {
+    @apply flex min-h-[76px] items-start justify-between gap-3;
+  }
+
+  .policy-plan-heading h3 {
+    @apply text-lg font-semibold text-foreground;
+  }
+
+  .policy-plan-price {
+    @apply mt-2 text-2xl font-bold text-primary;
+  }
+
+  .policy-plan-price span {
+    @apply text-sm font-normal text-muted-foreground;
+  }
+
+  .policy-plan-badge {
+    @apply rounded-full bg-primary px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-primary-foreground;
+  }
+
+  .policy-plan-limits {
+    @apply my-4 space-y-2 border-y border-border py-4 text-sm;
+  }
+
+  .policy-plan-limits div {
+    @apply flex items-center justify-between gap-4;
+  }
+
+  .policy-plan-limits dt {
+    @apply text-muted-foreground;
+  }
+
+  .policy-plan-limits dd {
+    @apply font-semibold text-foreground;
+  }
+
+  .policy-plan-benefits {
+    @apply min-h-[120px] space-y-2 text-sm leading-5 text-muted-foreground;
+  }
+
+  .policy-plan-benefits li {
+    @apply flex items-start gap-2;
+  }
+
+  .policy-plan-benefits svg {
+    @apply mt-0.5 shrink-0;
+  }
+
+  .policy-process {
+    @apply border-y border-border py-10 md:py-12;
+  }
+
+  .policy-process-grid {
+    @apply grid gap-5 sm:grid-cols-2 lg:grid-cols-4;
+  }
+
+  .policy-process-grid li {
+    @apply flex items-center gap-3;
+  }
+
+  .policy-process-grid span {
+    @apply flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground;
+  }
+
+  .policy-process-grid p {
+    @apply text-sm font-medium text-foreground;
+  }
+
+  .policy-waiting-note {
+    @apply mx-auto mt-6 flex max-w-3xl items-start gap-2 text-xs leading-5 text-muted-foreground;
   }
 
   .application-page-inner {

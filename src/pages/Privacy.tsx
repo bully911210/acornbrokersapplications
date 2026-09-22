@@ -2,7 +2,7 @@ import { Layout } from "@/components/Layout";
 
 const Privacy = () => {
   return (
-    <Layout>
+    <Layout showStepIndicator={false}>
       <div className="container max-w-4xl py-12">
         <h1 className="text-3xl font-bold text-foreground mb-8">Privacy Policy</h1>
         
@@ -60,8 +60,7 @@ const Privacy = () => {
             <p>
               For privacy-related queries, contact our Information Officer at: <br />
               Email: privacy@acornbrokers.co.za<br />
-              Phone: +27 (0)69 007 6320
-              Phone: 0800 123 456
+               Phone: +27 (0)69 007 6320
             </p>
           </section>
         </div>

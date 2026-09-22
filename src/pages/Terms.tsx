@@ -2,7 +2,7 @@ import { Layout } from "@/components/Layout";
 
 const Terms = () => {
   return (
-    <Layout>
+    <Layout showStepIndicator={false}>
       <div className="container max-w-4xl py-12">
         <h1 className="text-3xl font-bold text-foreground mb-8">Terms of Service</h1>
         
@@ -25,7 +25,8 @@ const Terms = () => {
             <h2 className="text-xl font-semibold text-foreground mb-4">3. Waiting Periods</h2>
             <ul className="list-disc pl-6 space-y-2">
               <li>Legal advice hotline: Available immediately upon policy activation</li>
-              <li>Legal representation: 3-month waiting period applies</li>
+               <li>Legal representation: 1-month waiting period applies</li>
+               <li>Liability cover: 3-month waiting period applies</li>
             </ul>
           </section>
 
