@@ -8,4 +8,4 @@
 - [x] Remove confirmed-unused UI wrappers and dependencies
 - [x] Resolve actionable lint issues and refresh compatibility data
 - [x] Run full build and browser regression checks
-- [ ] Open up the application form spacing and verify desktop and mobile layouts
+- [x] Open up the application form spacing and verify desktop and mobile layouts
