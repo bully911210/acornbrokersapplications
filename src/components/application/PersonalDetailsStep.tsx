@@ -118,7 +118,7 @@ export const PersonalDetailsStep = ({
                       maskType="saId"
                       value={field.value}
                       onValueChange={field.onChange}
-                      placeholder="910210 5009 08 7" autoComplete="off"
+                      placeholder="910210 5009 08 7"
                       autoComplete="off"
                     />
                   </FormControl>
@@ -154,7 +154,7 @@ export const PersonalDetailsStep = ({
                         maskType="mobile"
                         value={field.value}
                         onValueChange={field.onChange}
-                        placeholder="082 123 4567" autoComplete="tel"
+                        placeholder="082 123 4567"
                         autoComplete="tel"
                       />
                     </FormControl>

@@ -6,7 +6,6 @@ export interface SessionData {
   agentId?: string;
   startTime: number;
   currentStep: number;
-  formData?: any;
   token?: string; // Signed JWT token from server
   formData?: Record<string, unknown>;
 }

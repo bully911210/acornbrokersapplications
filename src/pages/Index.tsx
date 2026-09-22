@@ -298,7 +298,7 @@ const Index = () => {
                         defaultValues={applicationData}
                         onNext={handleStep2}
                         onBack={() => setCurrentStep(1)}
-                        isLoading={updateApplicantMutation.isPending}
+                        isSaving={updateApplicantMutation.isPending}
                       />
                     )}
                     {currentStep === 3 && (
@@ -306,7 +306,7 @@ const Index = () => {
                         defaultValues={applicationData}
                         onNext={handleStep3}
                         onBack={() => setCurrentStep(2)}
-                        isLoading={updateApplicantMutation.isPending}
+                        isSaving={updateApplicantMutation.isPending}
                       />
                     )}
                     {currentStep === 4 && (
@@ -314,7 +314,7 @@ const Index = () => {
                         defaultValues={applicationData}
                         onNext={handleStep4}
                         onBack={() => setCurrentStep(3)}
-                        isLoading={updateApplicantMutation.isPending}
+                        isSaving={updateApplicantMutation.isPending}
                       />
                     )}
                     {currentStep === 5 && (

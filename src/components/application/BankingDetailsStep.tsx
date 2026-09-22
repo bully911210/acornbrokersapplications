@@ -119,7 +119,7 @@ export const BankingDetailsStep = ({
                       maskType="accountNumber"
                       value={field.value}
                       onValueChange={field.onChange}
-                      placeholder="1234 5678 90" autoComplete="off"
+                      placeholder="1234 5678 90"
                       autoComplete="off"
                     />
                   </FormControl>
