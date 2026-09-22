@@ -19,6 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
 import {
   personalDetailsSchema,
   PersonalDetailsData,
@@ -31,10 +32,12 @@ interface PersonalDetailsStepProps {
   defaultValues?: Partial<PersonalDetailsData>;
   onNext: (data: PersonalDetailsData) => void;
   onBack: () => void;
+  isLoading?: boolean;
   isSaving?: boolean;
 }
 
 export const PersonalDetailsStep = ({
+  isLoading,
   defaultValues,
   onNext,
   onBack,
@@ -117,7 +120,7 @@ export const PersonalDetailsStep = ({
                       maskType="saId"
                       value={field.value}
                       onValueChange={field.onChange}
-                      placeholder="910210 5009 08 7"
+                      placeholder="910210 5009 08 7" autoComplete="off"
                       autoComplete="off"
                     />
                   </FormControl>
@@ -153,7 +156,7 @@ export const PersonalDetailsStep = ({
                         maskType="mobile"
                         value={field.value}
                         onValueChange={field.onChange}
-                        placeholder="082 123 4567"
+                        placeholder="082 123 4567" autoComplete="tel"
                         autoComplete="tel"
                       />
                     </FormControl>

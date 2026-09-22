@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/form";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
 import {
   Collapsible,
   CollapsibleContent,
@@ -32,10 +33,12 @@ interface CoverSelectionStepProps {
   defaultValues?: Partial<CoverSelectionData>;
   onNext: (data: CoverSelectionData) => void;
   onBack: () => void;
+  isLoading?: boolean;
   isSaving?: boolean;
 }
 
 export const CoverSelectionStep = ({
+  isLoading,
   defaultValues,
   onNext,
   onBack,
