@@ -31,12 +31,12 @@ export const EligibilityStep = ({ defaultValues, onNext, isLoading }: Eligibilit
   return (
     <div className="animate-fade-in">
       <Form {...form}>
-        <form noValidate onSubmit={form.handleSubmit(onNext)} className="space-y-6">
+        <form noValidate onSubmit={form.handleSubmit(onNext)} className="space-y-8 md:space-y-10">
           <FormField
             control={form.control}
             name="firearmLicenceStatus"
             render={({ field }) => (
-              <FormItem className="space-y-3">
+              <FormItem className="space-y-5">
                 <FormLabel className="text-base font-semibold text-foreground">
                   What is your current firearm licence status?
                 </FormLabel>
@@ -44,7 +44,7 @@ export const EligibilityStep = ({ defaultValues, onNext, isLoading }: Eligibilit
                   <RadioGroup
                     onValueChange={field.onChange}
                     value={field.value || ""}
-                    className="grid grid-cols-1 gap-3 md:grid-cols-2"
+                    className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-5"
                   >
                     <label
                       className={`option-tile-compact ${
