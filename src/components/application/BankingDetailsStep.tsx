@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/tooltip";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
 import { bankingDetailsSchema, BankingDetailsData, SA_BANKS } from "@/lib/validations";
 import { ArrowLeft, Building2, Info } from "lucide-react";
 
@@ -32,10 +33,12 @@ interface BankingDetailsStepProps {
   defaultValues?: Partial<BankingDetailsData>;
   onNext: (data: BankingDetailsData) => void;
   onBack: () => void;
+  isLoading?: boolean;
   isSaving?: boolean;
 }
 
 export const BankingDetailsStep = ({
+  isLoading,
   defaultValues,
   onNext,
   onBack,
@@ -116,7 +119,7 @@ export const BankingDetailsStep = ({
                       maskType="accountNumber"
                       value={field.value}
                       onValueChange={field.onChange}
-                      placeholder="1234 5678 90"
+                      placeholder="1234 5678 90" autoComplete="off"
                       autoComplete="off"
                     />
                   </FormControl>
