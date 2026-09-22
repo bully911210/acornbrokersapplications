@@ -7,4 +7,4 @@
 - [x] Correct legal/support page layout and verified content issues
 - [x] Remove confirmed-unused UI wrappers and dependencies
 - [x] Resolve actionable lint issues and refresh compatibility data
-- [ ] Run full build and browser regression checks
+- [x] Run full build and browser regression checks
