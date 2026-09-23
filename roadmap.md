@@ -10,4 +10,4 @@
 - [x] Run full build and browser regression checks
 - [x] Open up the application form spacing and verify desktop and mobile layouts
 - [x] Refine the cover comparison panels and verify responsive presentation
-- [ ] Complete the mobile-first legibility pass across all application steps
+- [x] Complete the mobile-first legibility pass across all application steps
