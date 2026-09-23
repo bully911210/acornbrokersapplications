@@ -1,4 +1,4 @@
-import { Helmet } from "react-helmet-async";
+import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
 import { COVER_OPTIONS } from "@/lib/coverData";
@@ -118,33 +118,59 @@ export const SeoHead = () => {
   const canonicalUrl = `${SITE_URL}${canonicalPath}`;
   const isHome = pathname === "/";
 
-  return (
-    <Helmet>
-      <title>{meta.title}</title>
-      <meta name="description" content={meta.description} />
-      <meta name="robots" content={meta.robots ?? "index, follow, max-image-preview:large"} />
-      <link rel="canonical" href={canonicalUrl} />
+  useEffect(() => {
+    document.title = meta.title;
 
-      <meta property="og:title" content={meta.title} />
-      <meta property="og:description" content={meta.description} />
-      <meta property="og:type" content="website" />
-      <meta property="og:url" content={canonicalUrl} />
-      <meta property="og:site_name" content="Firearms Guardian" />
-      <meta property="og:locale" content="en_ZA" />
+    const upsertMeta = (selector: string, attributes: Record<string, string>) => {
+      let element = document.head.querySelector<HTMLMetaElement>(selector);
+      if (!element) {
+        element = document.createElement("meta");
+        document.head.appendChild(element);
+      }
+      Object.entries(attributes).forEach(([name, value]) => element?.setAttribute(name, value));
+    };
 
-      <meta name="twitter:card" content="summary" />
-      <meta name="twitter:title" content={meta.title} />
-      <meta name="twitter:description" content={meta.description} />
+    upsertMeta('meta[name="description"]', { name: "description", content: meta.description });
+    upsertMeta('meta[name="robots"]', {
+      name: "robots",
+      content: meta.robots ?? "index, follow, max-image-preview:large",
+    });
+    upsertMeta('meta[property="og:title"]', { property: "og:title", content: meta.title });
+    upsertMeta('meta[property="og:description"]', { property: "og:description", content: meta.description });
+    upsertMeta('meta[property="og:type"]', { property: "og:type", content: "website" });
+    upsertMeta('meta[property="og:url"]', { property: "og:url", content: canonicalUrl });
+    upsertMeta('meta[property="og:site_name"]', { property: "og:site_name", content: "Firearms Guardian" });
+    upsertMeta('meta[property="og:locale"]', { property: "og:locale", content: "en_ZA" });
+    upsertMeta('meta[name="twitter:card"]', { name: "twitter:card", content: "summary" });
+    upsertMeta('meta[name="twitter:title"]', { name: "twitter:title", content: meta.title });
+    upsertMeta('meta[name="twitter:description"]', {
+      name: "twitter:description",
+      content: meta.description,
+    });
 
-      {isHome && (
-        <script type="application/ld+json">{JSON.stringify(productSchema)}</script>
-      )}
-      {isHome && (
-        <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
-      )}
-      {isHome && (
-        <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
-      )}
-    </Helmet>
-  );
+    let canonical = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+    if (!canonical) {
+      canonical = document.createElement("link");
+      canonical.rel = "canonical";
+      document.head.appendChild(canonical);
+    }
+    canonical.href = canonicalUrl;
+
+    const schemas = [productSchema, faqSchema, breadcrumbSchema];
+    schemas.forEach((schema, index) => {
+      const id = `route-schema-${index}`;
+      const existing = document.getElementById(id);
+      if (!isHome) {
+        existing?.remove();
+        return;
+      }
+      const script = existing ?? document.createElement("script");
+      script.id = id;
+      script.setAttribute("type", "application/ld+json");
+      script.textContent = JSON.stringify(schema);
+      if (!existing) document.head.appendChild(script);
+    });
+  }, [canonicalUrl, isHome, meta.description, meta.robots, meta.title]);
+
+  return null;
 };
