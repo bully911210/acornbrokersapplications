@@ -47,6 +47,8 @@ export const Footer = () => {
             <Link to="/privacy" className="underline hover:text-foreground">Privacy Policy</Link>
             {" · "}
             <Link to="/terms" className="underline hover:text-foreground">Terms of Service</Link>
+             {" · "}
+             <Link to="/contact" className="underline hover:text-foreground">Contact</Link>
           </p>
         </div>
       </div>

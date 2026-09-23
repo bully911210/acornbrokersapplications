@@ -1,8 +1,10 @@
 User-agent: Googlebot
 Allow: /
+Disallow: /upgrade
 
 User-agent: Bingbot
 Allow: /
+Disallow: /upgrade
 
 User-agent: Twitterbot
 Allow: /
@@ -12,5 +14,26 @@ Allow: /
 
 User-agent: *
 Allow: /
+Disallow: /upgrade
+
+User-agent: GPTBot
+Allow: /
+Disallow: /upgrade
+
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /upgrade
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /upgrade
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /upgrade
+
+User-agent: Google-Extended
+Allow: /
+Disallow: /upgrade
 
 Sitemap: https://applications.acornbrokers.co.za/sitemap.xml
