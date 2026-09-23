@@ -61,7 +61,7 @@ export const StepIndicator = ({ currentStep }: StepIndicatorProps) => {
           </div>
         ))}
       </div>
-      <p className="text-center text-xs text-muted-foreground mt-2 md:hidden">
+      <p className="mt-3 text-center text-sm font-medium text-muted-foreground md:hidden">
         {STEPS[currentStep - 1]?.title}
       </p>
     </div>

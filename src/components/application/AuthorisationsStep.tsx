@@ -75,14 +75,14 @@ export const AuthorisationsStep = ({
       <section className="document-section mb-8">
         <div className="document-section-header flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+            <p className="text-xs font-semibold uppercase text-muted-foreground">
               Pre-submission review
             </p>
             <h3 className="mt-1 text-lg font-semibold text-foreground">
               Review your application summary
             </h3>
           </div>
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <div className="flex items-start gap-2 text-sm leading-6 text-muted-foreground">
             <CircleCheck className="h-4 w-4 text-success" />
             Confirm your details before final submission
           </div>
@@ -165,7 +165,7 @@ export const AuthorisationsStep = ({
                     <RadioGroup
                       onValueChange={field.onChange}
                       value={field.value || ""}
-                      className="grid grid-cols-2 gap-2 md:grid-cols-4"
+                       className="grid grid-cols-2 gap-3 md:grid-cols-4"
                     >
                       {[
                         { value: "online", label: "Online", icon: Globe },
@@ -201,8 +201,8 @@ export const AuthorisationsStep = ({
             </div>
 
             {/* Select-all */}
-            <div className="rounded-md border border-border bg-muted/20 px-5 py-4">
-              <div className="flex items-center gap-3">
+            <div className="rounded-md border border-border bg-muted/20 px-4 py-4 md:px-5">
+              <div className="flex items-start gap-3">
                 <Checkbox
                   checked={allAccepted}
                   onCheckedChange={(c) => toggleAll(!!c)}
@@ -210,15 +210,15 @@ export const AuthorisationsStep = ({
                 />
                 <label
                   htmlFor="accept-all-declarations"
-                  className="flex-1 cursor-pointer text-sm font-medium text-foreground"
+                  className="flex-1 cursor-pointer text-sm font-medium leading-6 text-foreground"
                 >
                   I accept all required declarations (Debit Order, Policy Declaration, POPIA Consent)
                 </label>
               </div>
 
               <Collapsible open={showIndividualDeclarations} onOpenChange={setShowIndividualDeclarations}>
-                <CollapsibleTrigger className="mt-3 flex items-center gap-1 text-xs font-medium text-primary hover:underline">
-                  <ChevronDown className={`h-3.5 w-3.5 transition-transform ${showIndividualDeclarations ? "rotate-180" : ""}`} />
+                <CollapsibleTrigger className="mt-2 flex min-h-11 items-center gap-2 text-sm font-medium text-primary hover:underline">
+                  <ChevronDown className={`h-4 w-4 transition-transform ${showIndividualDeclarations ? "rotate-180" : ""}`} />
                   {showIndividualDeclarations ? "Hide individual declarations" : "View individual declarations"}
                 </CollapsibleTrigger>
                 <CollapsibleContent className="mt-4 space-y-3">
@@ -229,15 +229,15 @@ export const AuthorisationsStep = ({
                       name="debitOrderConsent"
                       render={({ field }) => (
                         <FormItem>
-                          <div className="flex items-center gap-3">
+                          <div className="flex items-start gap-3">
                             <FormControl>
                               <Checkbox checked={field.value} onCheckedChange={field.onChange} />
                             </FormControl>
-                            <label className="flex-1 cursor-pointer text-sm font-medium text-foreground" onClick={() => field.onChange(!field.value)}>
-                              <span className="inline-flex items-center gap-2">
+                            <label className="flex-1 cursor-pointer text-sm font-medium leading-5 text-foreground" onClick={() => field.onChange(!field.value)}>
+                              <span className="flex items-start gap-2">
                                 <FileText className="h-4 w-4 shrink-0 text-primary" />
-                                I agree to the Debit Order Authorisation
-                                <span className="text-xs font-medium text-primary">
+                                <span className="flex-1">I agree to the Debit Order Authorisation</span>
+                                <span className="shrink-0 text-sm font-medium text-primary">
                                   • {coverOption ? formatCurrency(coverOption.premium) : "R0"}/pm
                                 </span>
                               </span>
@@ -249,11 +249,11 @@ export const AuthorisationsStep = ({
                     />
                     <Accordion type="multiple" value={expandedItems} onValueChange={setExpandedItems}>
                       <AccordionItem value="debitOrder" className="border-0">
-                        <AccordionTrigger className="hover:no-underline py-2 text-xs text-muted-foreground">
+                        <AccordionTrigger className="min-h-11 py-2 text-sm text-muted-foreground hover:no-underline">
                           Read full terms
                         </AccordionTrigger>
                         <AccordionContent className="pb-2">
-                          <div className="space-y-3 text-sm text-muted-foreground">
+                          <div className="space-y-3 text-sm leading-6 text-muted-foreground">
                             <p>I hereby request and authorise Firearms Guardian (Pty) Ltd, Acorn Brokers (Pty) Ltd, and/or their authorised agent/s or collection service providers, to draw against my bank account as indicated herein each month and to debit my account with the amount equivalent to the premium due by me in respect of the Firearms Guardian policy, until cancelled by me in writing.</p>
                             <p>In the event of an increase of the premium, Firearms Guardian, Acorn Brokers, or their agent/s have my authority to deduct from my account the increased premium.</p>
                             <p>All such debits against my account shall be treated as though I have signed and done them personally.</p>
@@ -271,12 +271,12 @@ export const AuthorisationsStep = ({
                       name="declarationConsent"
                       render={({ field }) => (
                         <FormItem>
-                          <div className="flex items-center gap-3">
+                          <div className="flex items-start gap-3">
                             <FormControl>
                               <Checkbox checked={field.value} onCheckedChange={field.onChange} />
                             </FormControl>
-                            <label className="flex-1 cursor-pointer text-sm font-medium text-foreground" onClick={() => field.onChange(!field.value)}>
-                              <span className="inline-flex items-center gap-2">
+                            <label className="flex-1 cursor-pointer text-sm font-medium leading-5 text-foreground" onClick={() => field.onChange(!field.value)}>
+                              <span className="flex items-start gap-2">
                                 <Shield className="h-4 w-4 shrink-0 text-primary" />
                                 I agree to the Policy Declaration
                               </span>
@@ -288,11 +288,11 @@ export const AuthorisationsStep = ({
                     />
                     <Accordion type="multiple" value={expandedItems} onValueChange={setExpandedItems}>
                       <AccordionItem value="declaration" className="border-0">
-                        <AccordionTrigger className="hover:no-underline py-2 text-xs text-muted-foreground">
+                        <AccordionTrigger className="min-h-11 py-2 text-sm text-muted-foreground hover:no-underline">
                           Read full terms
                         </AccordionTrigger>
                         <AccordionContent className="pb-2">
-                          <div className="space-y-3 text-sm text-muted-foreground">
+                          <div className="space-y-3 text-sm leading-6 text-muted-foreground">
                             <p>I hereby apply for a Firearms Guardian policy in accordance with all applicable terms and conditions.</p>
                             <p>I personally completed this application and acknowledge that payment of premiums on the due dates is my responsibility.</p>
                             <p>I warrant that all information given in this application form is true, correct, and complete.</p>
@@ -311,12 +311,12 @@ export const AuthorisationsStep = ({
                       name="popiaConsent"
                       render={({ field }) => (
                         <FormItem>
-                          <div className="flex items-center gap-3">
+                          <div className="flex items-start gap-3">
                             <FormControl>
                               <Checkbox checked={field.value} onCheckedChange={field.onChange} />
                             </FormControl>
-                            <label className="flex-1 cursor-pointer text-sm font-medium text-foreground" onClick={() => field.onChange(!field.value)}>
-                              <span className="inline-flex items-center gap-2">
+                            <label className="flex-1 cursor-pointer text-sm font-medium leading-5 text-foreground" onClick={() => field.onChange(!field.value)}>
+                              <span className="flex items-start gap-2">
                                 <Lock className="h-4 w-4 shrink-0 text-primary" />
                                 I agree to the POPIA Consent & Privacy Notice
                               </span>
@@ -328,11 +328,11 @@ export const AuthorisationsStep = ({
                     />
                     <Accordion type="multiple" value={expandedItems} onValueChange={setExpandedItems}>
                       <AccordionItem value="popia" className="border-0">
-                        <AccordionTrigger className="hover:no-underline py-2 text-xs text-muted-foreground">
+                        <AccordionTrigger className="min-h-11 py-2 text-sm text-muted-foreground hover:no-underline">
                           Read full terms
                         </AccordionTrigger>
                         <AccordionContent className="pb-2">
-                          <div className="space-y-3 text-sm text-muted-foreground">
+                          <div className="space-y-3 text-sm leading-6 text-muted-foreground">
                             <p>We at GENRIC Insurance Company Limited (GENRIC), Firearms Guardian (Pty) Ltd, and Acorn Brokers (Pty) Ltd respect your right to privacy.</p>
                             <p>Personal information is collected and processed in accordance with the Protection of Personal Information Act, 4 of 2013 (POPIA), for the primary purpose of providing insurance cover and for all activities incidental and relevant to this purpose.</p>
                             <p>Personal information may be shared with authorised third parties, service providers, reinsurers, legal service providers, payment processors, and regulatory bodies as required by law, including for fraud prevention and compliance purposes.</p>

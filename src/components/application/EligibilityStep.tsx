@@ -60,7 +60,7 @@ export const EligibilityStep = ({ defaultValues, onNext, isLoading }: Eligibilit
                         </div>
                         <div className="min-w-0">
                           <p className="font-semibold text-foreground">Valid licence</p>
-                          <p className="mt-1 text-sm leading-5 text-muted-foreground">
+                          <p className="mt-1 text-sm leading-6 text-muted-foreground">
                             I have a current, valid firearm licence.
                           </p>
                         </div>
@@ -81,7 +81,7 @@ export const EligibilityStep = ({ defaultValues, onNext, isLoading }: Eligibilit
                         </div>
                         <div className="min-w-0">
                           <p className="font-semibold text-foreground">Application in progress</p>
-                          <p className="mt-1 text-sm leading-5 text-muted-foreground">
+                          <p className="mt-1 text-sm leading-6 text-muted-foreground">
                             My firearm licence application is still being processed.
                           </p>
                         </div>
