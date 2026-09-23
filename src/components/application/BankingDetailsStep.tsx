@@ -146,23 +146,23 @@ export const BankingDetailsStep = ({
                       type="single"
                       value={field.value || ""}
                       onValueChange={(v) => v && field.onChange(v)}
-                      className="grid w-full grid-cols-3 gap-1 rounded-md border border-border bg-muted/40 p-1"
+                      className="grid w-full grid-cols-2 gap-1 rounded-md border border-border bg-muted/40 p-1 sm:grid-cols-3"
                     >
                       <ToggleGroupItem
                         value="cheque"
-                        className="h-10 rounded-[6px] text-sm font-medium data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+                        className="h-11 rounded-[6px] text-sm font-medium data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
                       >
                         Cheque
                       </ToggleGroupItem>
                       <ToggleGroupItem
                         value="savings"
-                        className="h-10 rounded-[6px] text-sm font-medium data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+                        className="h-11 rounded-[6px] text-sm font-medium data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
                       >
                         Savings
                       </ToggleGroupItem>
                       <ToggleGroupItem
                         value="transmission"
-                        className="h-10 gap-1 rounded-[6px] text-sm font-medium data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+                        className="col-span-2 h-11 gap-1 rounded-[6px] text-sm font-medium data-[state=on]:bg-primary data-[state=on]:text-primary-foreground sm:col-span-1"
                       >
                         <span>Transmission (Business)</span>
                         <TooltipProvider>
@@ -209,7 +209,7 @@ export const BankingDetailsStep = ({
                         <ToggleGroupItem
                           key={value}
                           value={value}
-                          className="h-10 rounded-[6px] text-sm font-medium data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+                          className="h-11 rounded-[6px] text-sm font-medium data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
                         >
                           {label}
                         </ToggleGroupItem>

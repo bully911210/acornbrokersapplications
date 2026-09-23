@@ -85,15 +85,14 @@ export const CoverSelectionStep = ({
                         >
                           <RadioGroupItem value={option.id} className="sr-only" />
 
-                          {option.id === "option_b" && (
-                            <span className="absolute right-3 top-3 rounded-full bg-primary px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-primary-foreground">
-                              Most Popular
-                            </span>
-                          )}
-
-                          <div className="mb-3 flex items-start justify-between gap-2 pr-24">
+                          <div className="mb-4 flex items-start justify-between gap-3">
                             <div className="min-w-0 flex-1">
-                              <h3 className="text-lg font-bold leading-tight text-foreground">
+                              {option.id === "option_b" && (
+                                <span className="mb-2 inline-flex rounded-md bg-primary px-2.5 py-1 text-xs font-semibold uppercase text-primary-foreground">
+                                  Most Popular
+                                </span>
+                              )}
+                              <h3 className="text-lg font-bold leading-6 text-foreground">
                                 {option.name}
                               </h3>
                               <p className="mt-2 whitespace-nowrap text-3xl font-bold text-primary">
@@ -111,16 +110,16 @@ export const CoverSelectionStep = ({
                           </div>
 
                           <div className="mb-3 space-y-2 border-b border-border pb-3">
-                            <div className="flex items-baseline justify-between gap-2 text-sm">
-                              <span className="whitespace-nowrap text-muted-foreground">
+                            <div className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-3 text-sm leading-5">
+                              <span className="text-muted-foreground">
                                 Legal Expense Limit
                               </span>
                               <span className="whitespace-nowrap font-semibold text-foreground">
                                 {formatCurrency(option.legalExpenseLimit)}
                               </span>
                             </div>
-                            <div className="flex items-baseline justify-between gap-2 text-sm">
-                              <span className="whitespace-nowrap text-muted-foreground">
+                            <div className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-3 text-sm leading-5">
+                              <span className="text-muted-foreground">
                                 Liability Limit
                               </span>
                               <span className="whitespace-nowrap font-semibold text-foreground">
@@ -138,7 +137,7 @@ export const CoverSelectionStep = ({
                                 )
                               }
                             >
-                              <CollapsibleTrigger className="flex w-full items-center justify-between py-2 text-sm font-medium text-primary hover:text-primary-dark">
+                              <CollapsibleTrigger className="flex min-h-11 w-full items-center justify-between py-2 text-sm font-medium text-primary hover:text-primary-dark">
                                 <span>View Benefits</span>
                                 {expandedBenefits === option.id ? (
                                   <ChevronUp className="h-4 w-4" />
@@ -148,7 +147,7 @@ export const CoverSelectionStep = ({
                               </CollapsibleTrigger>
                               <CollapsibleContent className="mt-2 space-y-2">
                                 {option.benefits.map((benefit, i) => (
-                                  <div key={i} className="flex items-start gap-2 text-sm">
+                                  <div key={i} className="flex items-start gap-2 text-sm leading-6">
                                     <Check className="mt-0.5 h-4 w-4 shrink-0 text-success" />
                                     <span className="text-muted-foreground">{benefit}</span>
                                   </div>
@@ -164,7 +163,7 @@ export const CoverSelectionStep = ({
                                 )
                               }
                             >
-                              <CollapsibleTrigger className="flex w-full items-center justify-between py-2 text-sm font-medium text-muted-foreground hover:text-foreground">
+                              <CollapsibleTrigger className="flex min-h-11 w-full items-center justify-between py-2 text-sm font-medium text-muted-foreground hover:text-foreground">
                                 <span>View Exclusions</span>
                                 {expandedExclusions === option.id ? (
                                   <ChevronUp className="h-4 w-4" />
@@ -174,7 +173,7 @@ export const CoverSelectionStep = ({
                               </CollapsibleTrigger>
                               <CollapsibleContent className="mt-2 space-y-2">
                                 {option.exclusions.map((exclusion, i) => (
-                                  <div key={i} className="flex items-start gap-2 text-sm">
+                                  <div key={i} className="flex items-start gap-2 text-sm leading-6">
                                     <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />
                                     <span className="text-muted-foreground">{exclusion}</span>
                                   </div>
@@ -201,10 +200,10 @@ export const CoverSelectionStep = ({
                 <h4 className="font-semibold text-foreground">
                   Waiting Period Information
                 </h4>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm leading-6 text-muted-foreground">
                   {WAITING_PERIOD_INFO.immediate}
                 </p>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm leading-6 text-muted-foreground">
                   {WAITING_PERIOD_INFO.representation}
                 </p>
               </div>
