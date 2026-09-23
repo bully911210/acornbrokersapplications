@@ -12,5 +12,5 @@
 - [x] Refine the cover comparison panels and verify responsive presentation
 - [x] Complete the mobile-first legibility pass across all application steps
 
-- [ ] Upgrade full-site SEO and AI-search visibility while excluding /upgrade from indexing
-- [ ] Add a branded favicon derived from the existing Acorn Brokers logo
+- [x] Upgrade full-site SEO and AI-search visibility while excluding /upgrade from indexing
+- [x] Add a branded favicon derived from the existing Acorn Brokers logo

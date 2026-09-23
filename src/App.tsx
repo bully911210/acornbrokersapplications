@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import Index from "./pages/Index";
+import { SeoHead } from "@/components/SeoHead";
 
 const Upgrade = lazy(() => import("./pages/Upgrade"));
 const Privacy = lazy(() => import("./pages/Privacy"));
@@ -24,6 +25,7 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <BrowserRouter>
+        <SeoHead />
         <Suspense fallback={<PageFallback />}>
           <Routes>
             <Route path="/" element={<Index />} />
